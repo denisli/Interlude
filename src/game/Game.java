@@ -1,6 +1,7 @@
 package game;
 
 import game.scenes.Scene;
+import game.scenes.SceneManager;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -16,15 +17,8 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 
 public class Game extends BasicGame {
-    private int ANoteKey = Input.KEY_A;
-    private int BNoteKey = Input.KEY_S; 
-    private int CNoteKey = Input.KEY_D;
-    private int DNoteKey = Input.KEY_F;
-    private int ENoteKey = Input.KEY_J;
-    private int FNoteKey = Input.KEY_K;
-    private int GNoteKey = Input.KEY_L;
-    
-    private Scene scene;
+    private final SceneManager sceneManager = new SceneManager();
+    private Controls controls;
     
     public Game() {
         super("Interlude");
@@ -63,5 +57,4 @@ public class Game extends BasicGame {
 //            notesOnScreen.remove();
 //        }
     }
-
 }

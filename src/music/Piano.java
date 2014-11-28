@@ -25,4 +25,9 @@ public class Piano implements Instrument {
             ie.printStackTrace();
         }
     }
+    
+    @Override
+    public String getInstrumentName() {
+        return this.getClass().getSimpleName();
+    }
 }

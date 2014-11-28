@@ -5,7 +5,7 @@ package music;
  * @author Denis
  *
  */
-public class Note {
+public class Note implements MusicElement {
     public static final int C = 0;
     public static final int CS = 1;
     public static final int D = 2;

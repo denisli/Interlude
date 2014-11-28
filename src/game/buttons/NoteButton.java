@@ -1,24 +1,26 @@
-package game;
+package game.buttons;
+
+import music.Note;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 
 public class NoteButton {
-    private final Note note;
+    private final int note;
     
-    public NoteButton(Note note) {
+    public NoteButton(int note) {
         this.note = note;
     }
     
     public void render(GameContainer gc, Graphics g) {
         switch (note) {
-        case A: return;
-        case B: return;
-        case C: return;
-        case D: return;
-        case E: return;
-        case F: return;
-        case G: return;
+        case Note.A: return;
+        case Note.B: return;
+        case Note.C: return;
+        case Note.D: return;
+        case Note.E: return;
+        case Note.F: return;
+        case Note.G: return;
         }
         
     }

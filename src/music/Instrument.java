@@ -6,4 +6,6 @@ public interface Instrument {
     }
     
     public void playNote(Note note);
+    
+    public String getInstrumentName();
 }
