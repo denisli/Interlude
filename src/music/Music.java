@@ -1,11 +1,11 @@
 package music;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class Music {
-    List<MusicElement> sequence = new ArrayList<MusicElement>();
+    Queue<MusicElement> sequence = new LinkedList<MusicElement>();
     String title;
     int tempo;
 
@@ -19,5 +19,13 @@ public class Music {
     
     public void setTempo(int tempo) {
         this.tempo = tempo;
+    }
+    
+    public MusicElement next() {
+        return sequence.remove();
+    }
+    
+    public boolean ended() {
+        return sequence.isEmpty();
     }
 }

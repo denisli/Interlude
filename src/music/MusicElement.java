@@ -1,8 +1,8 @@
 package music;
 
 public interface MusicElement {
-    public static MusicElement note( int note, int duration, int volume, int octave ) {
-        return new Note( note, duration, volume, octave );
+    public static MusicElement note( int note, float durationType, int volume, int octave, int tempo, int accidental ) {
+        return new Note( note, durationType, volume, octave, tempo, accidental );
     }
     
     public static MusicElement rest( int duration ) {

@@ -2,8 +2,11 @@ package game.scenes;
 
 import game.Controls;
 import game.MovingNote;
+import game.buttons.Button;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 import org.newdawn.slick.GameContainer;
@@ -18,6 +21,7 @@ public class Round implements Scene {
     private final String songTitle;
     private final Instrument instrument;
     private final Controls controls;
+    private final List<Button> buttons = new ArrayList<Button>();
     
     private Queue<MovingNote> notesOnScreen = new LinkedList<MovingNote>();
     
@@ -31,55 +35,66 @@ public class Round implements Scene {
     @Override
     public void render(GameContainer gc, Graphics g) {
         // TODO Auto-generated method stub
-        for (MovingNote movingNote : notesOnScreen) {
-            movingNote.render(gc, g);
+//        for (MovingNote movingNote : notesOnScreen) {
+//            movingNote.render(gc, g);
+//        }
+        for (Button button : buttons) {
+            button.render(gc, g);
         }
     }
 
     @Override
     public void update(GameContainer gc, int t) {
         // TODO Auto-generated method stub
-        Input input = gc.getInput();
-        if (input.isKeyPressed(controls.getANoteKey())) {
-            if (!notesOnScreen.isEmpty()) {
-                MovingNote movingNote = notesOnScreen.remove();
-                Note note = movingNote.note();
-                instrument.playNote( note.noteInOctave(controls.getANoteKey()) );
-            }
-        } else if (input.isKeyPressed(controls.getBNoteKey())) {
-            MovingNote movingNote = notesOnScreen.remove();
-            Note note = movingNote.note();
-            instrument.playNote( note.noteInOctave(controls.getBNoteKey()) );
-        } else if (input.isKeyPressed(controls.getBNoteKey())) {
-            MovingNote movingNote = notesOnScreen.remove();
-            Note note = movingNote.note();
-            instrument.playNote( note.noteInOctave(controls.getCNoteKey()) );
-        } else if (input.isKeyPressed(controls.getBNoteKey())) {
-            MovingNote movingNote = notesOnScreen.remove();
-            Note note = movingNote.note();
-            instrument.playNote( note.noteInOctave(controls.getDNoteKey()) );
-        } else if (input.isKeyPressed(controls.getBNoteKey())) {
-            MovingNote movingNote = notesOnScreen.remove();
-            Note note = movingNote.note();
-            instrument.playNote( note.noteInOctave(controls.getENoteKey()) );
-        } else if (input.isKeyPressed(controls.getBNoteKey())) {
-            MovingNote movingNote = notesOnScreen.remove();
-            Note note = movingNote.note();
-            instrument.playNote( note.noteInOctave(controls.getFNoteKey()) );
-        } else if (input.isKeyPressed(controls.getBNoteKey())) {
-            MovingNote movingNote = notesOnScreen.remove();
-            Note note = movingNote.note();
-            instrument.playNote( note.noteInOctave(controls.getGNoteKey()) );
-        }
-        
-        for (MovingNote movingNote : notesOnScreen) {
-            movingNote.update(gc, t);
+//        Input input = gc.getInput();
+//        if (input.isKeyPressed(controls.getANoteKey())) {
+//            if (!notesOnScreen.isEmpty()) {
+//                MovingNote movingNote = notesOnScreen.remove();
+//                Note note = movingNote.note();
+//                instrument.playNote( note.noteInOctave(controls.getANoteKey()) );
+//            }
+//        } else if (input.isKeyPressed(controls.getBNoteKey())) {
+//            MovingNote movingNote = notesOnScreen.remove();
+//            Note note = movingNote.note();
+//            instrument.playNote( note.noteInOctave(controls.getBNoteKey()) );
+//        } else if (input.isKeyPressed(controls.getBNoteKey())) {
+//            MovingNote movingNote = notesOnScreen.remove();
+//            Note note = movingNote.note();
+//            instrument.playNote( note.noteInOctave(controls.getCNoteKey()) );
+//        } else if (input.isKeyPressed(controls.getBNoteKey())) {
+//            MovingNote movingNote = notesOnScreen.remove();
+//            Note note = movingNote.note();
+//            instrument.playNote( note.noteInOctave(controls.getDNoteKey()) );
+//        } else if (input.isKeyPressed(controls.getBNoteKey())) {
+//            MovingNote movingNote = notesOnScreen.remove();
+//            Note note = movingNote.note();
+//            instrument.playNote( note.noteInOctave(controls.getENoteKey()) );
+//        } else if (input.isKeyPressed(controls.getBNoteKey())) {
+//            MovingNote movingNote = notesOnScreen.remove();
+//            Note note = movingNote.note();
+//            instrument.playNote( note.noteInOctave(controls.getFNoteKey()) );
+//        } else if (input.isKeyPressed(controls.getBNoteKey())) {
+//            MovingNote movingNote = notesOnScreen.remove();
+//            Note note = movingNote.note();
+//            instrument.playNote( note.noteInOctave(controls.getGNoteKey()) );
+//        }
+//        
+//        for (MovingNote movingNote : notesOnScreen) {
+//            movingNote.update(gc, t);
+//        }
+        for (Button button : buttons) {
+            button.update(gc, t);
         }
     }
     
     @Override
     public void init(GameContainer gc) {
-        
+        int[] notes = new int[] { Note.A, Note.B, Note.C, Note.D, Note.E, Note.F, Note.G };
+        for (int note : notes) {
+            Button button = Button.noteButton(note);
+            button.init(gc);
+            buttons.add( button );
+        }
     }
     
     @Override
@@ -90,6 +105,6 @@ public class Round implements Scene {
     @Override
     public Scene nextScene(GameContainer gc, int t) {
         // TODO Auto-generated method stub
-        return null;
+        return this;
     }
 }

@@ -14,6 +14,10 @@ public interface Button {
         return new SongSelectionButton(songTitle, yCoord);
     }
     
+    public static Button noteButton(int note) {
+        return new NoteButton(note);
+    }
+    
     public void render(GameContainer gc, Graphics g);
     
     public void update(GameContainer gc, int t);

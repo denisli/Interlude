@@ -16,6 +16,7 @@ public class SongSelectionButton implements Button {
     private UnicodeFont font;
     private Rectangle boundingBox;
     private final int yCoord;
+    private boolean mouseWasDown = false;
 
     public SongSelectionButton(String songTitle, int yCoord) {
         this.songTitle = songTitle;
@@ -38,11 +39,13 @@ public class SongSelectionButton implements Button {
         float mouseY = input.getMouseY();
         if (boundingBox.contains( mouseX, mouseY )) {
             if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
+                mouseWasDown = true;
                 color = Color.red;
             } else {
                 color = Color.green;
             }
         } else {
+            mouseWasDown = false;
             color = Color.yellow;
         }
     }
@@ -85,6 +88,20 @@ public class SongSelectionButton implements Button {
     @Override
     public boolean isClicked(Input input) {
         // TODO Auto-generated method stub
-        return false;
+        return mouseWasDown && !input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON);
+    }
+    
+    @Override
+    public boolean equals(Object other) {
+        if (! (other instanceof SongSelectionButton) ) {
+            return false;
+        } else {
+            return ((SongSelectionButton) other).songTitle == this.songTitle;
+        }
+    }
+    
+    @Override
+    public int hashCode() {
+        return songTitle.length();
     }
 }

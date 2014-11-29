@@ -3,10 +3,14 @@ package game.scenes;
 import java.util.ArrayList;
 import java.util.List;
 
+import game.Controls;
 import game.buttons.Button;
+import music.Instrument;
+import music.Note;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 
 public class SongSelectionPage implements Scene {
     private final String[] songTitles = new String[] { "God Knows" };
@@ -49,7 +53,14 @@ public class SongSelectionPage implements Scene {
     @Override
     public Scene nextScene(GameContainer gc, int t) {
         // TODO Auto-generated method stub
-        return this;
+        Input input = gc.getInput();
+        if (buttons.get(0).isClicked(input)) {
+            Scene newScene = Scene.round("God knows", "God Knows", Instrument.piano(), new Controls());
+            newScene.init(gc);
+            return newScene;
+        } else {
+            return this;
+        }
     }
     
     

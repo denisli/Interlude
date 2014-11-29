@@ -49,6 +49,6 @@ public class Main {
         } while (clip.isActive());
         */
         Instrument piano = Instrument.piano();
-        piano.playNote(new Note( Note.D, 2000, 100, 5 ));
+        piano.playNote(new Note( Note.D, Note.WHOLE_NOTE, 100, 5, 60, Note.NATURAL ));
     }
 }

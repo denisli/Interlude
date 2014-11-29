@@ -28,7 +28,7 @@ public class Main {
         int width = (int) Math.floor( screenSize.getWidth() );
         int height = (int) Math.floor( screenSize.getHeight() );
         
-        Display.setResizable(true);
+        //Display.setResizable(true);
         Game game = new Game();
         AppGameContainer app = new AppGameContainer( game );
         app.setDisplayMode( width, height, false );
