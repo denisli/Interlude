@@ -1,7 +1,6 @@
 package game.scenes;
 
 import game.Controls;
-import game.Game;
 import game.MovingNote;
 
 import java.util.LinkedList;
@@ -14,7 +13,7 @@ import org.newdawn.slick.Input;
 import music.Instrument;
 import music.Note;
 
-public class SongSelection implements Scene {
+public class Round implements Scene {
     private final String name;
     private final String songTitle;
     private final Instrument instrument;
@@ -22,7 +21,7 @@ public class SongSelection implements Scene {
     
     private Queue<MovingNote> notesOnScreen = new LinkedList<MovingNote>();
     
-    public SongSelection(String name, String songTitle, Instrument instrument, Controls controls ) {
+    public Round(String name, String songTitle, Instrument instrument, Controls controls ) {
         this.name = name;
         this.songTitle = songTitle;
         this.instrument = instrument;

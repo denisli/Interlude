@@ -7,7 +7,7 @@ public class SceneManager {
     private Scene currentScene;
     
     public SceneManager() {
-        this.currentScene = Scene.mainMenu();
+        this.currentScene = Scene.mainMenu();//Scene.mainMenu();
     }
     
     public void render(GameContainer gc, Graphics g) {

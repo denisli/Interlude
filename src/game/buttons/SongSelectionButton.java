@@ -10,21 +10,29 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.Rectangle;
 
-public class PlayButton implements Button {
-    private final static String TEXT = "PLAY";
+public class SongSelectionButton implements Button {
+    private final String songTitle;
     private Color color = Color.yellow;
     private UnicodeFont font;
     private Rectangle boundingBox;
-    
-    @Override
-    public void render(GameContainer gc, Graphics g) {
-        g.setFont( font );
-        g.setColor( color );
-        g.drawString( TEXT, boundingBox.getX(), boundingBox.getY());
+    private final int yCoord;
+
+    public SongSelectionButton(String songTitle, int yCoord) {
+        this.songTitle = songTitle;
+        this.yCoord = yCoord;
     }
     
     @Override
+    public void render(GameContainer gc, Graphics g) {
+        // TODO Auto-generated method stub
+        g.setFont( font );
+        g.setColor( color );
+        g.drawString( songTitle, boundingBox.getX(), boundingBox.getY());
+    }
+
+    @Override
     public void update(GameContainer gc, int t) {
+        // TODO Auto-generated method stub
         Input input = gc.getInput();
         float mouseX = input.getMouseX();
         float mouseY = input.getMouseY();
@@ -38,9 +46,10 @@ public class PlayButton implements Button {
             color = Color.yellow;
         }
     }
-    
+
     @Override
     public void init(GameContainer gc) {
+        // TODO Auto-generated method stub
         this.font = getFont();
         this.boundingBox = boundingBox(gc);
     }
@@ -54,22 +63,22 @@ public class PlayButton implements Button {
     }
     
     private Rectangle boundingBox(GameContainer gc) {;
-        int width = font.getWidth(TEXT);
-        int height = font.getHeight(TEXT);
+        int width = font.getWidth(songTitle);
+        int height = font.getHeight(songTitle);
         int containerWidth = gc.getWidth();
         int containerHeight = gc.getHeight();
-        return new Rectangle( (containerWidth - width)/2, containerHeight/2, width, height );
+        return new Rectangle( (containerWidth - width)/2, containerHeight/10 + yCoord, width, height );
     }
 
     @Override
     public int width() {
         // TODO Auto-generated method stub
-        return getFont().getWidth(TEXT);
+        return getFont().getWidth(songTitle);
     }
 
     @Override
     public int height() {
         // TODO Auto-generated method stub
-        return getFont().getHeight(TEXT);
+        return getFont().getHeight(songTitle);
     }
 }

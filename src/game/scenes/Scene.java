@@ -13,8 +13,13 @@ public interface Scene {
     public static Scene mainMenu() {
         return new MainMenu();
     }
-    public static Scene songSelection(String name, String songTitle, Instrument instrument, Controls controls ) {
-        return new SongSelection( name, songTitle, instrument, controls );
+    
+    public static Scene songSelection() {
+        return new SongSelectionPage();
+    }
+    
+    public static Scene round(String name, String songTitle, Instrument instrument, Controls controls ) {
+        return new Round( name, songTitle, instrument, controls );
     }
     
     public String name();

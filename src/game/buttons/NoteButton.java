@@ -49,4 +49,16 @@ public class NoteButton implements Button {
     public void init(GameContainer gc) {
         return;
     }
+
+    @Override
+    public int width() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public int height() {
+        // TODO Auto-generated method stub
+        return 0;
+    }
 }
