@@ -23,5 +23,7 @@ public interface Scene {
     
     public void update(GameContainer gc, int t);
     
+    public void init(GameContainer gc);
+    
     public Scene nextScene(GameContainer gc, int t);
 }

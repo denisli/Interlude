@@ -1,8 +1,10 @@
 package game;
 
+import game.buttons.SimpleFont;
 import game.scenes.Scene;
 import game.scenes.SceneManager;
 
+import java.awt.Font;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -15,33 +17,41 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.UnicodeFont;
 
-public class Game extends BasicGame {
-    private final SceneManager sceneManager = new SceneManager();
+public class Game extends BasicGame { 
+    private GameContainer container;
+    private final SceneManager sceneManager;
     private Controls controls;
     
     public Game() {
         super("Interlude");
+        this.sceneManager = new SceneManager();
     }
     
     @Override
     public void render(GameContainer gc, Graphics g) throws SlickException {
         // TODO Auto-generated method stub
-        
+        sceneManager.render(gc, g);
     }
 
     @Override
     public void init(GameContainer gc) throws SlickException {
         // TODO Auto-generated method stub
-        
+        this.container = container;
+        sceneManager.init(gc);
     }
 
     @Override
     public void update(GameContainer gc, int t) throws SlickException {
         // TODO Auto-generated method stub
-        
-        
+        this.sceneManager.update(gc, t);
     }
+    
+//    @Override
+//    public void keyPressed(int key, char c) {
+//        container.exit();
+//    }
     
     private void handleKeyPress(GameContainer gc) {
 //        Input input = gc.getInput();

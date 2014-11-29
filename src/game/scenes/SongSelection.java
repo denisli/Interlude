@@ -15,14 +15,14 @@ import music.Instrument;
 import music.Note;
 
 public class SongSelection implements Scene {
-    private String name;
-    private String songTitle;
-    private Instrument instrument;
-    private Controls controls;
+    private final String name;
+    private final String songTitle;
+    private final Instrument instrument;
+    private final Controls controls;
     
     private Queue<MovingNote> notesOnScreen = new LinkedList<MovingNote>();
     
-    public SongSelection(String name, String songTitle, Instrument instrument, Controls controls) {
+    public SongSelection(String name, String songTitle, Instrument instrument, Controls controls ) {
         this.name = name;
         this.songTitle = songTitle;
         this.instrument = instrument;
@@ -76,6 +76,11 @@ public class SongSelection implements Scene {
         for (MovingNote movingNote : notesOnScreen) {
             movingNote.update(gc, t);
         }
+    }
+    
+    @Override
+    public void init(GameContainer gc) {
+        
     }
     
     @Override
