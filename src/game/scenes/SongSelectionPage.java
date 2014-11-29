@@ -49,7 +49,7 @@ public class SongSelectionPage implements Scene {
     @Override
     public Scene nextScene(GameContainer gc, int t) {
         // TODO Auto-generated method stub
-        return null;
+        return this;
     }
     
     

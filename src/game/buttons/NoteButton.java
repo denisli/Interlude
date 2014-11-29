@@ -4,6 +4,7 @@ import music.Note;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.geom.Rectangle;
 
 public class NoteButton implements Button {
@@ -60,5 +61,11 @@ public class NoteButton implements Button {
     public int height() {
         // TODO Auto-generated method stub
         return 0;
+    }
+
+    @Override
+    public boolean isClicked(Input input) {
+        // TODO Auto-generated method stub
+        return false;
     }
 }

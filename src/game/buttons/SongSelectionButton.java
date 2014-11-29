@@ -81,4 +81,10 @@ public class SongSelectionButton implements Button {
         // TODO Auto-generated method stub
         return getFont().getHeight(songTitle);
     }
+
+    @Override
+    public boolean isClicked(Input input) {
+        // TODO Auto-generated method stub
+        return false;
+    }
 }

@@ -8,6 +8,7 @@ import game.buttons.PlayButton;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 
 public class MainMenu implements Scene {
     private final List<Button> buttons;
@@ -49,7 +50,14 @@ public class MainMenu implements Scene {
     @Override
     public Scene nextScene(GameContainer gc, int t) {
         // TODO Auto-generated method stub
-        return null;
+        Input input = gc.getInput();
+        if (buttons.get(0).isClicked(input)) {
+            Scene newScene = Scene.songSelection();
+            newScene.init(gc);
+            return newScene;
+        } else {
+            return this;
+        }
     }
     
 }

@@ -15,6 +15,7 @@ public class PlayButton implements Button {
     private Color color = Color.yellow;
     private UnicodeFont font;
     private Rectangle boundingBox;
+    private boolean mouseWasDown;
     
     @Override
     public void render(GameContainer gc, Graphics g) {
@@ -30,11 +31,14 @@ public class PlayButton implements Button {
         float mouseY = input.getMouseY();
         if (boundingBox.contains( mouseX, mouseY )) {
             if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
+                mouseWasDown = true;
                 color = Color.red;
             } else {
+                //mouseWasDown = false;
                 color = Color.green;
             }
         } else {
+            mouseWasDown = false;
             color = Color.yellow;
         }
     }
@@ -71,5 +75,11 @@ public class PlayButton implements Button {
     public int height() {
         // TODO Auto-generated method stub
         return getFont().getHeight(TEXT);
+    }
+
+    @Override
+    public boolean isClicked(Input input) {
+        // TODO Auto-generated method stub
+        return mouseWasDown && !input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON);
     }
 }

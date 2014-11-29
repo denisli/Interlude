@@ -2,6 +2,7 @@ package game.buttons;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.geom.Rectangle;
 
 public interface Button {
@@ -18,6 +19,8 @@ public interface Button {
     public void update(GameContainer gc, int t);
     
     public void init(GameContainer gc);
+    
+    public boolean isClicked(Input input);
     
     public int width();
     
