@@ -1,7 +1,9 @@
 package game.buttons;
 
-// http://slickrpg.blogspot.com/2011/07/unicode-font.html
-// by Brandon Reid
+/**
+ * The code here can be found at http://slickrpg.blogspot.com/2011/07/unicode-font.html
+ * All implementation (with the exception of getWidth() method) is done by Brandon Reid.
+ */
 
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
