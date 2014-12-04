@@ -1,11 +1,14 @@
 package music;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Note is an immutable class representing a musical note.
  * @author Denis
  *
  */
-public class Note implements MusicElement {
+public class Note extends MusicElement {
     public static final int C = 0;
     //public static final int CS = 1;
     public static final int D = 2;
@@ -32,7 +35,7 @@ public class Note implements MusicElement {
     public static final int NATURAL = 0;
     public static final int SHARP = 1;
     
-    private final int note;
+    private final int letter;
     private final float durationType;
     private final int volume;
     private final int octave;
@@ -50,8 +53,8 @@ public class Note implements MusicElement {
      *                           octave must be an integer between 0 and 10, inclusive
      */
     
-    public Note( int note, float durationType, int volume, int octave, int tempo, int accidental ) {
-        this.note = note;
+    public Note( int letter, float durationType, int volume, int octave, int tempo, int accidental ) {
+        this.letter = letter;
         this.durationType = durationType;
         this.volume = volume;
         this.octave = octave;
@@ -59,8 +62,44 @@ public class Note implements MusicElement {
         this.tempo = tempo;
     }
     
+    public int letter() {
+        return letter;
+    }
+    
+    public static int letter(Character character) {
+        character = Character.toLowerCase(character);
+        switch (character) {
+        case 'a': return Note.A;
+        case 'b': return Note.B;
+        case 'c': return Note.C;
+        case 'd': return Note.D;
+        case 'e': return Note.E;
+        case 'f': return Note.F;
+        case 'g': return Note.G;
+        default: throw new IllegalArgumentException("Character does not represent a note");
+        }
+    }
+    
+    public static int letter(String character) {
+        character = character.toLowerCase();
+        switch (character) {
+        case "a": return Note.A;
+        case "b": return Note.B;
+        case "c": return Note.C;
+        case "d": return Note.D;
+        case "e": return Note.E;
+        case "f": return Note.F;
+        case "g": return Note.G;
+        default: throw new IllegalArgumentException("Character does not represent a note");
+        }
+    }
+    
     public int pitch() {
-        return Math.max(0,Math.min(127,note + 12 * octave + accidental)); // bound the answer between 0 and 127
+        return Math.max(0,Math.min(127,letter + 12 * octave + accidental)); // bound the answer between 0 and 127
+    }
+    
+    public int volume() {
+        return volume;
     }
     
     /**
@@ -72,20 +111,42 @@ public class Note implements MusicElement {
         return (int) Math.floor( standard * durationType / tempo );
     }
     
-    public int volume() {
-        return volume;
+    public Note correspondingNote( int letter ) {
+        return new Note( letter, durationType, volume, octave, tempo, accidental );
     }
     
-    public int octave() {
-        return octave;
+    /**
+     * Returns a duration type given the name of the duration type. 
+     * "W" - whole note, "H" - half note, "Q" - quarter note, "QT" - quarter triplet,
+     * "E" - eighth note, "ET" - eighth triplet, "S" - sixteenth, "ST" - sixteenth triplet
+     * @return 
+     */
+    public static float durationTypeFromName( String nameOfDurationType ) {
+        float[] durationTypes = new float[] { WHOLE_NOTE, HALF_NOTE, QUARTER_NOTE, QUARTER_NOTE_TRIPLET,
+                EIGHTH_NOTE, EIGHTH_NOTE_TRIPLET, SIXTEENTH_NOTE, SIXTEENTH_NOTE_TRIPLET
+        };
+        String[] durationTypeNames = new String[] { "W", "H", "Q", "QT", "E", "ET", "S", "ST" };
+        
+        for (int i=0; i<durationTypeNames.length; i++) {
+            String durationTypeName = durationTypeNames[i];
+            if (durationTypeName.equals(nameOfDurationType)) {
+                return durationTypes[i];
+            }
+        }
+        throw new IllegalArgumentException("String given is not the name of a note");
     }
     
-    public int accidental() {
-        return accidental;
-    }
     
-    public Note noteInOctave( int note ) {
-        return new Note( note, durationType, volume, octave, tempo, accidental );
+    public static int accidentalFromName( String nameOfAccidental ) {
+        if (nameOfAccidental.equals("flat")) {
+            return FLAT;
+        } else if (nameOfAccidental.equals("sharp")) {
+            return SHARP;
+        } else if (nameOfAccidental.equals("natural")) {
+            return NATURAL;
+        } else {
+            throw new IllegalArgumentException("Not the name of an accidental");
+        }
     }
     
     @Override
@@ -94,7 +155,7 @@ public class Note implements MusicElement {
             return false;
         } else {
             Note otherNote = (Note) other;
-            return this.note == otherNote.note && this.durationType == otherNote.durationType &&
+            return this.letter == otherNote.letter && this.durationType == otherNote.durationType &&
                    this.volume == otherNote.volume && this.octave == otherNote.octave &&
                    this.tempo == otherNote.tempo && this.accidental == otherNote.accidental;
         }
@@ -102,6 +163,6 @@ public class Note implements MusicElement {
     
     @Override
     public int hashCode() {
-        return pitch() + volume() + duration();
+        return letter + volume + duration();
     }
 }

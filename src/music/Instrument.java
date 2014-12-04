@@ -5,6 +5,14 @@ public interface Instrument {
         return new Piano();
     }
     
+    public static Instrument instrumentFromName(String instrumentName) {
+        if (instrumentName.equals("piano")) {
+            return new Piano();
+        } else {
+            return null;
+        }
+    }
+    
     public void playNote(Note note);
     
     public String getInstrumentName();

@@ -6,6 +6,7 @@ import java.util.List;
 import game.Controls;
 import game.buttons.Button;
 import music.Instrument;
+import music.Music;
 import music.Note;
 
 import org.newdawn.slick.GameContainer;
@@ -55,7 +56,7 @@ public class SongSelectionPage implements Scene {
         // TODO Auto-generated method stub
         Input input = gc.getInput();
         if (buttons.get(0).isClicked(input)) {
-            Scene newScene = Scene.round("God knows", "God Knows", Instrument.piano(), new Controls());
+            Scene newScene = Scene.round( Music.godKnows(), new Controls() );
             newScene.init(gc);
             return newScene;
         } else {

@@ -5,20 +5,36 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class Music {
-    Queue<MusicElement> sequence = new LinkedList<MusicElement>();
-    String title;
-    int tempo;
-
-    public void addElement(MusicElement element) {
-        sequence.add(element);
-    }
+    private final Queue<MusicElement> sequence;
+    private final String title;
+    private final int tempo;
+    private final Instrument instrument;
     
-    public void setTitle(String title) {
+    public Music(String title, int tempo, Instrument instrument, Queue<MusicElement> sequence) {
         this.title = title;
+        this.tempo = tempo;
+        this.instrument = instrument;
+        this.sequence = sequence;
     }
     
-    public void setTempo(int tempo) {
-        this.tempo = tempo;
+    public static Music godKnows() {
+        return new Music("God Knows", 60, Instrument.piano(), new LinkedList<MusicElement>());
+    }
+    
+    public void add(MusicElement note) {
+        sequence.add(note);
+    }
+    
+    public String getTitle() {
+        return title;
+    }
+    
+    public int tempo() {
+        return tempo;
+    }
+    
+    public Instrument instrument() {
+        return instrument;
     }
     
     public MusicElement next() {

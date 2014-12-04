@@ -1,20 +1,12 @@
 package game;
 
-import game.buttons.SimpleFont;
-
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 
-import javax.swing.JFrame;
-
-import org.lwjgl.LWJGLException;
 import org.lwjgl.LWJGLUtil;
-import org.lwjgl.opengl.Display;
 import org.newdawn.slick.AppGameContainer;
-import org.newdawn.slick.CanvasGameContainer;
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.SlickException;
 
 public class Main {

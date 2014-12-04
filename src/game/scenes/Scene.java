@@ -1,13 +1,10 @@
 package game.scenes;
 
+import music.Music;
 import game.Controls;
-import game.Game;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-
-import music.Instrument;
-
 
 public interface Scene {
     public static Scene mainMenu() {
@@ -18,8 +15,8 @@ public interface Scene {
         return new SongSelectionPage();
     }
     
-    public static Scene round(String name, String songTitle, Instrument instrument, Controls controls ) {
-        return new Round( name, songTitle, instrument, controls );
+    public static Scene round(Music music, Controls controls ) {
+        return new Round( music, controls );
     }
     
     public String name();
