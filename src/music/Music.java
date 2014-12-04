@@ -1,6 +1,7 @@
 package music;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -18,7 +19,12 @@ public class Music {
     }
     
     public static Music godKnows() {
-        return new Music("God Knows", 60, Instrument.piano(), new LinkedList<MusicElement>());
+        try {
+            return Parser.fileToMusic(new File("res/music.txt"));
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException("stuff");
+        }
     }
     
     public void add(MusicElement note) {

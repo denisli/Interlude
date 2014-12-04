@@ -92,10 +92,11 @@ public class Round implements Scene {
             }
         }
         
-        restingTime -= t;
+        restingTime = Math.max(restingTime - t, 0);
         
         if (restingTime == 0) { // pick out another note!
             if (music.ended()) {
+                //System.out.println("HERE?");
                 // go to a different scene?
             } else {
                 MusicElement element = music.next();
@@ -103,8 +104,12 @@ public class Round implements Scene {
                     Rest rest = (Rest) element;
                     restingTime = rest.duration();
                 } else { // then it must be a note
+                    System.out.println("YO");
+                    
                     Note note = (Note) element;
-                    notesOnScreen.add( new MovingNote( note) );
+                    MovingNote movingNote = new MovingNote(note);
+                    movingNote.init(gc);
+                    notesOnScreen.add( movingNote );
                 }
             }
         }
@@ -119,7 +124,6 @@ public class Round implements Scene {
         for (MovingNote movingNote : notesOffScreen) {
             notesOnScreen.remove(movingNote);
         }
-        notesOffScreen.clear();
         
         for (Button button : buttons) {
             button.update(gc, t);
@@ -134,15 +138,6 @@ public class Round implements Scene {
             button.init(gc);
             buttons.add( button );
         }
-        int letter = Note.C;
-        float durationType = Note.QUARTER_NOTE;
-        int volume = 90;
-        int octave = 5;
-        int tempo = 60;
-        int accidental = Note.NATURAL;
-        MovingNote movingNote = new MovingNote(new Note(letter, durationType, volume, octave, tempo, accidental));
-        movingNote.init(gc);
-        notesOnScreen.add(movingNote);
     }
     
     @Override

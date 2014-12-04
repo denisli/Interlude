@@ -55,7 +55,7 @@ public class Parser {
             while (!notes.isEmpty()) {
                 String marker = notes.remove();
                 if (marker.equals(NOTE_MARKER)) {
-                    int letter = Integer.valueOf(notes.remove());
+                    int letter = Note.letter(notes.remove());
                     float durationType = Note.durationTypeFromName(notes.remove());
                     int volume = Integer.valueOf(notes.remove());
                     int octave = Integer.valueOf(notes.remove());
