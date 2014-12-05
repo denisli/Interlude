@@ -10,6 +10,7 @@ public class Controls {
     private int ENoteKey = Input.KEY_J;
     private int FNoteKey = Input.KEY_K;
     private int GNoteKey = Input.KEY_L;
+    private int simultaneousKey = Input.KEY_SEMICOLON;
     
     public int getANoteKey() {
         return ANoteKey;
@@ -65,6 +66,14 @@ public class Controls {
 
     public void setGNoteKey(int gNoteKey) {
         GNoteKey = gNoteKey;
+    }
+    
+    public int getSimultaneousKey() {
+        return simultaneousKey;
+    }
+    
+    public void setSimultaneousKey(int simultaneousKey) {
+        this.simultaneousKey = simultaneousKey;
     }
     
     public void resetKeys() {

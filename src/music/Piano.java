@@ -22,19 +22,29 @@ public class Piano implements Instrument {
     }
     
     @Override
-    public void playNote(Note note) {
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    int pitch = note.pitch(); int duration = note.duration(); int volume = note.volume();
-                    piano.noteOn( pitch, volume );
-                    Thread.sleep( duration );
-                    piano.noteOff( pitch );
-                } catch (InterruptedException ie) {
-                    ie.printStackTrace();
+    public void playSoundElement(SoundElement soundElement) {
+        if ( soundElement instanceof Note ) {
+            new Thread(new Runnable() {
+                public void run() {
+                    if ( soundElement instanceof Note ) {
+                        Note note = (Note) soundElement;
+                        try {
+                            int pitch = note.pitch(); int duration = note.duration(); int volume = note.volume();
+                            piano.noteOn( pitch, volume );
+                            Thread.sleep( duration );
+                            piano.noteOff( pitch );
+                        } catch (InterruptedException ie) {
+                            ie.printStackTrace();
+                        }
+                    }
                 }
+            }).start();
+        } else if (soundElement instanceof MusicElement) {
+            Simultaneous simultaneous = (Simultaneous) soundElement;
+            for (Note note : simultaneous.notes()) {
+                Piano.this.playSoundElement(note);
             }
-        }).start();
+        }
     }
     
     @Override

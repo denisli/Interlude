@@ -49,7 +49,7 @@ public class Main {
         } while (clip.isActive());
         */
         Instrument piano = Instrument.piano();
-        Note note = new Note( Note.G, Note.EIGHTH_NOTE, 110, 6, 70, Note.SHARP );
-        piano.playNote(note);
+        Note note = new Note( Note.G, Note.EIGHTH_NOTE, 200, 6, 70, Note.SHARP );
+        piano.playSoundElement(note);
     }
 }

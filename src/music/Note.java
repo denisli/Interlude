@@ -8,7 +8,7 @@ import java.util.Map;
  * @author Denis
  *
  */
-public class Note extends MusicElement {
+public class Note implements SoundElement {
     public static final int C = 0;
     //public static final int CS = 1;
     public static final int D = 2;
@@ -90,7 +90,7 @@ public class Note extends MusicElement {
         case "e": return Note.E;
         case "f": return Note.F;
         case "g": return Note.G;
-        default: throw new IllegalArgumentException("Character does not represent a note");
+        default: throw new IllegalArgumentException(String.format("Character %s does not represent a note",character));
         }
     }
     
@@ -111,7 +111,10 @@ public class Note extends MusicElement {
         return (int) Math.floor( standard * durationType / tempo );
     }
     
-    public Note correspondingNote( int letter ) {
+    public Note correspondingSoundElement( int letter ) {
+        if (letter == Simultaneous.S) {
+            return new Note( 3, durationType, volume, octave, tempo, accidental ); // TODO: FIX THIS TO SOMETHING MORE LEGIT
+        }
         return new Note( letter, durationType, volume, octave, tempo, accidental );
     }
     

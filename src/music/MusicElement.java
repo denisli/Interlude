@@ -1,5 +1,5 @@
 package music;
 
-public class MusicElement {
+public interface MusicElement {
 
 }

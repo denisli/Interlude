@@ -1,7 +1,7 @@
 package game.scenes;
 
 import game.Controls;
-import game.MovingNote;
+import game.MovingSound;
 import game.buttons.Button;
 
 import java.util.ArrayList;
@@ -16,8 +16,10 @@ import org.newdawn.slick.Input;
 import music.Instrument;
 import music.Music;
 import music.MusicElement;
-import music.Note;
+import music.Simultaneous;
+import music.SoundElement;
 import music.Rest;
+import music.Note;
 
 public class Round implements Scene {
     private final Music music;
@@ -25,7 +27,7 @@ public class Round implements Scene {
     private final List<Button> buttons = new ArrayList<Button>();
     private int restingTime = 1500;
     
-    private Queue<MovingNote> notesOnScreen = new LinkedList<MovingNote>();
+    private Queue<MovingSound> notesOnScreen = new LinkedList<MovingSound>();
     
     public Round(Music music, Controls controls ) {
         this.music = music;
@@ -35,8 +37,8 @@ public class Round implements Scene {
     @Override
     public void render(GameContainer gc, Graphics g) {
         // TODO Auto-generated method stub
-        for (MovingNote movingNote : notesOnScreen) {
-            movingNote.render(gc, g);
+        for (MovingSound movingSound : notesOnScreen) {
+            movingSound.render(gc, g);
         }
         for (Button button : buttons) {
             button.render(gc, g);
@@ -50,45 +52,51 @@ public class Round implements Scene {
         Instrument instrument = music.instrument();
         if (input.isKeyPressed(controls.getANoteKey())) {
             if (!notesOnScreen.isEmpty()) {
-                MovingNote movingNote = notesOnScreen.remove();
-                Note note = movingNote.note();
-                instrument.playNote( note.correspondingNote( Note.A ) );
+                MovingSound movingSound = notesOnScreen.remove();
+                SoundElement note = movingSound.soundElement();
+                instrument.playSoundElement( note.correspondingSoundElement( Note.A ) );
             }
         } else if (input.isKeyPressed(controls.getBNoteKey())) {
             if (!notesOnScreen.isEmpty()) {
-                MovingNote movingNote = notesOnScreen.remove();
-                Note note = movingNote.note();
-                instrument.playNote( note.correspondingNote( Note.B ) );
+                MovingSound movingSound = notesOnScreen.remove();
+                SoundElement note = movingSound.soundElement();
+                instrument.playSoundElement( note.correspondingSoundElement( Note.B ) );
             }
         } else if (input.isKeyPressed(controls.getCNoteKey())) {
             if (!notesOnScreen.isEmpty()) {
-                MovingNote movingNote = notesOnScreen.remove();
-                Note note = movingNote.note();
-                instrument.playNote( note.correspondingNote( Note.C ) );
+                MovingSound movingSound = notesOnScreen.remove();
+                SoundElement note = movingSound.soundElement();
+                instrument.playSoundElement( note.correspondingSoundElement( Note.C ) );
             }
         } else if (input.isKeyPressed(controls.getDNoteKey())) {
             if (!notesOnScreen.isEmpty()) {
-                MovingNote movingNote = notesOnScreen.remove();
-                Note note = movingNote.note();
-                instrument.playNote( note.correspondingNote( Note.D ) );
+                MovingSound movingSound = notesOnScreen.remove();
+                SoundElement note = movingSound.soundElement();
+                instrument.playSoundElement( note.correspondingSoundElement( Note.D ) );
             }
         } else if (input.isKeyPressed(controls.getENoteKey())) {
             if (!notesOnScreen.isEmpty()) {
-                MovingNote movingNote = notesOnScreen.remove();
-                Note note = movingNote.note();
-                instrument.playNote( note.correspondingNote( Note.E ) );
+                MovingSound movingSound = notesOnScreen.remove();
+                SoundElement note = movingSound.soundElement();
+                instrument.playSoundElement( note.correspondingSoundElement( Note.E ) );
             }
         } else if (input.isKeyPressed(controls.getFNoteKey())) {
             if (!notesOnScreen.isEmpty()) {
-                MovingNote movingNote = notesOnScreen.remove();
-                Note note = movingNote.note();
-                instrument.playNote( note.correspondingNote( Note.F ) );
+                MovingSound movingSound = notesOnScreen.remove();
+                SoundElement note = movingSound.soundElement();
+                instrument.playSoundElement( note.correspondingSoundElement( Note.F ) );
             }
         } else if (input.isKeyPressed(controls.getGNoteKey())) {
             if (!notesOnScreen.isEmpty()) {
-                MovingNote movingNote = notesOnScreen.remove();
-                Note note = movingNote.note();
-                instrument.playNote( note.correspondingNote( Note.G ) );
+                MovingSound movingSound = notesOnScreen.remove();
+                SoundElement note = movingSound.soundElement();
+                instrument.playSoundElement( note.correspondingSoundElement( Note.G ) );
+            }
+        } else if (input.isKeyPressed(controls.getSimultaneousKey())) {
+            if (!notesOnScreen.isEmpty()) {
+                MovingSound movingSound = notesOnScreen.remove();
+                SoundElement note = movingSound.soundElement();
+                instrument.playSoundElement( note.correspondingSoundElement( Simultaneous.S ));
             }
         }
         
@@ -102,26 +110,26 @@ public class Round implements Scene {
                 if ( element instanceof Rest ) {
                     Rest rest = (Rest) element;
                     restingTime = rest.duration();
-                } else { // then it must be a note
+                } else { // then it must be a sound element
                     
-                    Note note = (Note) element;
-                    MovingNote movingNote = new MovingNote(note);
-                    movingNote.init(gc);
-                    restingTime = note.duration();
-                    notesOnScreen.add( movingNote );
+                    SoundElement soundElement = (SoundElement) element;
+                    MovingSound movingSound = new MovingSound( soundElement );
+                    movingSound.init(gc);
+                    restingTime = soundElement.duration();
+                    notesOnScreen.add( movingSound );
                 }
             }
         }
         
-        List<MovingNote> notesOffScreen = new ArrayList<MovingNote>();
-        for (MovingNote movingNote : notesOnScreen) {
-            movingNote.update(gc, t);
-            if (movingNote.offScreen()) {
-                notesOffScreen.add(movingNote);
+        List<MovingSound> notesOffScreen = new ArrayList<MovingSound>();
+        for (MovingSound movingSound : notesOnScreen) {
+            movingSound.update(gc, t);
+            if (movingSound.offScreen()) {
+                notesOffScreen.add(movingSound);
             }
         }
-        for (MovingNote movingNote : notesOffScreen) {
-            notesOnScreen.remove(movingNote);
+        for (MovingSound movingSound : notesOffScreen) {
+            notesOnScreen.remove(movingSound);
         }
         
         for (Button button : buttons) {

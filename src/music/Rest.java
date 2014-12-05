@@ -1,6 +1,6 @@
 package music;
 
-public class Rest extends MusicElement {
+public class Rest implements MusicElement {
     private final float durationType;
     private final int tempo;
     

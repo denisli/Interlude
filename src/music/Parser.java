@@ -5,8 +5,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 /**
@@ -20,6 +22,8 @@ import java.util.Queue;
  * INSTRUMENTNAME must be all lowercase
  * 
  * OTHER_LINE := NOTE | REST
+ * 
+ * SIMULTANEOUS := SIMULTANEOUS_MARKER NOTE w/o marker ... NOTE w/o marker END
  * 
  * NOTE := NOTE_MARKER LETTER DURATION_TYPE_NAME VOLUME, OCTAVE, ACCIDENTAL
  * 
@@ -38,6 +42,8 @@ import java.util.Queue;
 public class Parser {
     private static final String NOTE_MARKER = "note";
     private static final String REST_MARKER = "rest";
+    private static final String SIMULTANEOUS_MARKER = "simultaneous";
+    private static final String END_MARKER = "end";
     
     public static Music fileToMusic(File file) throws FileNotFoundException {
         Queue<MusicElement> sequence = new LinkedList<MusicElement>(); 
@@ -55,18 +61,28 @@ public class Parser {
             while (!notes.isEmpty()) {
                 String marker = notes.remove();
                 if (marker.equals(NOTE_MARKER)) {
-                    int letter = Note.letter(notes.remove());
-                    float durationType = Note.durationTypeFromName(notes.remove());
-                    int volume = Integer.valueOf(notes.remove());
-                    int octave = Integer.valueOf(notes.remove());
-                    int accidental = Note.accidentalFromName(notes.remove());
-                    Note note = new Note(letter, durationType, volume, octave, tempo, accidental);
+//                    int letter = Note.letter(notes.remove());
+//                    float durationType = Note.durationTypeFromName(notes.remove());
+//                    //int volume = Integer.valueOf(notes.remove());
+//                    int octave = Integer.valueOf(notes.remove());
+//                    int accidental = Note.accidentalFromName(notes.remove());
+//                    Note note = new Note(letter, durationType, 127, octave, tempo, accidental);
+                    Note note = processNote(notes, tempo);
                     sequence.add(note);
                 } else if (marker.equals(REST_MARKER)) {
                     float durationType = Note.durationTypeFromName(notes.remove());
                     sequence.add(new Rest(durationType, tempo));
+                } else if (marker.equals(SIMULTANEOUS_MARKER)){
+                    List<Note> simultaneousNotes = new ArrayList<Note>();
+                    while ( !notes.peek().equals(END_MARKER) ) {
+                        Note note = processNote(notes, tempo);
+                        simultaneousNotes.add(note);
+                    }
+                    notes.remove(); // remove the end marker
+                    Simultaneous simultaneous = new Simultaneous(simultaneousNotes);
+                    sequence.add(simultaneous);
                 } else {
-                    throw new IllegalArgumentException("There needs to be a marker to indicate if the music has a rest or a note");
+                    throw new IllegalArgumentException("There needs to be a marker to indicate the music element type");
                 }
             }
             
@@ -82,5 +98,20 @@ public class Parser {
             }
         }
         throw new IllegalArgumentException("This code is not reachable"); // not reached
+    }
+    
+    /**
+     * This method modifies the given queue! Be careful of how this is used.
+     * @param notes
+     * @return
+     */
+    private static Note processNote(Queue<String> notes, int tempo) {
+        int letter = Note.letter(notes.remove());
+        float durationType = Note.durationTypeFromName(notes.remove());
+        //int volume = Integer.valueOf(notes.remove());
+        int octave = Integer.valueOf(notes.remove());
+        int accidental = Note.accidentalFromName(notes.remove());
+        Note note = new Note(letter, durationType, 127, octave, tempo, accidental);
+        return note;
     }
 }
