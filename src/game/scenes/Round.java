@@ -23,7 +23,7 @@ public class Round implements Scene {
     private final Music music;
     private final Controls controls;
     private final List<Button> buttons = new ArrayList<Button>();
-    private int restingTime = 0;
+    private int restingTime = 1500;
     
     private Queue<MovingNote> notesOnScreen = new LinkedList<MovingNote>();
     
@@ -52,43 +52,43 @@ public class Round implements Scene {
             if (!notesOnScreen.isEmpty()) {
                 MovingNote movingNote = notesOnScreen.remove();
                 Note note = movingNote.note();
-                instrument.playNote( note.correspondingNote(controls.getANoteKey()) );
+                instrument.playNote( note.correspondingNote( Note.A ) );
             }
         } else if (input.isKeyPressed(controls.getBNoteKey())) {
             if (!notesOnScreen.isEmpty()) {
                 MovingNote movingNote = notesOnScreen.remove();
                 Note note = movingNote.note();
-                instrument.playNote( note.correspondingNote(controls.getBNoteKey()) );
+                instrument.playNote( note.correspondingNote( Note.B ) );
             }
         } else if (input.isKeyPressed(controls.getCNoteKey())) {
             if (!notesOnScreen.isEmpty()) {
                 MovingNote movingNote = notesOnScreen.remove();
                 Note note = movingNote.note();
-                instrument.playNote( note.correspondingNote(controls.getCNoteKey()) );
+                instrument.playNote( note.correspondingNote( Note.C ) );
             }
         } else if (input.isKeyPressed(controls.getDNoteKey())) {
             if (!notesOnScreen.isEmpty()) {
                 MovingNote movingNote = notesOnScreen.remove();
                 Note note = movingNote.note();
-                instrument.playNote( note.correspondingNote(controls.getDNoteKey()) );
+                instrument.playNote( note.correspondingNote( Note.D ) );
             }
         } else if (input.isKeyPressed(controls.getENoteKey())) {
             if (!notesOnScreen.isEmpty()) {
                 MovingNote movingNote = notesOnScreen.remove();
                 Note note = movingNote.note();
-                instrument.playNote( note.correspondingNote(controls.getENoteKey()) );
+                instrument.playNote( note.correspondingNote( Note.E ) );
             }
         } else if (input.isKeyPressed(controls.getFNoteKey())) {
             if (!notesOnScreen.isEmpty()) {
                 MovingNote movingNote = notesOnScreen.remove();
                 Note note = movingNote.note();
-                instrument.playNote( note.correspondingNote(controls.getFNoteKey()) );
+                instrument.playNote( note.correspondingNote( Note.F ) );
             }
         } else if (input.isKeyPressed(controls.getGNoteKey())) {
             if (!notesOnScreen.isEmpty()) {
                 MovingNote movingNote = notesOnScreen.remove();
                 Note note = movingNote.note();
-                instrument.playNote( note.correspondingNote(controls.getGNoteKey()) );
+                instrument.playNote( note.correspondingNote( Note.G ) );
             }
         }
         
@@ -96,7 +96,6 @@ public class Round implements Scene {
         
         if (restingTime == 0) { // pick out another note!
             if (music.ended()) {
-                //System.out.println("HERE?");
                 // go to a different scene?
             } else {
                 MusicElement element = music.next();
@@ -104,11 +103,11 @@ public class Round implements Scene {
                     Rest rest = (Rest) element;
                     restingTime = rest.duration();
                 } else { // then it must be a note
-                    System.out.println("YO");
                     
                     Note note = (Note) element;
                     MovingNote movingNote = new MovingNote(note);
                     movingNote.init(gc);
+                    restingTime = note.duration();
                     notesOnScreen.add( movingNote );
                 }
             }

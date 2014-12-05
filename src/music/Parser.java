@@ -60,7 +60,8 @@ public class Parser {
                     int volume = Integer.valueOf(notes.remove());
                     int octave = Integer.valueOf(notes.remove());
                     int accidental = Note.accidentalFromName(notes.remove());
-                    sequence.add(new Note(letter, durationType, volume, octave, tempo, accidental));
+                    Note note = new Note(letter, durationType, volume, octave, tempo, accidental);
+                    sequence.add(note);
                 } else if (marker.equals(REST_MARKER)) {
                     float durationType = Note.durationTypeFromName(notes.remove());
                     sequence.add(new Rest(durationType, tempo));

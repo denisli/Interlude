@@ -162,6 +162,11 @@ public class Note extends MusicElement {
     }
     
     @Override
+    public String toString() {
+        return String.format("Note: %d %.3f %d %d %d %d",letter,durationType,volume,octave,tempo,accidental);
+    }
+    
+    @Override
     public int hashCode() {
         return letter + volume + duration();
     }

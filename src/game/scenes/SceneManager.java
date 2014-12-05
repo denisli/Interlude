@@ -15,8 +15,11 @@ public class SceneManager {
     }
     
     public void update(GameContainer gc, int t) {
-        currentScene.update(gc, t);
-        currentScene = currentScene.nextScene(gc, t);
+        if (currentScene != currentScene.nextScene(gc, t)) {
+            currentScene = currentScene.nextScene(gc, t);
+        } else {
+            currentScene.update(gc, t);
+        }
     }
     
     public void init(GameContainer gc) {
