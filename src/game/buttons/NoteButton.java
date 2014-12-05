@@ -1,6 +1,7 @@
 package game.buttons;
 
 import music.Note;
+import music.Simultaneous;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -16,23 +17,6 @@ public class NoteButton implements Button {
     
     public NoteButton(int note) {
         this.note = note;
-//        if (note == Note.G) {
-//            boundingBox = new Rectangle(X, 100, WIDTH, HEIGHT);
-//        } else if (note == Note.F) {
-//            boundingBox = new Rectangle(X, 300, WIDTH, HEIGHT);
-//        } else if (note == Note.E) {
-//            boundingBox = new Rectangle(X, 500, WIDTH, HEIGHT);
-//        } else if (note == Note.D) {
-//            boundingBox = new Rectangle(X, 700, WIDTH, HEIGHT);
-//        } else if (note == Note.C) {
-//            boundingBox = new Rectangle(X, 900, WIDTH, HEIGHT);
-//        } else if (note == Note.B) {
-//            boundingBox = new Rectangle(X, 1100, WIDTH, HEIGHT);
-//        } else if (note == Note.A) {
-//            boundingBox = new Rectangle(X, 1300, WIDTH, HEIGHT);
-//        } else {
-//            throw new IllegalArgumentException("Not a valid note");
-//        }
     }
     
     @Override
@@ -66,6 +50,8 @@ public class NoteButton implements Button {
             centerY = 6 * increment;
         } else if (note == Note.G) {
             centerY = 7 * increment;
+        } else if (note == Simultaneous.S) {
+            centerY = 8 * increment;
         } else {
             throw new IllegalArgumentException("Note button not given a valid note to represent");
         }

@@ -25,7 +25,7 @@ public class Round implements Scene {
     private final Music music;
     private final Controls controls;
     private final List<Button> buttons = new ArrayList<Button>();
-    private int restingTime = 1500;
+    private int restingTime = 4000;
     
     private Queue<MovingSound> notesOnScreen = new LinkedList<MovingSound>();
     
@@ -107,39 +107,34 @@ public class Round implements Scene {
                 // go to a different scene?
             } else {
                 MusicElement element = music.next();
-                if ( element instanceof Rest ) {
-                    Rest rest = (Rest) element;
-                    restingTime = rest.duration();
-                } else { // then it must be a sound element
-                    
-                    SoundElement soundElement = (SoundElement) element;
-                    MovingSound movingSound = new MovingSound( soundElement );
-                    movingSound.init(gc);
-                    restingTime = soundElement.duration();
-                    notesOnScreen.add( movingSound );
+                
+                SoundElement soundElement = (SoundElement) element;
+                MovingSound movingSound = new MovingSound( soundElement );
+                movingSound.init(gc);
+                if (!music.ended()) {
+                    restingTime = music.timeUntilNextSound();
+                }
+                notesOnScreen.add( movingSound );
+            }
+        }
+        
+        if ( !notesOnScreen.isEmpty() ) { 
+            while ( notesOnScreen.peek().offScreen() ) {
+                notesOnScreen.remove();
+                if (notesOnScreen.isEmpty()) {
+                    break;
                 }
             }
         }
         
-        List<MovingSound> notesOffScreen = new ArrayList<MovingSound>();
-        for (MovingSound movingSound : notesOnScreen) {
+        for ( MovingSound movingSound : notesOnScreen ) {
             movingSound.update(gc, t);
-            if (movingSound.offScreen()) {
-                notesOffScreen.add(movingSound);
-            }
-        }
-        for (MovingSound movingSound : notesOffScreen) {
-            notesOnScreen.remove(movingSound);
-        }
-        
-        for (Button button : buttons) {
-            button.update(gc, t);
         }
     }
     
     @Override
     public void init(GameContainer gc) {
-        int[] notes = new int[] { Note.A, Note.B, Note.C, Note.D, Note.E, Note.F, Note.G };
+        int[] notes = new int[] { Note.A, Note.B, Note.C, Note.D, Note.E, Note.F, Note.G, Simultaneous.S };
         for (int note : notes) {
             Button button = Button.noteButton(note);
             button.init(gc);

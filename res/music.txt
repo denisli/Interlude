@@ -1,2 +1,2 @@
-GodKnows 70 piano
-note C E 120 7 sharp note G E 120 6 sharp note G E 120 7 sharp note G E 120 6 sharp note F E 120 7 sharp note G E 120 6 sharp note E E 120 7 natural note G E 120 6 sharp
+GodKnows 80 piano
+simultaneous C E 7 sharp A W 4 natural C W 5 sharp E W 5 natural send E note G E 6 sharp E note G E 7 sharp E note G E 6 sharp E note F E 7 sharp E note G E 6 sharp E note E E 7 natural E note G E 6 sharp E simultaneous B W 4 natural D W 5 sharp G W 5 sharp D E 7 sharp send E note G E 6 sharp E note E E 7 natural E note G E 6 sharp E note F E 7 sharp E note G E 6 sharp E note E E 7 natural E note G E 6 sharp end

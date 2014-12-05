@@ -136,7 +136,7 @@ public class Note implements SoundElement {
                 return durationTypes[i];
             }
         }
-        throw new IllegalArgumentException("String given is not the name of a note");
+        throw new IllegalArgumentException(String.format("String %s given is not the name of a note", nameOfDurationType));
     }
     
     
