@@ -9,8 +9,24 @@ public class Rest implements MusicElement {
         this.tempo = tempo;
     }
     
+    @Override
     public int duration() {
-        final int standard = 60000; // need a better name for this...?
+        final int standard = 60000;
         return (int) Math.floor( standard * durationType / tempo );
+    }
+
+    @Override
+    public int timeUntilNextElement() {
+        return duration();
+    }
+    
+    @Override
+    public void bePlayed(Instrument instrument) {
+        instrument.play( this );
+    }
+    
+    @Override
+    public boolean isRest() {
+        return true;
     }
 }

@@ -13,7 +13,11 @@ public interface Instrument {
         }
     }
     
-    public void playSoundElement(SoundElement soundElement);
+    public void play(Rest rest);
     
+    public void play(Note note);
+    
+    public void play(Simultaneous simultaneous);
+        
     public String getInstrumentName();
 }

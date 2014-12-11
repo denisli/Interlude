@@ -16,35 +16,48 @@ public class Piano implements Instrument {
             synth.open();
             piano = synth.getChannels()[0]; // 0 is the MidiChannel representing a piano
         } catch (MidiUnavailableException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
     
     @Override
-    public void playSoundElement(SoundElement soundElement) {
-        if ( soundElement instanceof Note ) {
-            new Thread(new Runnable() {
-                public void run() {
-                    if ( soundElement instanceof Note ) {
-                        Note note = (Note) soundElement;
-                        try {
-                            int pitch = note.pitch(); int duration = note.duration(); int volume = note.volume();
-                            piano.noteOn( pitch, volume );
-                            Thread.sleep( duration );
-                            piano.noteOff( pitch );
-                        } catch (InterruptedException ie) {
-                            ie.printStackTrace();
-                        }
-                    }
+    public void play(Rest rest) {
+        return;
+    }
+    
+    @Override
+    public void play(Note note) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    int pitch = note.pitch();
+                    int volume = note.volume();
+                    int duration = note.duration();
+                    piano.noteOn( pitch, volume );
+                    Thread.sleep( duration );
+                    piano.noteOff( pitch );
+                } catch (InterruptedException ie) {
+                    ie.printStackTrace();
                 }
-            }).start();
-        } else if (soundElement instanceof MusicElement) {
-            Simultaneous simultaneous = (Simultaneous) soundElement;
-            for (Note note : simultaneous.notes()) {
-                Piano.this.playSoundElement(note);
             }
-        }
+        }).start();
+    }
+    
+    @Override
+    public void play(Simultaneous simultaneous) {
+        new Thread(new Runnable() {
+           @Override
+           public void run() {
+               for (MusicElement element : simultaneous.musicElements()) {
+                   if ( element.isRest() ) {
+                       play( (Rest) element );
+                   } else {
+                       play( (Note) element );
+                   }
+               }
+           }
+        }).start();
     }
     
     @Override

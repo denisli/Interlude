@@ -1,55 +1,16 @@
 package music;
-import java.io.IOException;
-import java.net.URL;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.LineUnavailableException;
-import javax.sound.sampled.Mixer;
-import javax.sound.sampled.UnsupportedAudioFileException;
+import java.util.Arrays;
+import java.util.List;
 
 public class Main {
-    private static Mixer mixer;
-    private static Clip clip;
     
     public static void main(String[] args) {
-        /*
-        Mixer.Info[] mixInfos = AudioSystem.getMixerInfo();
-        mixer = AudioSystem.getMixer(mixInfos[0]);
-        
-        DataLine.Info dataInfo = new DataLine.Info(Clip.class, null);
-        try { 
-            clip = (Clip) mixer.getLine(dataInfo); 
-        } catch (LineUnavailableException lue) {
-             lue.printStackTrace();
-        }
-        
-        try {
-            URL soundURL = Main.class.getResource("/res/BRE@THLESS.wav");
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundURL);
-            clip.open(audioStream);
-        } catch (LineUnavailableException lue) {
-            lue.printStackTrace();
-        } catch (UnsupportedAudioFileException uafe) {
-            uafe.printStackTrace();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-        
-        clip.start();
-        
-        do {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException ie) {
-                ie.printStackTrace();
-            }
-        } while (clip.isActive());
-        */
+        System.out.println("YO");
         Instrument piano = Instrument.piano();
-        Note note = new Note( Note.G, Note.EIGHTH_NOTE, 200, 6, 70, Note.SHARP );
-        piano.playSoundElement(note);
+        Note note = new Note( Note.G, Note.QUARTER_NOTE, 6, Note.SHARP, 127, 60 );
+        List<MusicElement> musicElements = Arrays.asList(note);
+        Simultaneous simultaneous = new Simultaneous ( musicElements );
+        simultaneous.bePlayed(piano);
     }
 }

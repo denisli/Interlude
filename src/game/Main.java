@@ -24,6 +24,7 @@ public class Main {
         Game game = new Game();
         AppGameContainer app = new AppGameContainer( game );
         app.setDisplayMode( width, height, false );
+        app.setTargetFrameRate(60);
         app.start();
     }
 }

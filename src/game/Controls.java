@@ -1,5 +1,8 @@
 package game;
 
+import music.Note;
+import music.Simultaneous;
+
 import org.newdawn.slick.Input;
 
 public class Controls {
@@ -11,6 +14,47 @@ public class Controls {
     private int FNoteKey = Input.KEY_K;
     private int GNoteKey = Input.KEY_L;
     private int simultaneousKey = Input.KEY_SEMICOLON;
+    
+    private int[] noteKeys = new int[] { ANoteKey, BNoteKey, CNoteKey, DNoteKey, 
+                                         ENoteKey, FNoteKey, GNoteKey, simultaneousKey };
+    
+    private int[] notes = new int[] { Note.A, Note.B, Note.C, Note.D, 
+            Note.E, Note.F, Note.G, Simultaneous.S };
+    
+    public int[] noteKeys() {
+        return noteKeys;
+    }
+    
+    public boolean noteKeyPressed(Input input) {
+        for ( int key : noteKeys ) {
+            if ( input.isKeyPressed(key) ) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public int correspondingNoteOfKey(int key) {
+        if ( key == ANoteKey ) {
+            return Note.A;
+        } else if ( key == BNoteKey ) {
+            return Note.B;
+        } else if ( key == CNoteKey ) {
+            return Note.C;
+        } else if ( key == DNoteKey ) {
+            return Note.D;
+        } else if ( key == ENoteKey ) {
+            return Note.E;
+        } else if ( key == FNoteKey ) {
+            return Note.F;
+        } else if ( key == GNoteKey ) {
+            return Note.G;
+        } else if ( key == simultaneousKey ) {
+            return Simultaneous.S;
+        } else {
+            throw new IllegalArgumentException("Key given is not a note key");
+        }
+    }
     
     public int getANoteKey() {
         return ANoteKey;

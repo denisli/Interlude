@@ -5,37 +5,55 @@ import java.util.List;
 public class Simultaneous implements SoundElement {
     public static final int S = 128;
     
-    private final List<Note> notes;
+    private final List<MusicElement> elements;
     
-    public Simultaneous(List<Note> notes) {
-        this.notes = notes;
+    public Simultaneous(List<MusicElement> elements) {
+        this.elements = elements;
     }
     
     // not the actual duration. Maybe I should change it to say minDuration
     @Override
     public int duration() {
-        int minDuration = notes.get(0).duration();
-        for (Note note : notes) {
-            minDuration = Math.min(minDuration, note.duration());
+        int maxNoteDuration = 0;
+        for (MusicElement element : elements) {
+            maxNoteDuration = Math.max(maxNoteDuration, element.duration());
         }
-        return minDuration;
+        return maxNoteDuration;
     }
 
-    public List<Note> notes() {
-        return notes;
+    public int timeUntilNextElement() {
+        return elements.get(0).timeUntilNextElement();
     }
-
+    
+    public List<MusicElement> musicElements() {
+        return elements;
+    }
+    
+    @Override
+    public boolean isRest() {
+        for ( MusicElement element : elements ) {
+            if ( !element.isRest() ) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
     @Override
     public int letter() {
         return Simultaneous.S;
     }
 
     @Override
+    public void bePlayed(Instrument instrument) {
+        instrument.play( this );
+    }
+    
+    @Override
     public SoundElement correspondingSoundElement(int letter) {
-        // TODO Auto-generated method stub
         if (letter == Simultaneous.S) {
             return this;
         }
-        return notes.get(0).correspondingSoundElement(letter);
+        return new Note(Note.A, Note.QUARTER_NOTE, 5, Note.SHARP, 127, 60);
     }
 }
