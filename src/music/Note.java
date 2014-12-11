@@ -24,14 +24,14 @@ public class Note implements SoundElement {
     //public static final int AS = 10;
     public static final int B = 11;
     
-    public static final float WHOLE_NOTE = 1;
-    public static final float HALF_NOTE = 1.0f/2;
-    public static final float QUARTER_NOTE = 1.0f/4;
-    public static final float QUARTER_NOTE_TRIPLET = 1.0f/3;
-    public static final float EIGHTH_NOTE = 1.0f/8;
-    public static final float EIGHTH_NOTE_TRIPLET = 1.0f/6;
-    public static final float SIXTEENTH_NOTE = 1.0f/16;
-    public static final float SIXTEENTH_NOTE_TRIPLET = 1.0f/12;
+    public static final float WHOLE_NOTE = 4.0f;
+    public static final float HALF_NOTE = 2.0f;
+    public static final float QUARTER_NOTE = 1.0f;
+    public static final float QUARTER_NOTE_TRIPLET = 2.0f/3;
+    public static final float EIGHTH_NOTE = 1.0f/2;
+    public static final float EIGHTH_NOTE_TRIPLET = 1.0f/3;
+    public static final float SIXTEENTH_NOTE = 1.0f/4;
+    public static final float SIXTEENTH_NOTE_TRIPLET = 1.0f/6;
     
     public static final int FLAT = -1;
     public static final int NATURAL = 0;
@@ -98,7 +98,7 @@ public class Note implements SoundElement {
      */
     @Override
     public int duration() {
-        final int standard = 240000; // need a better name for this...?
+        final int standard = 60000; // need a better name for this...?
         return (int) Math.floor( standard * durationType / tempo );
     }
     
