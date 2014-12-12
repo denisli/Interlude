@@ -1,5 +1,7 @@
 package music;
 
+import game.Hand;
+
 import java.util.List;
 
 public class Voice {
@@ -30,5 +32,15 @@ public class Voice {
     
     public boolean ended() {
         return index == sequence.size() - 1;
+    }
+    
+    private Hand hand;
+    
+    public Hand getHand() {
+        return hand;
+    }
+    
+    public void setHand(Hand hand) {
+        this.hand = hand;
     }
 }

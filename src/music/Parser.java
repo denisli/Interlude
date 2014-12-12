@@ -106,6 +106,8 @@ public class Parser {
             } else if ( Character.isDigit( character ) ) {
                 if (multiplyToDuration) {
                     durationType *= Character.getNumericValue( character );
+                } else {
+                    durationType /= Character.getNumericValue( character );
                 }
             }
         }

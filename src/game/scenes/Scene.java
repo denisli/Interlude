@@ -15,8 +15,12 @@ public interface Scene {
         return new SongSelectionPage();
     }
     
-    public static Scene round(Music music, Controls controls ) {
-        return new Round( music, controls );
+    public static Scene round(Music music ) {
+        if ( music.isMultiVoice() ) {
+            return new TwoVoiceRound(music);
+        } else {
+            return new OneVoiceRound(music);
+        }
     }
     
     public String name();

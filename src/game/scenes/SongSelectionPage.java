@@ -56,7 +56,7 @@ public class SongSelectionPage implements Scene {
         // TODO Auto-generated method stub
         Input input = gc.getInput();
         if (buttons.get(0).isClicked(input)) {
-            Scene newScene = Scene.round( Music.godKnows(), new Controls() );
+            Scene newScene = Scene.round( Music.godKnows() );
             newScene.init(gc);
             return newScene;
         } else {

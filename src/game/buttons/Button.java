@@ -1,5 +1,8 @@
 package game.buttons;
 
+import game.Controls;
+import game.Hand;
+
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
@@ -15,7 +18,11 @@ public interface Button {
     }
     
     public static Button noteButton(int note) {
-        return new NoteButton(note);
+        return new OneVoiceNoteButton( note );
+    }
+    
+    public static Button twoVoiceNoteButton(int note, Hand hand) {
+        return new TwoVoiceNoteButton( note, hand );
     }
     
     public void render(GameContainer gc, Graphics g);

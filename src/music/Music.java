@@ -23,6 +23,10 @@ public class Music {
         }
     }
     
+    public boolean isMultiVoice() {
+        return voices.size() > 1;
+    }
+    
     public String title() {
         return title;
     }

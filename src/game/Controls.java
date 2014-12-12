@@ -6,123 +6,373 @@ import music.Simultaneous;
 import org.newdawn.slick.Input;
 
 public class Controls {
-    private int ANoteKey = Input.KEY_A;
-    private int BNoteKey = Input.KEY_S; 
-    private int CNoteKey = Input.KEY_D;
-    private int DNoteKey = Input.KEY_F;
-    private int ENoteKey = Input.KEY_J;
-    private int FNoteKey = Input.KEY_K;
-    private int GNoteKey = Input.KEY_L;
-    private int simultaneousKey = Input.KEY_SEMICOLON;
+    private static boolean isMultiVoice;
     
-    private int[] noteKeys = new int[] { ANoteKey, BNoteKey, CNoteKey, DNoteKey, 
-                                         ENoteKey, FNoteKey, GNoteKey, simultaneousKey };
-    
-    private int[] notes = new int[] { Note.A, Note.B, Note.C, Note.D, 
-            Note.E, Note.F, Note.G, Simultaneous.S };
-    
-    public int[] noteKeys() {
-        return noteKeys;
+    // single voice controls
+    private static int ANoteKey = Input.KEY_A;
+    private static int BNoteKey = Input.KEY_S;
+    private static int CNoteKey = Input.KEY_D;
+    private static int DNoteKey = Input.KEY_F;
+    private static int ENoteKey = Input.KEY_J;
+    private static int FNoteKey = Input.KEY_K;
+    private static int GNoteKey = Input.KEY_L;
+    private static int simultaneousKey = Input.KEY_SEMICOLON;
+
+    // two voice controls
+    private static int leftANoteKey = Input.KEY_A;
+    private static int leftBNoteKey = Input.KEY_S;
+    private static int leftCNoteKey = Input.KEY_D;
+    private static int leftDNoteKey = Input.KEY_F;
+    private static int leftENoteKey = Input.KEY_G;
+    private static int leftFNoteKey = Input.KEY_W;
+    private static int leftGNoteKey = Input.KEY_E;
+    private static int leftSimultaneousKey = Input.KEY_R;
+
+    private static int rightANoteKey = Input.KEY_H;
+    private static int rightBNoteKey = Input.KEY_J;
+    private static int rightCNoteKey = Input.KEY_K;
+    private static int rightDNoteKey = Input.KEY_L;
+    private static int rightENoteKey = Input.KEY_SEMICOLON;
+    private static int rightFNoteKey = Input.KEY_Y;
+    private static int rightGNoteKey = Input.KEY_U;
+    private static int rightSimultaneousKey = Input.KEY_I;
+
+    public static void enableSingleVoiceControls() {
+        isMultiVoice = false;
     }
     
-    public boolean noteKeyPressed(Input input) {
-        for ( int key : noteKeys ) {
-            if ( input.isKeyPressed(key) ) {
-                return true;
+    public static void enableTwoVoiceControls() {
+        isMultiVoice = true;
+    }
+    
+    public static int[] noteKeys() {
+        return new int[] { ANoteKey, BNoteKey, CNoteKey, DNoteKey, 
+                ENoteKey, FNoteKey, GNoteKey, simultaneousKey
+        };
+    }
+    
+    public static int[] leftNoteKeys() {
+        return new int[] { leftANoteKey, leftBNoteKey, leftCNoteKey, leftDNoteKey,
+                leftENoteKey, leftFNoteKey, leftGNoteKey, leftSimultaneousKey
+        };
+    }
+    
+    public static int[] rightNoteKeys() {
+        return new int[] { rightANoteKey, rightBNoteKey, rightCNoteKey, rightDNoteKey,
+                rightENoteKey, rightFNoteKey, rightGNoteKey, rightSimultaneousKey 
+        };
+    }
+    
+    // 
+    public static int correspondingNote(int key) {
+        if (!isMultiVoice) {
+            if (key == ANoteKey) {
+                return Note.A;
+            } else if (key == BNoteKey) {
+                return Note.B;
+            } else if (key == CNoteKey) {
+                return Note.C;
+            } else if (key == DNoteKey) {
+                return Note.D;
+            } else if (key == ENoteKey) {
+                return Note.E;
+            } else if (key == FNoteKey) {
+                return Note.F;
+            } else if (key == GNoteKey) {
+                return Note.G;
+            } else if (key == simultaneousKey) {
+                return Simultaneous.S;
+            } else {
+                throw new IllegalArgumentException("Key given is not a note key");
+            }
+        } else {
+            if (key == leftANoteKey || key == rightANoteKey) {
+                return Note.A;
+            } else if (key == leftBNoteKey || key == rightBNoteKey) {
+                return Note.B;
+            } else if (key == leftCNoteKey || key == rightCNoteKey) {
+                return Note.C;
+            } else if (key == leftDNoteKey || key == rightDNoteKey) {
+                return Note.D;
+            } else if (key == leftENoteKey || key == rightENoteKey) {
+                return Note.E;
+            } else if (key == leftFNoteKey || key == rightFNoteKey) {
+                return Note.F;
+            } else if (key == leftGNoteKey || key == rightGNoteKey) {
+                return Note.G;
+            } else if (key == leftSimultaneousKey || key == rightSimultaneousKey) {
+                return Simultaneous.S;
+            } else {
+                throw new IllegalArgumentException("Key given is not a note key");
             }
         }
-        return false;
     }
-    
-    public int correspondingNoteOfKey(int key) {
-        if ( key == ANoteKey ) {
-            return Note.A;
-        } else if ( key == BNoteKey ) {
-            return Note.B;
-        } else if ( key == CNoteKey ) {
-            return Note.C;
-        } else if ( key == DNoteKey ) {
-            return Note.D;
-        } else if ( key == ENoteKey ) {
-            return Note.E;
-        } else if ( key == FNoteKey ) {
-            return Note.F;
-        } else if ( key == GNoteKey ) {
-            return Note.G;
-        } else if ( key == simultaneousKey ) {
-            return Simultaneous.S;
+
+    public static int correspondingKey(int letter) {
+        if (letter == Note.A) {
+            return ANoteKey;
+        } else if (letter == Note.B) {
+            return BNoteKey;
+        } else if (letter == Note.C) {
+            return CNoteKey;
+        } else if (letter == Note.D) {
+            return DNoteKey;
+        } else if (letter == Note.E) {
+            return ENoteKey;
+        } else if (letter == Note.F) {
+            return FNoteKey;
+        } else if (letter == Note.G) {
+            return GNoteKey;
+        }  else if (letter == Simultaneous.S) {
+            return simultaneousKey;
         } else {
-            throw new IllegalArgumentException("Key given is not a note key");
+            throw new IllegalArgumentException("A valid note was not given!");
         }
     }
     
-    public int getANoteKey() {
+    
+    
+    public static int correspondingKey(int letter, Hand hand) {
+        if ( hand == Hand.LEFT ){
+            if (letter == Note.A) {
+                return leftANoteKey;
+            } else if (letter == Note.B) {
+                return leftBNoteKey;
+            } else if (letter == Note.C) {
+                return leftCNoteKey;
+            } else if (letter == Note.D) {
+                return leftDNoteKey;
+            } else if (letter == Note.E) {
+                return leftENoteKey;
+            } else if (letter == Note.F) {
+                return leftFNoteKey;
+            } else if (letter == Note.G) {
+                return leftGNoteKey;
+            }  else if (letter == Simultaneous.S) {
+                return leftSimultaneousKey;
+            } else {
+                throw new IllegalArgumentException("A valid note was not given!");
+            }
+        } else {
+            if (letter == Note.A) {
+                return rightANoteKey;
+            } else if (letter == Note.B) {
+                return rightBNoteKey;
+            } else if (letter == Note.C) {
+                return rightCNoteKey;
+            } else if (letter == Note.D) {
+                return rightDNoteKey;
+            } else if (letter == Note.E) {
+                return rightENoteKey;
+            } else if (letter == Note.F) {
+                return rightFNoteKey;
+            } else if (letter == Note.G) {
+                return rightGNoteKey;
+            }  else if (letter == Simultaneous.S) {
+                return rightSimultaneousKey;
+            } else {
+                throw new IllegalArgumentException("A valid note was not given!");
+            }
+        }
+    }
+    
+    // one voice key getters and setters
+    public static int getANoteKey() {
         return ANoteKey;
     }
 
-    public void setANoteKey(int aNoteKey) {
+    public static void setANoteKey(int aNoteKey) {
         ANoteKey = aNoteKey;
     }
 
-    public int getBNoteKey() {
+    public static int getBNoteKey() {
         return BNoteKey;
     }
 
-    public void setBNoteKey(int bNoteKey) {
+    public static void setBNoteKey(int bNoteKey) {
         BNoteKey = bNoteKey;
     }
 
-    public int getCNoteKey() {
+    public static int getCNoteKey() {
         return CNoteKey;
     }
 
-    public void setCNoteKey(int cNoteKey) {
+    public static void setCNoteKey(int cNoteKey) {
         CNoteKey = cNoteKey;
     }
 
-    public int getDNoteKey() {
+    public static int getDNoteKey() {
         return DNoteKey;
     }
 
-    public void setDNoteKey(int dNoteKey) {
+    public static void setDNoteKey(int dNoteKey) {
         DNoteKey = dNoteKey;
     }
 
-    public int getENoteKey() {
+    public static int getENoteKey() {
         return ENoteKey;
     }
 
-    public void setENoteKey(int eNoteKey) {
+    public static void setENoteKey(int eNoteKey) {
         ENoteKey = eNoteKey;
     }
 
-    public int getFNoteKey() {
+    public static int getFNoteKey() {
         return FNoteKey;
     }
 
-    public void setFNoteKey(int fNoteKey) {
+    public static void setFNoteKey(int fNoteKey) {
         FNoteKey = fNoteKey;
     }
 
-    public int getGNoteKey() {
+    public static int getGNoteKey() {
         return GNoteKey;
     }
 
-    public void setGNoteKey(int gNoteKey) {
+    public static void setGNoteKey(int gNoteKey) {
         GNoteKey = gNoteKey;
     }
-    
-    public int getSimultaneousKey() {
+
+    public static int getSimultaneousKey() {
         return simultaneousKey;
     }
-    
-    public void setSimultaneousKey(int simultaneousKey) {
-        this.simultaneousKey = simultaneousKey;
+
+    public static void setSimultaneousKey(int simultaneousKey) {
+        Controls.simultaneousKey = simultaneousKey;
     }
     
-    public void resetKeys() {
+    // two voice key getters and setters
+    public static int getLeftANoteKey() {
+        return leftANoteKey;
+    }
+
+    public static void setLeftANoteKey(int leftANoteKey) {
+        Controls.leftANoteKey = leftANoteKey;
+    }
+
+    public static int getLeftBNoteKey() {
+        return leftBNoteKey;
+    }
+
+    public static void setLeftBNoteKey(int leftBNoteKey) {
+        Controls.leftBNoteKey = leftBNoteKey;
+    }
+
+    public static int getLeftCNoteKey() {
+        return leftCNoteKey;
+    }
+
+    public static void setLeftCNoteKey(int leftCNoteKey) {
+        Controls.leftCNoteKey = leftCNoteKey;
+    }
+
+    public static int getLeftDNoteKey() {
+        return leftDNoteKey;
+    }
+
+    public static void setLeftDNoteKey(int leftDNoteKey) {
+        Controls.leftDNoteKey = leftDNoteKey;
+    }
+
+    public static int getLeftENoteKey() {
+        return leftENoteKey;
+    }
+
+    public static void setLeftENoteKey(int leftENoteKey) {
+        Controls.leftENoteKey = leftENoteKey;
+    }
+
+    public static int getLeftFNoteKey() {
+        return leftFNoteKey;
+    }
+
+    public static void setLeftFNoteKey(int leftFNoteKey) {
+        Controls.leftFNoteKey = leftFNoteKey;
+    }
+
+    public static int getLeftGNoteKey() {
+        return leftGNoteKey;
+    }
+
+    public static void setLeftGNoteKey(int leftGNoteKey) {
+        Controls.leftGNoteKey = leftGNoteKey;
+    }
+
+    public static int getLeftSimultaneousKey() {
+        return leftSimultaneousKey;
+    }
+
+    public static void setLeftSimultaneousKey(int leftSimultaneousKey) {
+        Controls.leftSimultaneousKey = leftSimultaneousKey;
+    }
+
+    public static int getRightANoteKey() {
+        return rightANoteKey;
+    }
+
+    public static void setRightANoteKey(int rightANoteKey) {
+        Controls.rightANoteKey = rightANoteKey;
+    }
+
+    public static int getRightBNoteKey() {
+        return rightBNoteKey;
+    }
+
+    public static void setRightBNoteKey(int rightBNoteKey) {
+        Controls.rightBNoteKey = rightBNoteKey;
+    }
+
+    public static int getRightCNoteKey() {
+        return rightCNoteKey;
+    }
+
+    public static void setRightCNoteKey(int rightCNoteKey) {
+        Controls.rightCNoteKey = rightCNoteKey;
+    }
+
+    public static int getRightDNoteKey() {
+        return rightDNoteKey;
+    }
+
+    public static void setRightDNoteKey(int rightDNoteKey) {
+        Controls.rightDNoteKey = rightDNoteKey;
+    }
+
+    public static int getRightENoteKey() {
+        return rightENoteKey;
+    }
+
+    public static void setRightENoteKey(int rightENoteKey) {
+        Controls.rightENoteKey = rightENoteKey;
+    }
+
+    public static int getRightFNoteKey() {
+        return rightFNoteKey;
+    }
+
+    public static void setRightFNoteKey(int rightFNoteKey) {
+        Controls.rightFNoteKey = rightFNoteKey;
+    }
+
+    public static int getRightGNoteKey() {
+        return rightGNoteKey;
+    }
+
+    public static void setRightGNoteKey(int rightGNoteKey) {
+        Controls.rightGNoteKey = rightGNoteKey;
+    }
+
+    public static int getRightSimultaneousKey() {
+        return rightSimultaneousKey;
+    }
+
+    public static void setRightSimultaneousKey(int rightSimultaneousKey) {
+        Controls.rightSimultaneousKey = rightSimultaneousKey;
+    }
+
+    public static void resetKeys() {
         ANoteKey = Input.KEY_A;
-        BNoteKey = Input.KEY_S; 
+        BNoteKey = Input.KEY_S;
         CNoteKey = Input.KEY_D;
         DNoteKey = Input.KEY_F;
         ENoteKey = Input.KEY_J;

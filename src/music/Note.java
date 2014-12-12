@@ -80,6 +80,28 @@ public class Note implements SoundElement {
         return octave -= 1;
     }
     
+    public static String toStringLetter( int letter ) {
+        if ( letter == Note.A ) {
+            return "A";
+        } else if ( letter == Note.B ) {
+            return "B";
+        } else if ( letter == Note.C ) {
+            return "C";
+        } else if ( letter == Note.D ) {
+            return "D";
+        } else if ( letter == Note.E ) {
+            return "E";
+        } else if ( letter == Note.F ) {
+            return "F";
+        } else if ( letter == Note.G ) {
+            return "G";
+        } else if ( letter == Simultaneous.S ) {
+            return "S";
+        } else {
+            throw new IllegalArgumentException("A valid note was not given");
+        }
+    }
+    
     public int letter() {
         return letter;
     }
