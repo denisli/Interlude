@@ -24,5 +24,5 @@ public abstract class MovingSound {
     
     public abstract void init(GameContainer gc);
     
-    public abstract boolean offScreen();
+    public abstract boolean offScreen(GameContainer gc);
 }

@@ -82,19 +82,24 @@ public class TwoVoiceRound extends Round {
                 // go to a different scene?
             } else {
                 MusicElement element = leftVoice.next();
-                
-                SoundElement soundElement = (SoundElement) element;
-                MovingSound movingSound = new OneVoiceMovingSound( soundElement );
-                movingSound.init(gc);
-                if (!leftVoice.ended()) {
-                    leftRestingTime = leftVoice.timeUntilNextElement();
+                if ( element.isRest() ) {
+                    if (!leftVoice.ended()) {
+                        leftRestingTime = leftVoice.timeUntilNextElement();
+                    }
+                } else {
+                    SoundElement soundElement = (SoundElement) element;
+                    MovingSound movingSound = new TwoVoiceMovingSound( soundElement, Hand.LEFT );
+                    movingSound.init(gc);
+                    if (!leftVoice.ended()) {
+                        leftRestingTime = leftVoice.timeUntilNextElement();
+                    }
+                    leftNotesOnScreen.add( movingSound );
                 }
-                leftNotesOnScreen.add( movingSound );
             }
         }
         
         if ( !leftNotesOnScreen.isEmpty() ) { 
-            while ( leftNotesOnScreen.peek().offScreen() ) {
+            while ( leftNotesOnScreen.peek().offScreen(gc) ) {
                 leftNotesOnScreen.remove();
                 if (leftNotesOnScreen.isEmpty()) {
                     break;
@@ -125,19 +130,24 @@ public class TwoVoiceRound extends Round {
                 // go to a different scene?
             } else {
                 MusicElement element = rightVoice.next();
-                
-                SoundElement soundElement = (SoundElement) element;
-                MovingSound movingSound = new OneVoiceMovingSound( soundElement );
-                movingSound.init(gc);
-                if (!rightVoice.ended()) {
-                    rightRestingTime = rightVoice.timeUntilNextElement();
+                if ( element.isRest() ) {
+                    if (!rightVoice.ended()) {
+                        rightRestingTime = rightVoice.timeUntilNextElement();
+                    }
+                } else {
+                    SoundElement soundElement = (SoundElement) element;
+                    MovingSound movingSound = new TwoVoiceMovingSound( soundElement, Hand.RIGHT );
+                    movingSound.init(gc);
+                    if (!rightVoice.ended()) {
+                        rightRestingTime = rightVoice.timeUntilNextElement();
+                    }
+                    rightNotesOnScreen.add( movingSound );
                 }
-                rightNotesOnScreen.add( movingSound );
             }
         }
         
         if ( !rightNotesOnScreen.isEmpty() ) { 
-            while ( rightNotesOnScreen.peek().offScreen() ) {
+            while ( rightNotesOnScreen.peek().offScreen(gc) ) {
                 rightNotesOnScreen.remove();
                 if (rightNotesOnScreen.isEmpty()) {
                     break;
@@ -153,6 +163,7 @@ public class TwoVoiceRound extends Round {
     @Override
     public void init(GameContainer gc) {
         // TODO Auto-generated method stub
+        Controls.enableTwoVoiceControls();
         int[] notes = new int[] { Note.A, Note.B, Note.C, Note.D, Note.E, Note.F, Note.G, Simultaneous.S };
         for (int note : notes) {
             Button button = Button.twoVoiceNoteButton(note, Hand.LEFT);
@@ -169,6 +180,6 @@ public class TwoVoiceRound extends Round {
     @Override
     public Scene nextScene(GameContainer gc, int t) {
         // TODO Auto-generated method stub
-        return null;
+        return this;
     }
 }

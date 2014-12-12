@@ -57,7 +57,7 @@ public class OneVoiceMovingSound extends MovingSound {
         radius = containerHeight / 45;
     }
     
-    public boolean offScreen() {
+    public boolean offScreen(GameContainer gc) {
         return centerX + radius < 0;
     }
 }

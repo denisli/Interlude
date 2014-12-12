@@ -65,19 +65,25 @@ public class OneVoiceRound extends Round {
                 // go to a different scene?
             } else {
                 MusicElement element = voice.next();
-                
-                SoundElement soundElement = (SoundElement) element;
-                MovingSound movingSound = new OneVoiceMovingSound( soundElement );
-                movingSound.init(gc);
-                if (!voice.ended()) {
+                if ( element.isRest() ) {
                     restingTime = voice.timeUntilNextElement();
+                    if (!voice.ended()) {
+                        restingTime = voice.timeUntilNextElement();
+                    }
+                } else {
+                    SoundElement soundElement = (SoundElement) element;
+                    MovingSound movingSound = new OneVoiceMovingSound( soundElement );
+                    movingSound.init(gc);
+                    if (!voice.ended()) {
+                        restingTime = voice.timeUntilNextElement();
+                    }
+                    notesOnScreen.add( movingSound );
                 }
-                notesOnScreen.add( movingSound );
             }
         }
         
         if ( !notesOnScreen.isEmpty() ) { 
-            while ( notesOnScreen.peek().offScreen() ) {
+            while ( notesOnScreen.peek().offScreen(gc) ) {
                 notesOnScreen.remove();
                 if (notesOnScreen.isEmpty()) {
                     break;
@@ -92,6 +98,7 @@ public class OneVoiceRound extends Round {
     
     @Override
     public void init(GameContainer gc) {
+        Controls.enableSingleVoiceControls();
         int[] notes = new int[] { Note.A, Note.B, Note.C, Note.D, Note.E, Note.F, Note.G, Simultaneous.S };
         for (int note : notes) {
             Button button = Button.noteButton(note);

@@ -33,9 +33,9 @@ public class Controls {
     private static int rightCNoteKey = Input.KEY_K;
     private static int rightDNoteKey = Input.KEY_L;
     private static int rightENoteKey = Input.KEY_SEMICOLON;
-    private static int rightFNoteKey = Input.KEY_Y;
-    private static int rightGNoteKey = Input.KEY_U;
-    private static int rightSimultaneousKey = Input.KEY_I;
+    private static int rightFNoteKey = Input.KEY_U;
+    private static int rightGNoteKey = Input.KEY_I;
+    private static int rightSimultaneousKey = Input.KEY_O;
 
     public static void enableSingleVoiceControls() {
         isMultiVoice = false;

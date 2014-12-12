@@ -62,7 +62,7 @@ public class TwoVoiceMovingSound extends MovingSound{
         radius = containerHeight / 45;
     }
     
-    public boolean offScreen() {
-        return centerX + radius < 0;
+    public boolean offScreen(GameContainer gc) {
+        return centerY + radius > gc.getHeight();
     }
 }

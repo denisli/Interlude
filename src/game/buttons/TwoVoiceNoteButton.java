@@ -46,6 +46,7 @@ public class TwoVoiceNoteButton extends NoteButton {
 
     @Override
     public void update(GameContainer gc, int t) {
+        System.out.println(hand.toString() + key);
         // TODO Auto-generated method stub
         
     }
@@ -54,7 +55,7 @@ public class TwoVoiceNoteButton extends NoteButton {
     public void init(GameContainer gc) {
         int containerWidth = gc.getWidth();
         int containerHeight = gc.getHeight();
-        int increment = containerWidth / 10;
+        int increment = containerWidth / 20;
         centerY = 9 * containerHeight / 10;
         if (note() == Note.A) {
             centerX = 2 * increment;
@@ -76,7 +77,7 @@ public class TwoVoiceNoteButton extends NoteButton {
             throw new IllegalArgumentException("Note button not given a valid note to represent");
         }
         if ( hand == Hand.RIGHT ) {
-            centerY += NUM_LETTERS * increment;
+            centerX += NUM_LETTERS * increment;
         }
         
         radius = increment * 2 / 5;
