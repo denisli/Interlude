@@ -12,6 +12,7 @@ import game.InterludeGame;
 import game.buttons.Button;
 import music.Instrument;
 import music.Music;
+import music.MusicFile;
 import music.Note;
 import music.Parser;
 
@@ -51,14 +52,10 @@ public class SongSelectionPage implements Scene {
         float fractionY = 0.1f;
         for (String songTitle : songTitles) {
             Button button;
-            try {
-                button = Button.songSelectionButton( Parser.fileToMusic(new File(songTitle)), 0.5f, fractionY );
-                button.init();
-                buttons.add( button );
-                fractionY += 0.1;
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+            button = Button.songSelectionButton( new MusicFile( songTitle, new File(songTitle) ), 0.5f, fractionY );
+            button.init();
+            buttons.add( button );
+            fractionY += 0.1;
         }
     }
 

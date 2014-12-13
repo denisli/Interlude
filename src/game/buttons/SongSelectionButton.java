@@ -7,6 +7,7 @@ import game.scenes.SceneManager;
 import java.awt.Font;
 
 import music.Music;
+import music.MusicFile;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -17,13 +18,18 @@ import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.Rectangle;
 
 public class SongSelectionButton implements Button {
-    private final Music music;
+    private final MusicFile musicFile;
     private final TextButton textComponent;
     
-    public SongSelectionButton(Music music, float fractionX, float fractionY) {
-        this.music = music;
-        this.textComponent = new TextButton( music.title(), fractionX, fractionY, (Runnable) () -> {
-            SceneManager.setNewScene( Scene.round(music) );
+    public SongSelectionButton(MusicFile musicFile, float fractionX, float fractionY) {
+        this.musicFile = musicFile;
+        this.textComponent = new TextButton( musicFile.musicTitle(), fractionX, fractionY, (Runnable) () -> {
+            try {
+                SceneManager.setNewScene( Scene.round( musicFile.getMusic() ) );
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         });
     }
     

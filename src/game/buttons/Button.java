@@ -6,6 +6,7 @@ import game.InterludeGame;
 import game.scenes.Scene;
 import game.scenes.SceneManager;
 import music.Music;
+import music.MusicFile;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -43,8 +44,8 @@ public interface Button {
         return button;
     }
     
-    public static Button songSelectionButton(Music music, float fractionX, float fractionY) {
-        Button button = new SongSelectionButton( music, fractionX, fractionY );
+    public static Button songSelectionButton(MusicFile musicFile, float fractionX, float fractionY) {
+        Button button = new SongSelectionButton( musicFile, fractionX, fractionY );
         button.init();
         return button;
     }
