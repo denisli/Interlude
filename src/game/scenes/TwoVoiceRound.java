@@ -2,10 +2,12 @@ package game.scenes;
 
 import game.Controls;
 import game.Hand;
+import game.Interlude;
 import game.MovingSound;
 import game.OneVoiceMovingSound;
 import game.TwoVoiceMovingSound;
 import game.buttons.Button;
+import game.InterludeGame;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -28,9 +30,9 @@ public class TwoVoiceRound extends Round {
     private int rightRestingTime = 4000;
     private final Voice rightVoice;
     private final Voice leftVoice;
-    List<Button> buttons = new ArrayList<Button>();
-    Queue<MovingSound> leftNotesOnScreen = new LinkedList<MovingSound>();
-    Queue<MovingSound> rightNotesOnScreen = new LinkedList<MovingSound>();
+    private final List<Button> buttons = new ArrayList<Button>();
+    private final Queue<MovingSound> leftNotesOnScreen = new LinkedList<MovingSound>();
+    private final Queue<MovingSound> rightNotesOnScreen = new LinkedList<MovingSound>();
     
     public TwoVoiceRound( Music music ) {
         super(music);
@@ -46,23 +48,23 @@ public class TwoVoiceRound extends Round {
     }
 
     @Override
-    public void render(GameContainer gc, Graphics g) {
+    public void render(Graphics g) {
         // TODO Auto-generated method stub
         for (MovingSound movingSound : leftNotesOnScreen) {
-            movingSound.render(gc, g);
+            movingSound.render(g);
         }
         for (MovingSound movingSound : rightNotesOnScreen) {
-            movingSound.render(gc, g);
+            movingSound.render(g);
         }
         for (Button button : buttons) {
-            button.render(gc, g);
+            button.render(g);
         }
     }
 
     @Override
-    public void update(GameContainer gc, int t) {
+    public void update(int t) {
         // TODO Auto-generated method stub
-        Input input = gc.getInput();
+        Input input = InterludeGame.gameContainer().getInput();
         for ( int key : Controls.leftNoteKeys() ) {
             if ( input.isKeyPressed(key) ) {
                 if ( !leftNotesOnScreen.isEmpty() ) {
@@ -89,7 +91,7 @@ public class TwoVoiceRound extends Round {
                 } else {
                     SoundElement soundElement = (SoundElement) element;
                     MovingSound movingSound = new TwoVoiceMovingSound( soundElement, Hand.LEFT );
-                    movingSound.init(gc);
+                    movingSound.init();
                     if (!leftVoice.ended()) {
                         leftRestingTime = leftVoice.timeUntilNextElement();
                     }
@@ -99,7 +101,7 @@ public class TwoVoiceRound extends Round {
         }
         
         if ( !leftNotesOnScreen.isEmpty() ) { 
-            while ( leftNotesOnScreen.peek().offScreen(gc) ) {
+            while ( leftNotesOnScreen.peek().offScreen() ) {
                 leftNotesOnScreen.remove();
                 if (leftNotesOnScreen.isEmpty()) {
                     break;
@@ -108,7 +110,7 @@ public class TwoVoiceRound extends Round {
         }
         
         for ( MovingSound movingSound : leftNotesOnScreen ) {
-            movingSound.update(gc, t);
+            movingSound.update(t);
         }
         
         for ( int key : Controls.rightNoteKeys() ) {
@@ -137,7 +139,7 @@ public class TwoVoiceRound extends Round {
                 } else {
                     SoundElement soundElement = (SoundElement) element;
                     MovingSound movingSound = new TwoVoiceMovingSound( soundElement, Hand.RIGHT );
-                    movingSound.init(gc);
+                    movingSound.init();
                     if (!rightVoice.ended()) {
                         rightRestingTime = rightVoice.timeUntilNextElement();
                     }
@@ -147,7 +149,7 @@ public class TwoVoiceRound extends Round {
         }
         
         if ( !rightNotesOnScreen.isEmpty() ) { 
-            while ( rightNotesOnScreen.peek().offScreen(gc) ) {
+            while ( rightNotesOnScreen.peek().offScreen() ) {
                 rightNotesOnScreen.remove();
                 if (rightNotesOnScreen.isEmpty()) {
                     break;
@@ -156,30 +158,40 @@ public class TwoVoiceRound extends Round {
         }
         
         for ( MovingSound movingSound : rightNotesOnScreen ) {
-            movingSound.update(gc, t);
+            movingSound.update(t);
         }
     }
 
     @Override
-    public void init(GameContainer gc) {
+    public void init() {
         // TODO Auto-generated method stub
         Controls.enableTwoVoiceControls();
         int[] notes = new int[] { Note.A, Note.B, Note.C, Note.D, Note.E, Note.F, Note.G, Simultaneous.S };
         for (int note : notes) {
             Button button = Button.twoVoiceNoteButton(note, Hand.LEFT);
-            button.init(gc);
+            button.init();
             buttons.add( button );
         }
         for (int note : notes) {
             Button button = Button.twoVoiceNoteButton(note, Hand.RIGHT);
-            button.init(gc);
+            button.init();
             buttons.add( button );
         }
     }
 
     @Override
-    public Scene nextScene(GameContainer gc, int t) {
+    public Scene parentScene() {
         // TODO Auto-generated method stub
-        return this;
+        return null;
+    }
+    
+    @Override
+    public void fireActivatedButtons() {
+        Input input = Interlude.GAME_CONTAINER.getInput();
+        for (Button button : buttons) {
+            if (button.isClicked(input)) {
+                button.callEffect();
+            }
+        }
     }
 }

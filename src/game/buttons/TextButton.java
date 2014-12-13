@@ -1,6 +1,10 @@
 package game.buttons;
 
+import game.Interlude;
+import game.InterludeGame;
+
 import java.awt.Font;
+import java.util.function.Function;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -10,23 +14,37 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.Rectangle;
 
-public class PlayButton implements Button {
-    private final static String TEXT = "PLAY";
+public class TextButton implements Button {
+    private final String text;
     private Color color = Color.yellow;
     private UnicodeFont font;
     private Rectangle boundingBox;
     private boolean mouseWasDown;
+    private final float fractionX;
+    private final float fractionY;
+    private Runnable effect;
     
-    @Override
-    public void render(GameContainer gc, Graphics g) {
-        g.setFont( font );
-        g.setColor( color );
-        g.drawString( TEXT, boundingBox.getX(), boundingBox.getY());
+    public TextButton( String text, float fractionX, float fractionY, Runnable effect) {
+        this.text = text;
+        this.fractionX = fractionX;
+        this.fractionY = fractionY;
+        this.effect = effect;
+    }
+    
+    public TextButton( String text, float fractionX, float fractionY ) {
+        this(text, fractionX, fractionY, (Runnable) () -> {});
     }
     
     @Override
-    public void update(GameContainer gc, int t) {
-        Input input = gc.getInput();
+    public void render(Graphics g) {
+        g.setFont( font );
+        g.setColor( color );
+        g.drawString( text, boundingBox.getX(), boundingBox.getY());
+    }
+    
+    @Override
+    public void update(int t) {
+        Input input = Interlude.GAME_CONTAINER.getInput();
         float mouseX = input.getMouseX();
         float mouseY = input.getMouseY();
         if (boundingBox.contains( mouseX, mouseY )) {
@@ -41,12 +59,16 @@ public class PlayButton implements Button {
             mouseWasDown = false;
             color = Color.yellow;
         }
+        if ( isClicked(input) ) {
+            callEffect();
+        }
     }
     
     @Override
-    public void init(GameContainer gc) {
+    public void init() {
         this.font = getFont();
-        this.boundingBox = boundingBox(gc);
+        this.boundingBox = boundingBox();
+        mouseWasDown = false;
     }
     
     private UnicodeFont getFont() {
@@ -57,29 +79,39 @@ public class PlayButton implements Button {
         }
     }
     
-    private Rectangle boundingBox(GameContainer gc) {;
-        int width = font.getWidth(TEXT);
-        int height = font.getHeight(TEXT);
-        int containerWidth = gc.getWidth();
-        int containerHeight = gc.getHeight();
-        return new Rectangle( (containerWidth - width)/2, containerHeight/2, width, height );
+    private Rectangle boundingBox() {;
+        int width = font.getWidth(text);
+        int height = font.getHeight(text);
+        int containerWidth = Interlude.GAME_CONTAINER.getWidth();
+        int containerHeight = Interlude.GAME_CONTAINER.getHeight();
+        return new Rectangle( ( (int) (fractionX * containerWidth) - width/2), (int) (fractionY * containerHeight) - height/2, width, height );
     }
 
     @Override
     public int width() {
         // TODO Auto-generated method stub
-        return getFont().getWidth(TEXT);
+        return getFont().getWidth(text);
     }
 
     @Override
     public int height() {
         // TODO Auto-generated method stub
-        return getFont().getHeight(TEXT);
+        return getFont().getHeight(text);
     }
 
     @Override
     public boolean isClicked(Input input) {
         // TODO Auto-generated method stub
         return mouseWasDown && !input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON);
+    }
+    
+    @Override
+    public void setEffect(Runnable effect) {
+        this.effect = effect;
+    }
+    
+    @Override
+    public void callEffect() {
+        effect.run();
     }
 }

@@ -9,22 +9,15 @@ import org.lwjgl.LWJGLUtil;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.SlickException;
 
-public class Main {
+public class Interlude {
+    public static final InterludeGameContainer GAME_CONTAINER = new InterludeGameContainer(new InterludeGame());
+    
     public static void main(String[] args) throws SlickException, IOException {
         System.setProperty("org.lwjgl.librarypath",
                 new File(new File(System.getProperty("user.dir"),"native"),
                         LWJGLUtil.getPlatformName()).getAbsolutePath());
         //System.setProperty("org.lwjgl.opengl.Window.undecorated", "true");
-        
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int width = (int) Math.floor( screenSize.getWidth() );
-        int height = (int) Math.floor( screenSize.getHeight() );
-        
-        //Display.setResizable(true);
-        Game game = new Game();
-        AppGameContainer app = new AppGameContainer( game );
-        app.setDisplayMode( width, height, false );
-        app.setTargetFrameRate(60);
-        app.start();
+        GAME_CONTAINER.init();
+        GAME_CONTAINER.start();
     }
 }

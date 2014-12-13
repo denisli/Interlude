@@ -21,18 +21,18 @@ public class TwoVoiceMovingSound extends MovingSound{
         this.hand = hand;
     }
     
-    public void render(GameContainer gc, Graphics g) {
+    public void render(Graphics g) {
         g.setColor(Color.white);
         g.fillOval( centerX - radius, centerY - radius, 2 * radius, 2 * radius); 
     }
     
-    public void update(GameContainer gc, int t) {
+    public void update(int t) {
         centerY += MovingSound.SPEED * t / 10;
     }
     
-    public void init(GameContainer gc) {
-        int containerWidth = gc.getWidth();
-        int containerHeight = gc.getHeight();
+    public void init() {
+        int containerWidth = Interlude.GAME_CONTAINER.getWidth();
+        int containerHeight = Interlude.GAME_CONTAINER.getHeight();
         int increment = containerWidth / 20;
         centerY = -2 * radius;
         int letter = soundElement().letter();
@@ -62,7 +62,7 @@ public class TwoVoiceMovingSound extends MovingSound{
         radius = containerHeight / 45;
     }
     
-    public boolean offScreen(GameContainer gc) {
-        return centerY + radius > gc.getHeight();
+    public boolean offScreen() {
+        return centerY + radius > Interlude.GAME_CONTAINER.getHeight();
     }
 }

@@ -1,6 +1,6 @@
 package game.scenes;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
 import game.Interlude;
@@ -11,47 +11,42 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
-public class MainMenu implements Scene {
-    private final List<Button> buttons;
-    private String name = "Main Menu";
+public class Instructions implements Scene {
+    private int upperLeftX;
+    private int upperLeftY;
+    private final List<Button> buttons = new ArrayList<Button>();
 
-    public MainMenu() {
-        this.buttons = Arrays.asList(Button.playButton(0.5f,0.5f),Button.instructionsButton(0.5f,0.6f),Button.controlsButton(0.5f,0.7f));
+    @Override
+    public String name() {
+        // TODO Auto-generated method stub
+        return null;
     }
-    
+
     @Override
     public void render(Graphics g) {
         // TODO Auto-generated method stub
-        for (Button button : buttons) {
-            button.render(g);
-        }
+        g.drawString("Your goal is to hit the notes as close as possible to the circle at the end. Have fun!", upperLeftX, upperLeftY);
     }
 
     @Override
     public void update(int t) {
         // TODO Auto-generated method stub
-        for (Button button : buttons) {
-            button.update(t);
-        }
-    }
-    
-    @Override
-    public void init() {
-        for (Button button : buttons) {
-            button.init();
-        }
+        
     }
 
     @Override
-    public String name() {
+    public void init() {
         // TODO Auto-generated method stub
-        return name;
+        int containerHeight = Interlude.GAME_CONTAINER.getHeight();
+        int containerWidth = Interlude.GAME_CONTAINER.getWidth();
+        upperLeftX = containerHeight / 2;
+        upperLeftY = containerWidth / 2;
     }
 
     @Override
     public Scene parentScene() {
         // TODO Auto-generated method stub
-        throw new RuntimeException("Main menu has no parent scene!");
+        return Scene.mainMenu();
     }
     
     @Override

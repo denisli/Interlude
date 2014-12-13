@@ -5,6 +5,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import game.Interlude;
+import game.InterludeGame;
 import game.Controls;
 import game.MovingSound;
 import game.OneVoiceMovingSound;
@@ -32,20 +34,20 @@ public class OneVoiceRound extends Round {
     }
     
     @Override
-    public void render(GameContainer gc, Graphics g) {
+    public void render(Graphics g) {
         // TODO Auto-generated method stub
         for (MovingSound movingSound : notesOnScreen) {
-            movingSound.render(gc, g);
+            movingSound.render(g);
         }
         for (Button button : buttons) {
-            button.render(gc, g);
+            button.render(g);
         }
     }
 
     @Override
-    public void update(GameContainer gc, int t) {
+    public void update(int t) {
         // TODO Auto-generated method stub
-        Input input = gc.getInput();
+        Input input = Interlude.GAME_CONTAINER.getInput();
         for ( int key : Controls.noteKeys() ) {
             if ( input.isKeyPressed(key) ) {
                 if ( !notesOnScreen.isEmpty() ) {
@@ -73,7 +75,7 @@ public class OneVoiceRound extends Round {
                 } else {
                     SoundElement soundElement = (SoundElement) element;
                     MovingSound movingSound = new OneVoiceMovingSound( soundElement );
-                    movingSound.init(gc);
+                    movingSound.init();
                     if (!voice.ended()) {
                         restingTime = voice.timeUntilNextElement();
                     }
@@ -83,7 +85,7 @@ public class OneVoiceRound extends Round {
         }
         
         if ( !notesOnScreen.isEmpty() ) { 
-            while ( notesOnScreen.peek().offScreen(gc) ) {
+            while ( notesOnScreen.peek().offScreen() ) {
                 notesOnScreen.remove();
                 if (notesOnScreen.isEmpty()) {
                     break;
@@ -92,17 +94,17 @@ public class OneVoiceRound extends Round {
         }
         
         for ( MovingSound movingSound : notesOnScreen ) {
-            movingSound.update(gc, t);
+            movingSound.update(t);
         }
     }
     
     @Override
-    public void init(GameContainer gc) {
+    public void init() {
         Controls.enableSingleVoiceControls();
         int[] notes = new int[] { Note.A, Note.B, Note.C, Note.D, Note.E, Note.F, Note.G, Simultaneous.S };
         for (int note : notes) {
             Button button = Button.noteButton(note);
-            button.init(gc);
+            button.init();
             buttons.add( button );
         }
     }
@@ -113,8 +115,14 @@ public class OneVoiceRound extends Round {
     }
 
     @Override
-    public Scene nextScene(GameContainer gc, int t) {
+    public Scene parentScene() {
         // TODO Auto-generated method stub
-        return this;
+        return null;
+    }
+
+    @Override
+    public void fireActivatedButtons() {
+        // TODO Auto-generated method stub
+        
     }
 }

@@ -20,18 +20,18 @@ public class OneVoiceMovingSound extends MovingSound {
         super( soundElement );
     }
     
-    public void render(GameContainer gc, Graphics g) {
+    public void render(Graphics g) {
         g.setColor(Color.white);
         g.fillOval( centerX - radius, centerY - radius, 2 * radius, 2 * radius ); 
     }
     
-    public void update(GameContainer gc, int t) {
+    public void update(int t) {
         centerX -= SPEED * t / 10;
     }
     
-    public void init(GameContainer gc) {
-        int containerWidth = gc.getWidth();
-        int containerHeight = gc.getHeight();
+    public void init() {
+        int containerWidth = Interlude.GAME_CONTAINER.getWidth();
+        int containerHeight = Interlude.GAME_CONTAINER.getHeight();
         int increment = containerHeight / 10;
         centerX = containerWidth + 2 * radius;
         int letter = soundElement().letter();
@@ -57,7 +57,7 @@ public class OneVoiceMovingSound extends MovingSound {
         radius = containerHeight / 45;
     }
     
-    public boolean offScreen(GameContainer gc) {
+    public boolean offScreen() {
         return centerX + radius < 0;
     }
 }

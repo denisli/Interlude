@@ -15,6 +15,10 @@ public interface Scene {
         return new SongSelectionPage();
     }
     
+    public static Scene instructionsPage() {
+        return new Instructions();
+    }
+    
     public static Scene round(Music music ) {
         if ( music.isMultiVoice() ) {
             return new TwoVoiceRound(music);
@@ -23,13 +27,15 @@ public interface Scene {
         }
     }
     
+    public void fireActivatedButtons();
+    
+    public Scene parentScene();
+    
     public String name();
     
-    public void render(GameContainer gc, Graphics g);
+    public void render(Graphics g);
     
-    public void update(GameContainer gc, int t);
+    public void update(int t);
     
-    public void init(GameContainer gc);
-    
-    public Scene nextScene(GameContainer gc, int t);
+    public void init();
 }

@@ -4,6 +4,8 @@ import java.awt.Font;
 
 import game.Controls;
 import game.Hand;
+import game.Interlude;
+import game.InterludeGame;
 import music.Note;
 import music.Simultaneous;
 
@@ -31,8 +33,8 @@ public class TwoVoiceNoteButton extends NoteButton {
     }
 
     @Override
-    public void render(GameContainer gc, Graphics g) {
-        Input input = gc.getInput();
+    public void render(Graphics g) {
+        Input input = Interlude.GAME_CONTAINER.getInput();
         if (input.isKeyDown( key )) {
             g.setColor(Color.blue);
         } else {
@@ -45,16 +47,15 @@ public class TwoVoiceNoteButton extends NoteButton {
     }
 
     @Override
-    public void update(GameContainer gc, int t) {
-        System.out.println(hand.toString() + key);
+    public void update(int t) {
         // TODO Auto-generated method stub
         
     }
 
     @Override
-    public void init(GameContainer gc) {
-        int containerWidth = gc.getWidth();
-        int containerHeight = gc.getHeight();
+    public void init() {
+        int containerWidth = Interlude.GAME_CONTAINER.getWidth();
+        int containerHeight = Interlude.GAME_CONTAINER.getHeight();
         int increment = containerWidth / 20;
         centerY = 9 * containerHeight / 10;
         if (note() == Note.A) {

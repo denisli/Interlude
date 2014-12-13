@@ -1,6 +1,12 @@
 package game.buttons;
 
+import game.InterludeGame;
+import game.scenes.Scene;
+import game.scenes.SceneManager;
+
 import java.awt.Font;
+
+import music.Music;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -11,97 +17,61 @@ import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.Rectangle;
 
 public class SongSelectionButton implements Button {
-    private final String songTitle;
-    private Color color = Color.yellow;
-    private UnicodeFont font;
-    private Rectangle boundingBox;
-    private final int yCoord;
-    private boolean mouseWasDown = false;
-
-    public SongSelectionButton(String songTitle, int yCoord) {
-        this.songTitle = songTitle;
-        this.yCoord = yCoord;
+    private final Music music;
+    private final TextButton textComponent;
+    
+    public SongSelectionButton(Music music, float fractionX, float fractionY) {
+        this.music = music;
+        this.textComponent = new TextButton( music.title(), fractionX, fractionY, (Runnable) () -> {
+            SceneManager.setNewScene( Scene.round(music) );
+        });
     }
     
     @Override
-    public void render(GameContainer gc, Graphics g) {
+    public void render(Graphics g) {
         // TODO Auto-generated method stub
-        g.setFont( font );
-        g.setColor( color );
-        g.drawString( songTitle, boundingBox.getX(), boundingBox.getY());
+        textComponent.render(g);
     }
 
     @Override
-    public void update(GameContainer gc, int t) {
+    public void update(int t) {
         // TODO Auto-generated method stub
-        Input input = gc.getInput();
-        float mouseX = input.getMouseX();
-        float mouseY = input.getMouseY();
-        if (boundingBox.contains( mouseX, mouseY )) {
-            if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
-                mouseWasDown = true;
-                color = Color.red;
-            } else {
-                color = Color.green;
-            }
-        } else {
-            mouseWasDown = false;
-            color = Color.yellow;
-        }
+        textComponent.update(t);
     }
 
     @Override
-    public void init(GameContainer gc) {
+    public void init() {
         // TODO Auto-generated method stub
-        this.font = getFont();
-        this.boundingBox = boundingBox(gc);
-    }
-    
-    private UnicodeFont getFont() {
-        try {
-            return (new SimpleFont( "Arial", Font.PLAIN, 36 )).get();
-        } catch (SlickException se) {
-            return null;
-        }
-    }
-    
-    private Rectangle boundingBox(GameContainer gc) {;
-        int width = font.getWidth(songTitle);
-        int height = font.getHeight(songTitle);
-        int containerWidth = gc.getWidth();
-        int containerHeight = gc.getHeight();
-        return new Rectangle( (containerWidth - width)/2, containerHeight/10 + yCoord, width, height );
+        textComponent.init();
     }
 
     @Override
     public int width() {
         // TODO Auto-generated method stub
-        return getFont().getWidth(songTitle);
+        return textComponent.width();
     }
 
     @Override
     public int height() {
         // TODO Auto-generated method stub
-        return getFont().getHeight(songTitle);
+        return textComponent.height();
     }
 
     @Override
     public boolean isClicked(Input input) {
         // TODO Auto-generated method stub
-        return mouseWasDown && !input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON);
+        return textComponent.isClicked(input);
     }
-    
+
     @Override
-    public boolean equals(Object other) {
-        if (! (other instanceof SongSelectionButton) ) {
-            return false;
-        } else {
-            return ((SongSelectionButton) other).songTitle == this.songTitle;
-        }
+    public void setEffect(Runnable effect) {
+        // TODO Auto-generated method stub
+        return;
     }
-    
+
     @Override
-    public int hashCode() {
-        return songTitle.length();
+    public void callEffect() {
+        // TODO Auto-generated method stub
+        return;
     }
 }

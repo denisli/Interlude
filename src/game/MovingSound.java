@@ -18,11 +18,11 @@ public abstract class MovingSound {
         return soundElement;
     }
     
-    public abstract void render(GameContainer gc, Graphics g);
+    public abstract void render(Graphics g);
     
-    public abstract void update(GameContainer gc, int t);
+    public abstract void update(int t);
     
-    public abstract void init(GameContainer gc);
+    public abstract void init();
     
-    public abstract boolean offScreen(GameContainer gc);
+    public abstract boolean offScreen();
 }

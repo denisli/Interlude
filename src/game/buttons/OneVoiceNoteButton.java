@@ -2,6 +2,8 @@ package game.buttons;
 
 import game.Hand;
 import game.Controls;
+import game.Interlude;
+import game.InterludeGame;
 
 import java.awt.Font;
 
@@ -29,8 +31,8 @@ public class OneVoiceNoteButton extends NoteButton {
     }
     
     @Override
-    public void render(GameContainer gc, Graphics g) {
-        Input input = gc.getInput();
+    public void render(Graphics g) {
+        Input input = Interlude.GAME_CONTAINER.getInput();
         if (input.isKeyDown( key )) {
             g.setColor(Color.blue);
         } else {
@@ -43,14 +45,14 @@ public class OneVoiceNoteButton extends NoteButton {
     }
     
     @Override
-    public void update(GameContainer gc, int t) {
+    public void update(int t) {
         return;
     }
     
     @Override
-    public void init(GameContainer gc) {
-        int containerWidth = gc.getWidth();
-        int containerHeight = gc.getHeight();
+    public void init() {
+        int containerWidth = Interlude.GAME_CONTAINER.getWidth();
+        int containerHeight = Interlude.GAME_CONTAINER.getHeight();
         int increment = containerHeight / 10;
         centerX = containerWidth / 10;
         if (note() == Note.A) {
