@@ -1,5 +1,7 @@
 package music;
 
+import game.VoiceType;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -58,7 +60,14 @@ public class Parser {
                 
                 // second line
                 Queue<String> notes = new LinkedList<String>(Arrays.asList(br.readLine().split(" ")));
-                Voice voice = parseVoice(notes, octave, tempo, instrument);
+                Voice voice = null;
+                if ( numVoices == 1 ) {
+                    voice = parseVoice(notes, octave, tempo, instrument, VoiceType.SINGLE);
+                } else if ( numVoices == 2 && i == 0) {
+                    voice = parseVoice(notes, octave, tempo, instrument, VoiceType.RIGHT);
+                } else if ( numVoices == 2 && i == 1) {
+                    voice = parseVoice(notes, octave, tempo, instrument, VoiceType.LEFT);
+                }
                 voices.add(voice);
             }
             return new Music(title, voices);
@@ -74,7 +83,7 @@ public class Parser {
         throw new IllegalArgumentException("This code is not reachable"); // not reached
     }
     
-    private static Voice parseVoice(Queue<String> notes, int octave, int tempo, Instrument instrument) {
+    private static Voice parseVoice(Queue<String> notes, int octave, int tempo, Instrument instrument, VoiceType voiceType) {
         List<MusicElement> sequence = new ArrayList<MusicElement>(); 
         while ( !notes.isEmpty() ) {
             String element = notes.remove();
@@ -93,7 +102,7 @@ public class Parser {
                                                    " is not valid!");
             }
         }
-        return new Voice(sequence, instrument);
+        return new Voice(sequence, instrument, voiceType);
     }
     
     private static Rest parseRest(String rest, int tempo) {

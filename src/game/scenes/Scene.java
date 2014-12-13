@@ -20,11 +20,7 @@ public interface Scene {
     }
     
     public static Scene round(Music music ) {
-        if ( music.isMultiVoice() ) {
-            return new TwoVoiceRound(music);
-        } else {
-            return new OneVoiceRound(music);
-        }
+        return new Round(music);
     }
     
     public void fireActivatedButtons();

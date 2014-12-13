@@ -1,11 +1,9 @@
 package game.buttons;
 
 import game.Controls;
-import game.Hand;
+import game.VoiceType;
 import game.InterludeGame;
 import game.Renderable;
-import game.note_marker.OneVoiceNoteMarker;
-import game.note_marker.TwoVoiceNoteMarker;
 import game.scenes.Scene;
 import game.scenes.SceneManager;
 import music.Music;

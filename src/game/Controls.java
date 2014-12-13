@@ -45,27 +45,27 @@ public class Controls {
         isMultiVoice = true;
     }
     
-    public static int[] noteKeys() {
-        return new int[] { ANoteKey, BNoteKey, CNoteKey, DNoteKey, 
-                ENoteKey, FNoteKey, GNoteKey, simultaneousKey
-        };
-    }
-    
-    public static int[] leftNoteKeys() {
-        return new int[] { leftANoteKey, leftBNoteKey, leftCNoteKey, leftDNoteKey,
-                leftENoteKey, leftFNoteKey, leftGNoteKey, leftSimultaneousKey
-        };
-    }
-    
-    public static int[] rightNoteKeys() {
-        return new int[] { rightANoteKey, rightBNoteKey, rightCNoteKey, rightDNoteKey,
-                rightENoteKey, rightFNoteKey, rightGNoteKey, rightSimultaneousKey 
-        };
+    public static int[] noteKeys( VoiceType voiceType ) {
+        if ( voiceType == VoiceType.SINGLE ) {
+            return new int[] { ANoteKey, BNoteKey, CNoteKey, DNoteKey, 
+                    ENoteKey, FNoteKey, GNoteKey, simultaneousKey
+            };
+        } else if ( voiceType == VoiceType.LEFT ) {
+            return new int[] { leftANoteKey, leftBNoteKey, leftCNoteKey, leftDNoteKey,
+                    leftENoteKey, leftFNoteKey, leftGNoteKey, leftSimultaneousKey
+            };
+        } else if ( voiceType == VoiceType.RIGHT ) {
+            return new int[] { rightANoteKey, rightBNoteKey, rightCNoteKey, rightDNoteKey,
+                    rightENoteKey, rightFNoteKey, rightGNoteKey, rightSimultaneousKey 
+            };
+        } else {
+            throw new IllegalArgumentException("Valid voice type not given");
+        }
     }
     
     // 
-    public static int correspondingNote(int key) {
-        if (!isMultiVoice) {
+    public static int correspondingNote(int key, VoiceType voiceType) {
+        if ( voiceType == VoiceType.SINGLE ) {
             if (key == ANoteKey) {
                 return Note.A;
             } else if (key == BNoteKey) {
@@ -132,8 +132,8 @@ public class Controls {
     
     
     
-    public static int correspondingKey(int letter, Hand hand) {
-        if ( hand == Hand.LEFT ){
+    public static int correspondingKey(int letter, VoiceType hand) {
+        if ( hand == VoiceType.LEFT ){
             if (letter == Note.A) {
                 return leftANoteKey;
             } else if (letter == Note.B) {
