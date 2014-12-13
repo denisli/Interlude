@@ -1,4 +1,4 @@
-package game.buttons;
+package game;
 
 /**
  * The code here can be found at http://slickrpg.blogspot.com/2011/07/unicode-font.html
@@ -39,7 +39,12 @@ public class SimpleFont {
         return font;
     }
     
-    public int getWidth(String text) {
-        return get().getWidth(text);
+    public static UnicodeFont retrieve( String fontName, int style, int size ) {
+        try {
+            return new SimpleFont( fontName, style, size ).get();
+        } catch (SlickException e) {
+            // TODO Auto-generated catch block
+            throw new RuntimeException("Do I ever get here? retrieve()");
+        }
     }
 }

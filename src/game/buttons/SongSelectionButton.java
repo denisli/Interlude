@@ -72,12 +72,12 @@ public class SongSelectionButton implements Button {
     @Override
     public void setEffect(Runnable effect) {
         // TODO Auto-generated method stub
-        return;
+        textComponent.setEffect(effect);
     }
 
     @Override
     public void callEffect() {
         // TODO Auto-generated method stub
-        return;
+        textComponent.callEffect();
     }
 }

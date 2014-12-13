@@ -3,6 +3,9 @@ package game.buttons;
 import game.Controls;
 import game.Hand;
 import game.InterludeGame;
+import game.Renderable;
+import game.note_marker.OneVoiceNoteMarker;
+import game.note_marker.TwoVoiceNoteMarker;
 import game.scenes.Scene;
 import game.scenes.SceneManager;
 import music.Music;
@@ -13,7 +16,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.geom.Rectangle;
 
-public interface Button {
+public interface Button extends Renderable {
     public static Button playButton(float fractionX, float fractionY) {
         Button button = new TextButton("Play", fractionX, fractionY, (Runnable) () -> {
             SceneManager.setNewScene(Scene.songSelection());
@@ -50,23 +53,9 @@ public interface Button {
         return button;
     }
     
-    public static Button noteButton(int note) {
-        return new OneVoiceNoteButton( note );
-    }
-    
-    public static Button twoVoiceNoteButton(int note, Hand hand) {
-        return new TwoVoiceNoteButton( note, hand );
-    }
-    
     public void setEffect(Runnable effect);
     
     public void callEffect();
-    
-    public void render(Graphics g);
-    
-    public void update(int t);
-    
-    public void init();
     
     public boolean isClicked(Input input);
     

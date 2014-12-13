@@ -2,9 +2,9 @@ package game.scenes;
 
 import game.Controls;
 import game.Hand;
-import game.MovingSound;
-import game.OneVoiceMovingSound;
 import game.buttons.Button;
+import game.moving_sound.MovingSound;
+import game.moving_sound.OneVoiceMovingSound;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

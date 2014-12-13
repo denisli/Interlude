@@ -1,4 +1,4 @@
-package game.buttons;
+package game.note_marker;
 
 import java.awt.Font;
 
@@ -6,6 +6,7 @@ import game.Controls;
 import game.Hand;
 import game.Interlude;
 import game.InterludeGame;
+import game.SimpleFont;
 import music.Note;
 import music.Simultaneous;
 
@@ -16,7 +17,7 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 
-public class TwoVoiceNoteButton extends NoteButton {
+public class TwoVoiceNoteMarker extends NoteMarker {
     private static final int NUM_LETTERS = 8; // number of letters to represent sound elements
     
     private final Hand hand;
@@ -26,7 +27,7 @@ public class TwoVoiceNoteButton extends NoteButton {
     private UnicodeFont font;
     private int key;
     
-    public TwoVoiceNoteButton( int note, Hand hand ) {
+    public TwoVoiceNoteMarker( int note, Hand hand ) {
         super(note);
         this.hand = hand;
         this.key = Controls.correspondingKey( note, hand );

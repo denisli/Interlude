@@ -2,6 +2,7 @@ package game.buttons;
 
 import game.Interlude;
 import game.InterludeGame;
+import game.SimpleFont;
 
 import java.awt.Font;
 import java.util.function.Function;

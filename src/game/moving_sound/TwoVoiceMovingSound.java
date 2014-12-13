@@ -1,4 +1,7 @@
-package game;
+package game.moving_sound;
+
+import game.Hand;
+import game.Interlude;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;

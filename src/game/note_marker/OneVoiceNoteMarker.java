@@ -1,9 +1,10 @@
-package game.buttons;
+package game.note_marker;
 
 import game.Hand;
 import game.Controls;
 import game.Interlude;
 import game.InterludeGame;
+import game.SimpleFont;
 
 import java.awt.Font;
 
@@ -18,14 +19,14 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.Rectangle;
 
-public class OneVoiceNoteButton extends NoteButton {
+public class OneVoiceNoteMarker extends NoteMarker {
     private int centerX;
     private int centerY;
     private int radius;
     private UnicodeFont font;
     private int key;
     
-    public OneVoiceNoteButton( int note ) {
+    public OneVoiceNoteMarker( int note ) {
         super( note );
         this.key = Controls.correspondingKey( note );
     }

@@ -1,5 +1,6 @@
-package game;
+package game.moving_sound;
 
+import game.Interlude;
 import music.MusicElement;
 import music.Note;
 import music.Simultaneous;

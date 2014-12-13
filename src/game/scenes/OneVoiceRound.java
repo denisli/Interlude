@@ -8,9 +8,10 @@ import java.util.Queue;
 import game.Interlude;
 import game.InterludeGame;
 import game.Controls;
-import game.MovingSound;
-import game.OneVoiceMovingSound;
 import game.buttons.Button;
+import game.moving_sound.MovingSound;
+import game.moving_sound.OneVoiceMovingSound;
+import game.note_marker.NoteMarker;
 import music.Music;
 import music.MusicElement;
 import music.Note;
@@ -27,6 +28,7 @@ public class OneVoiceRound extends Round {
     private final Voice voice;
     private final List<Button> buttons = new ArrayList<Button>();
     private final Queue<MovingSound> notesOnScreen = new LinkedList<MovingSound>();
+    private final List<NoteMarker> noteMarker = new ArrayList<NoteMarker>();
     
     public OneVoiceRound( Music music ) {
         super(music);
@@ -103,9 +105,9 @@ public class OneVoiceRound extends Round {
         Controls.enableSingleVoiceControls();
         int[] notes = new int[] { Note.A, Note.B, Note.C, Note.D, Note.E, Note.F, Note.G, Simultaneous.S };
         for (int note : notes) {
-            Button button = Button.noteButton(note);
-            button.init();
-            buttons.add( button );
+            NoteMarker noteMarker = NoteMarker.oneVoiceNoteMarker(note);
+            noteMarker.init();
+            buttons.add( noteMarker );
         }
     }
     

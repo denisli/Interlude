@@ -3,10 +3,11 @@ package game.scenes;
 import game.Controls;
 import game.Hand;
 import game.Interlude;
-import game.MovingSound;
-import game.OneVoiceMovingSound;
-import game.TwoVoiceMovingSound;
 import game.buttons.Button;
+import game.moving_sound.MovingSound;
+import game.moving_sound.OneVoiceMovingSound;
+import game.moving_sound.TwoVoiceMovingSound;
+import game.note_marker.NoteMarker;
 import game.InterludeGame;
 
 import java.util.ArrayList;
@@ -168,12 +169,12 @@ public class TwoVoiceRound extends Round {
         Controls.enableTwoVoiceControls();
         int[] notes = new int[] { Note.A, Note.B, Note.C, Note.D, Note.E, Note.F, Note.G, Simultaneous.S };
         for (int note : notes) {
-            Button button = Button.twoVoiceNoteButton(note, Hand.LEFT);
+            NoteMarker button = NoteMarker.twoVoiceNoteMarker(note, Hand.LEFT);
             button.init();
             buttons.add( button );
         }
         for (int note : notes) {
-            Button button = Button.twoVoiceNoteButton(note, Hand.RIGHT);
+            NoteMarker button = NoteMarker.twoVoiceNoteMarker(note, Hand.RIGHT);
             button.init();
             buttons.add( button );
         }
