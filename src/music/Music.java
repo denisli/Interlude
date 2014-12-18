@@ -16,7 +16,7 @@ public class Music {
     
     public static Music godKnows() {
         try {
-            return Parser.fileToMusic(new File("res/music.txt"));
+            return Parser.fileToMusic(new File("res/new_music2.txt"));
         } catch (FileNotFoundException e) {
             // TODO Auto-generated catch block
             throw new RuntimeException("I should be able to find the file...");

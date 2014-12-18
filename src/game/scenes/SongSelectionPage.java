@@ -10,6 +10,7 @@ import game.Controls;
 import game.Interlude;
 import game.InterludeGame;
 import game.buttons.Button;
+import game.pop_ups.PopUp;
 import music.Instrument;
 import music.Music;
 import music.MusicFile;
@@ -21,7 +22,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
 public class SongSelectionPage implements Scene {
-    private final String[] songTitles = new String[] { "res/music.txt" };
+    private final String[] songTitles = new String[] { "res/new_music3.txt" };
     private List<Button> buttons = new ArrayList<Button>(Arrays.asList(Button.backButton(0.9f, 0.1f)));
     
     @Override
@@ -73,5 +74,17 @@ public class SongSelectionPage implements Scene {
                 button.callEffect();
             }
         }
+    }
+
+    @Override
+    public void addPopUp(PopUp popUp) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void destroyPopUp(PopUp popUp) {
+        // TODO Auto-generated method stub
+        
     }
 }

@@ -8,6 +8,7 @@ import game.Interlude;
 import game.InterludeGame;
 import game.buttons.Button;
 import game.labels.Label;
+import game.pop_ups.PopUp;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -70,5 +71,17 @@ public class MainMenu implements Scene {
                 button.callEffect();
             }
         }
+    }
+
+    @Override
+    public void addPopUp(PopUp popUp) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void destroyPopUp(PopUp popUp) {
+        // TODO Auto-generated method stub
+        
     }
 }

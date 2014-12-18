@@ -107,7 +107,7 @@ public class Parser {
     
     private static Rest parseRest(String rest, int tempo) {
         boolean multiplyToDuration = true;
-        float durationType = Note.WHOLE_NOTE;
+        float durationType = Note.QUARTER_NOTE;
         for ( int index=1; index<rest.length(); index++ ) {
             char character = rest.charAt(index);
             if (character == '/') {
@@ -126,7 +126,7 @@ public class Parser {
     private static Note parseNote(String note, int octave, int tempo) {
         boolean multiplyToDuration = true;
         int letter = 0;
-        float durationType = Note.WHOLE_NOTE;
+        float durationType = Note.QUARTER_NOTE;
         int accidental = Note.NATURAL;
         for ( int index=0; index<note.length(); index++ ) {
             char character = note.charAt(index);

@@ -2,6 +2,7 @@ package game.scenes;
 
 import music.Music;
 import game.Controls;
+import game.pop_ups.PopUp;
 
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -23,7 +24,15 @@ public interface Scene {
         return new Round(music);
     }
     
+    public static Scene changeControlsPage() {
+        return new ChangeControls();
+    }
+    
     public void fireActivatedButtons();
+    
+    public void addPopUp(PopUp popUp);
+    
+    public void destroyPopUp(PopUp popUp);
     
     public Scene parentScene();
     

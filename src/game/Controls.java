@@ -6,8 +6,6 @@ import music.Simultaneous;
 import org.newdawn.slick.Input;
 
 public class Controls {
-    private static boolean isMultiVoice;
-    
     // single voice controls
     private static int ANoteKey = Input.KEY_A;
     private static int BNoteKey = Input.KEY_S;
@@ -36,14 +34,6 @@ public class Controls {
     private static int rightFNoteKey = Input.KEY_U;
     private static int rightGNoteKey = Input.KEY_I;
     private static int rightSimultaneousKey = Input.KEY_O;
-
-    public static void enableSingleVoiceControls() {
-        isMultiVoice = false;
-    }
-    
-    public static void enableTwoVoiceControls() {
-        isMultiVoice = true;
-    }
     
     public static int[] noteKeys( VoiceType voiceType ) {
         if ( voiceType == VoiceType.SINGLE ) {
@@ -60,6 +50,72 @@ public class Controls {
             };
         } else {
             throw new IllegalArgumentException("Valid voice type not given");
+        }
+    }
+    
+    public static void setKey( int note, VoiceType voiceType, int key ) {
+        if ( voiceType == VoiceType.SINGLE ) {
+            if ( note == Note.A ) {
+                setANoteKey( key );
+            } else if ( note == Note.B ) {
+                setBNoteKey( key );
+            } else if ( note == Note.C ) {
+                setCNoteKey( key );
+            } else if ( note == Note.D ) {
+                setDNoteKey( key );
+            } else if ( note == Note.E ) {
+                setENoteKey( key );
+            } else if ( note == Note.F ) {
+                setFNoteKey( key );
+            } else if ( note == Note.G ) {
+                setGNoteKey( key );
+            } else if ( note == Simultaneous.S ) {
+                setSimultaneousKey( key );
+            } else {
+                throw new IllegalArgumentException( "Valid letter for note not given" );
+            }
+        } else if ( voiceType == VoiceType.LEFT ) {
+            if ( note == Note.A ) {
+                setLeftANoteKey( key );
+            } else if ( note == Note.B ) {
+                setLeftBNoteKey( key );
+            } else if ( note == Note.C ) {
+                setLeftCNoteKey( key );
+            } else if ( note == Note.D ) {
+                setLeftDNoteKey( key );
+            } else if ( note == Note.E ) {
+                setLeftENoteKey( key );
+            } else if ( note == Note.F ) {
+                setLeftFNoteKey( key );
+            } else if ( note == Note.G ) {
+                setLeftGNoteKey( key );
+            } else if ( note == Simultaneous.S ) {
+                setLeftSimultaneousKey( key );
+            } else {
+                throw new IllegalArgumentException( "Valid letter for note not given" );
+            }
+        } else if ( voiceType == VoiceType.RIGHT ) {
+            if ( note == Note.A ) {
+                setRightANoteKey( key );
+            } else if ( note == Note.B ) {
+                setRightBNoteKey( key );
+            } else if ( note == Note.C ) {
+                setRightCNoteKey( key );
+            } else if ( note == Note.D ) {
+                setRightDNoteKey( key );
+            } else if ( note == Note.E ) {
+                setRightENoteKey( key );
+            } else if ( note == Note.F ) {
+                setRightFNoteKey( key );
+            } else if ( note == Note.G ) {
+                setRightGNoteKey( key );
+            } else if ( note == Simultaneous.S ) {
+                setRightSimultaneousKey( key );
+            } else {
+                throw new IllegalArgumentException( "Valid letter for note not given" );
+            }
+        } else {
+            throw new IllegalArgumentException( "Valid voice type not given" );
         }
     }
     
@@ -108,32 +164,28 @@ public class Controls {
         }
     }
 
-    public static int correspondingKey(int letter) {
-        if (letter == Note.A) {
-            return ANoteKey;
-        } else if (letter == Note.B) {
-            return BNoteKey;
-        } else if (letter == Note.C) {
-            return CNoteKey;
-        } else if (letter == Note.D) {
-            return DNoteKey;
-        } else if (letter == Note.E) {
-            return ENoteKey;
-        } else if (letter == Note.F) {
-            return FNoteKey;
-        } else if (letter == Note.G) {
-            return GNoteKey;
-        }  else if (letter == Simultaneous.S) {
-            return simultaneousKey;
-        } else {
-            throw new IllegalArgumentException("A valid note was not given!");
-        }
-    }
-    
-    
-    
-    public static int correspondingKey(int letter, VoiceType hand) {
-        if ( hand == VoiceType.LEFT ){
+    public static int correspondingKey(int letter, VoiceType voiceType ) {
+        if ( voiceType == VoiceType.SINGLE ) {
+            if (letter == Note.A) {
+                return ANoteKey;
+            } else if (letter == Note.B) {
+                return BNoteKey;
+            } else if (letter == Note.C) {
+                return CNoteKey;
+            } else if (letter == Note.D) {
+                return DNoteKey;
+            } else if (letter == Note.E) {
+                return ENoteKey;
+            } else if (letter == Note.F) {
+                return FNoteKey;
+            } else if (letter == Note.G) {
+                return GNoteKey;
+            }  else if (letter == Simultaneous.S) {
+                return simultaneousKey;
+            } else {
+                throw new IllegalArgumentException("A valid note was not given!");
+            }
+        } else if ( voiceType == VoiceType.LEFT ){
             if (letter == Note.A) {
                 return leftANoteKey;
             } else if (letter == Note.B) {
@@ -153,7 +205,7 @@ public class Controls {
             } else {
                 throw new IllegalArgumentException("A valid note was not given!");
             }
-        } else {
+        } else if ( voiceType == VoiceType.RIGHT ){
             if (letter == Note.A) {
                 return rightANoteKey;
             } else if (letter == Note.B) {
@@ -173,6 +225,8 @@ public class Controls {
             } else {
                 throw new IllegalArgumentException("A valid note was not given!");
             }
+        } else {
+            throw new IllegalArgumentException("Not a valid voice type");
         }
     }
     

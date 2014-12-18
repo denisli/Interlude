@@ -61,7 +61,10 @@ public class NoteMarker implements Button {
         g.fillOval( centerX - radius, centerY - radius, 2 * radius, 2 * radius); 
         g.setColor( Color.red );
         g.setFont( font );
-        g.drawString( Note.toStringLetter( note() ), centerX, centerY);
+        String noteText = Input.getKeyName( Controls.correspondingKey( note() , voiceType) );//Note.toStringLetter( note() );
+        int textWidth = font.getWidth(noteText);
+        int textHeight = font.getHeight(noteText);
+        g.drawString( noteText, centerX - textWidth / 2, centerY - textHeight / 2);
     }
     
     @Override

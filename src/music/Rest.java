@@ -1,18 +1,20 @@
 package music;
 
 public class Rest implements MusicElement {
-    private final float durationType;
-    private final int tempo;
+    private final int duration;
     
     public Rest(float durationType, int tempo) {
-        this.durationType = durationType;
-        this.tempo = tempo;
+        final int standard = 60000; // please get a better name
+        this.duration = (int) Math.floor( standard * durationType / tempo );
+    }
+    
+    public Rest(int duration) {
+        this.duration = duration;
     }
     
     @Override
     public int duration() {
-        final int standard = 60000;
-        return (int) Math.floor( standard * durationType / tempo );
+        return duration;
     }
 
     @Override

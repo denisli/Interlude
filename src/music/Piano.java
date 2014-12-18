@@ -9,12 +9,18 @@ import javax.sound.midi.Synthesizer;
 
 public class Piano implements Instrument {
     private MidiChannel piano;
+    private MidiChannel otherPiano;
+    private MidiChannel currentPlayer;
     public Piano() {
         Synthesizer synth;
         try {
             synth = MidiSystem.getSynthesizer();
             synth.open();
             piano = synth.getChannels()[0]; // 0 is the MidiChannel representing a piano
+            //Instrument[] instruments = synth.getDefaultSoundbank().getInstruments();
+            //channels[0].programChange(instruments[0].getPatch().getProgram());
+            otherPiano = synth.getChannels()[1];
+            currentPlayer = piano;
         } catch (MidiUnavailableException e) {
             e.printStackTrace();
         }
@@ -31,12 +37,18 @@ public class Piano implements Instrument {
             @Override
             public void run() {
                 try {
+                    if ( currentPlayer == piano ) {
+                        currentPlayer = otherPiano;
+                    } else {
+                        currentPlayer = piano;
+                    }
                     int pitch = note.pitch();
                     int volume = note.volume();
                     int duration = note.duration();
-                    piano.noteOn( pitch, volume );
+                    currentPlayer.noteOn( pitch, volume );
                     Thread.sleep( duration );
-                    piano.noteOff( pitch );
+                    currentPlayer.noteOff( pitch );
+                    
                 } catch (InterruptedException ie) {
                     ie.printStackTrace();
                 }

@@ -6,6 +6,7 @@ import game.VoiceType;
 import game.buttons.Button;
 import game.moving_sound.MovingSound;
 import game.note_marker.NoteMarker;
+import game.pop_ups.PopUp;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -74,20 +75,6 @@ public class Round implements Scene {
         }
         
         for ( VoiceType voiceType : voiceTypes ) {
-            for ( int key : Controls.noteKeys( voiceType ) ) {
-                if ( input.isKeyPressed(key) ) {
-                    Queue<MovingSound> notesOnScreenOfVoice = notesOnScreen.get(voiceType);
-                    if ( !notesOnScreenOfVoice.isEmpty() ) {
-                        int letter = Controls.correspondingNote(key, voiceType );
-                        MovingSound movingSound = notesOnScreenOfVoice.remove();
-                        SoundElement soundElement = movingSound.soundElement();
-                        SoundElement correspondingSoundElement = soundElement.correspondingSoundElement(letter);
-                        correspondingSoundElement.bePlayed(voices.get(voiceType).instrument());
-                    }
-                }
-            }
-            
-            
             int restingTime = restingTimes.get(voiceType);
             restingTime = Math.max(restingTime - t, 0);
             restingTimes.put(voiceType, restingTime);
@@ -132,11 +119,25 @@ public class Round implements Scene {
                 movingSound.update(t);
             }
         }
+        
+        for ( VoiceType voiceType : voiceTypes ) {
+            for ( int key : Controls.noteKeys( voiceType ) ) {
+                //if ( input.isKeyPressed(key) ) {
+                    Queue<MovingSound> notesOnScreenOfVoice = notesOnScreen.get(voiceType);
+                    if ( !notesOnScreenOfVoice.isEmpty() ) {
+                        int letter = Controls.correspondingNote(key, voiceType );
+                        MovingSound movingSound = notesOnScreenOfVoice.remove();
+                        SoundElement soundElement = movingSound.soundElement();
+                        SoundElement correspondingSoundElement = soundElement.correspondingSoundElement(letter);
+                        soundElement.bePlayed(voices.get(voiceType).instrument());
+                    }
+                //}
+            }
+        }
     }
     
     @Override
     public void init() {
-        Controls.enableSingleVoiceControls();
         int[] notes = new int[] { Note.A, Note.B, Note.C, Note.D, Note.E, Note.F, Note.G, Simultaneous.S };
         for (int note : notes) {
             for ( VoiceType voiceType : voiceTypes ) {
@@ -171,5 +172,17 @@ public class Round implements Scene {
     public String name() {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public void addPopUp(PopUp popUp) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void destroyPopUp(PopUp popUp) {
+        // TODO Auto-generated method stub
+        
     }
 }

@@ -32,7 +32,9 @@ public interface Button extends Renderable {
     }
     
     public static Button controlsButton(float fractionX, float fractionY) {
-        Button button = new TextButton("Controls", fractionX, fractionY);
+        Button button = new TextButton("Controls", fractionX, fractionY, (Runnable) () -> {
+            SceneManager.setNewScene(Scene.changeControlsPage());
+        });
         button.init();
         return button;
     }
@@ -43,6 +45,10 @@ public interface Button extends Renderable {
         });
         button.init();
         return button;
+    }
+    
+    public static Button textButton(String text, float fractionX, float fractionY, Runnable effect) {
+        return new TextButton( text, fractionX, fractionY, effect );
     }
     
     public static Button songSelectionButton(MusicFile musicFile, float fractionX, float fractionY) {

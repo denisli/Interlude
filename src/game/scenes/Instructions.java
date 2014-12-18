@@ -8,6 +8,7 @@ import game.Interlude;
 import game.InterludeGame;
 import game.buttons.Button;
 import game.labels.Label;
+import game.pop_ups.PopUp;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
@@ -79,5 +80,17 @@ public class Instructions implements Scene {
                 button.callEffect();
             }
         }
+    }
+
+    @Override
+    public void addPopUp(PopUp popUp) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void destroyPopUp(PopUp popUp) {
+        // TODO Auto-generated method stub
+        
     }
 }

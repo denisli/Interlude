@@ -1,4 +1,4 @@
-package pop_up;
+package game.pop_ups;
 
 import game.Interlude;
 import game.scenes.Scene;
