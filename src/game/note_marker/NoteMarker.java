@@ -4,6 +4,8 @@ import java.awt.Font;
 
 import game.Controls;
 import game.Interlude;
+import game.Orientation;
+import game.Reflection;
 import game.SimpleFont;
 import game.VoiceType;
 import game.buttons.Button;
@@ -17,13 +19,15 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 
-public class NoteMarker implements Button {
+import util.Pair;
+
+public class NoteMarker {
     private static final int NUM_LETTERS = 8; // number of letters to represent sound elements
     private final int note;
     private Runnable effect = (Runnable) () -> {};
     private final VoiceType voiceType;
-    private int centerX;
-    private int centerY;
+    private float fractionX;
+    private float fractionY;
     private int radius;
     private UnicodeFont font;
     private final int key;
@@ -38,36 +42,25 @@ public class NoteMarker implements Button {
     public int note() {
         return note;
     }
-
-    @Override
-    public boolean isClicked(Input input) {
-        // TODO Auto-generated method stub
-        return false;
-    }
     
-    @Override
-    public void setEffect(Runnable effect) {
-        this.effect = effect;
-    }
-    
-    @Override
-    public void callEffect() {
-        effect.run();
-    }
-    
-    @Override
     public void render(Graphics g) {
+        int containerWidth = Interlude.GAME_CONTAINER.getWidth();
+        int containerHeight = Interlude.GAME_CONTAINER.getHeight();
+        Pair<Float,Float> actualPosition = Reflection.getPosition(Orientation.getPosition( fractionX, fractionY ));
+        float actualFractionX = actualPosition.getLeft();
+        float actualFractionY = actualPosition.getRight();
+        int centerX = (int) (actualFractionX * containerWidth);
+        int centerY = (int) (actualFractionY * containerHeight);
         g.setColor( color );
         g.fillOval( centerX - radius, centerY - radius, 2 * radius, 2 * radius); 
         g.setColor( Color.red );
         g.setFont( font );
-        String noteText = Input.getKeyName( Controls.correspondingKey( note() , voiceType) );//Note.toStringLetter( note() );
+        String noteText = Input.getKeyName( Controls.correspondingKey( note() , voiceType) );
         int textWidth = font.getWidth(noteText);
         int textHeight = font.getHeight(noteText);
-        g.drawString( noteText, centerX - textWidth / 2, centerY - textHeight / 2);
+        g.drawString( noteText, centerX  - textWidth / 2, centerY - textHeight / 2);
     }
     
-    @Override
     public void update(int t) {
         Input input = Interlude.GAME_CONTAINER.getInput();
         if (input.isKeyDown( key )) {
@@ -77,60 +70,58 @@ public class NoteMarker implements Button {
         };
     }
     
-    @Override
     public void init() {
         int containerWidth = Interlude.GAME_CONTAINER.getWidth();
         int containerHeight = Interlude.GAME_CONTAINER.getHeight();
         if ( voiceType == VoiceType.SINGLE ) {
-            int increment = containerHeight / 10;
-            centerX = containerWidth / 10;
+            float increment = 0.1f;
+            fractionX = 0.9f;
             if (note() == Note.A) {
-                centerY = increment;
+                fractionY = increment;
             } else if (note() == Note.B) {
-                centerY = 2 * increment;
+                fractionY = 2 * increment;
             } else if (note() == Note.C) {
-                centerY = 3 * increment;
+                fractionY = 3 * increment;
             } else if (note() == Note.D) {
-                centerY = 4 * increment;
+                fractionY = 4 * increment;
             } else if (note() == Note.E) {
-                centerY = 5 * increment;
+                fractionY = 5 * increment;
             } else if (note() == Note.F) {
-                centerY = 6 * increment;
+                fractionY = 6 * increment;
             } else if (note() == Note.G) {
-                centerY = 7 * increment;
+                fractionY = 7 * increment;
             } else if (note() == Simultaneous.S) {
-                centerY = 8 * increment;
+                fractionY = 8 * increment;
             } else {
                 throw new IllegalArgumentException("Note button not given a valid note to represent");
             }
-            radius = containerHeight / 40;
+            radius = (int) (Math.min(containerWidth, containerHeight) * increment * 2) / 5;
         } else {
-            int increment = containerWidth / 20;
-            centerY = 9 * containerHeight / 10;
+            float increment = 0.05f;
+            fractionX = 0.9f;
             if (note() == Note.A) {
-                centerX = 2 * increment;
+                fractionY = 2 * increment;
             } else if (note() == Note.B) {
-                centerX = 3 * increment;
+                fractionY = 3 * increment;
             } else if (note() == Note.C) {
-                centerX = 4 * increment;
+                fractionY = 4 * increment;
             } else if (note() == Note.D) {
-                centerX = 5 * increment;
+                fractionY = 5 * increment;
             } else if (note() == Note.E) {
-                centerX = 6 * increment;
+                fractionY = 6 * increment;
             } else if (note() == Note.F) {
-                centerX = 7 * increment;
+                fractionY = 7 * increment;
             } else if (note() == Note.G) {
-                centerX = 8 * increment;
+                fractionY = 8 * increment;
             } else if (note() == Simultaneous.S) {
-                centerX = 9 * increment;
+                fractionY = 9 * increment;
             } else {
                 throw new IllegalArgumentException("Note button not given a valid note to represent");
             }
             if ( voiceType == VoiceType.RIGHT ) {
-                centerX += NUM_LETTERS * increment;
+                fractionY += NUM_LETTERS * increment;
             }
-            
-            radius = increment * 2 / 5;
+            radius = (int) (Math.min(containerWidth, containerHeight) * increment * 2) / 5;
         }
         
         try {
@@ -139,16 +130,12 @@ public class NoteMarker implements Button {
             se.printStackTrace();
         }
     }
-
-    @Override
-    public int width() {
-        // TODO Auto-generated method stub
-        return 2 * radius;
+    
+    public float fractionX() {
+        return fractionX;
     }
-
-    @Override
-    public int height() {
-        // TODO Auto-generated method stub
-        return 2 * radius;
+    
+    public float fractionY() {
+        return fractionY;
     }
 }

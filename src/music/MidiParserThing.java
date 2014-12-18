@@ -3,6 +3,7 @@ package music;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiEvent;
@@ -23,6 +24,7 @@ import org.jfugue.MidiParser;
 import org.jfugue.Note;
 import org.jfugue.ParserListener;
 import org.jfugue.PitchBend;
+import org.jfugue.Player;
 import org.jfugue.PolyphonicPressure;
 import org.jfugue.Tempo;
 import org.jfugue.Time;
@@ -70,53 +72,7 @@ public class MidiParserThing {
     
     
     public static void main(String[] args) throws InvalidMidiDataException, IOException {
-        Sequence sequence = MidiSystem.getSequence(new File("God Knows....mid"));
 
-        int trackNumber = 0;
-        for (Track track :  sequence.getTracks()) {
-            trackNumber++;
-            System.out.println("Track " + trackNumber + ": size = " + track.size());
-            System.out.println();
-            for (int i=0; i < track.size(); i++) { 
-                MidiEvent event = track.get(i);
-                if ( event.getTick() < 10000) {
-                    System.out.print("@" + event.getTick() + " ");
-                    MidiMessage message = event.getMessage();
-                    if (message instanceof ShortMessage) {
-                        ShortMessage sm = (ShortMessage) message;
-                        
-                        System.out.print("Channel: " + sm.getChannel() + " ");
-                        if (sm.getCommand() == NOTE_ON) {
-                            int key = sm.getData1();
-                            int octave = (key / 12)-1;
-                            int note = key % 12;
-                            String noteName = NOTE_NAMES[note];
-                            int velocity = sm.getData2();
-                            System.out.println("Note on, " + noteName + octave + " key=" + key + " velocity: " + velocity);
-                        } else if (sm.getCommand() == NOTE_OFF) {
-                            int key = sm.getData1();
-                            int octave = (key / 12)-1;
-                            int note = key % 12;
-                            String noteName = NOTE_NAMES[note];
-                            int velocity = sm.getData2();
-                            System.out.println("Note off, " + noteName + octave + " key=" + key + " velocity: " + velocity);
-                        } else if ( sm.getCommand() == CONTROLLER ) {
-                            System.out.println("Controller type: " + sm.getData1() + " Value: " + sm.getData2());
-                        } else if ( sm.getCommand() == PROGRAM_CHANGE ) {
-                            int programNumber = sm.getData1();
-                            System.out.println("Program number: " + programNumber);
-                        } else {
-                            System.out.println("Command:" + sm.getCommand());
-                        }
-
-                    } else {
-                        System.out.println("Other message: " + message.getClass());
-                    }
-                }
-            }
-
-            System.out.println();
-        }
 
     }
 }

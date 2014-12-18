@@ -2,6 +2,8 @@ package game.scenes;
 
 import game.Controls;
 import game.Interlude;
+import game.Orientation;
+import game.Reflection;
 import game.VoiceType;
 import game.buttons.Button;
 import game.moving_sound.MovingSound;
@@ -21,6 +23,7 @@ import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
+import util.Pair;
 import music.Instrument;
 import music.Music;
 import music.MusicElement;
@@ -35,25 +38,31 @@ public class Round implements Scene {
     private final boolean isMultiVoice;
     private final List<Button> buttons = new ArrayList<Button>();
     private final Set<VoiceType> voiceTypes = new HashSet<VoiceType>();
+    /** Each note value and voicetype corresponds to a notemarker */
+    private final Map<Pair<Integer,VoiceType>,NoteMarker> noteMarkers = new HashMap<Pair<Integer,VoiceType>,NoteMarker>();
     private final Map<VoiceType,Queue<MovingSound>> notesOnScreen = new HashMap<VoiceType,Queue<MovingSound>>();
     private final Map<VoiceType, Voice> voices = new HashMap<VoiceType, Voice>();
     private final Map<VoiceType,Integer> restingTimes = new HashMap<VoiceType,Integer>();
     
+    private int orientation;
+    
     public Round(Music music) {
         this.music = music;
         this.isMultiVoice = music.isMultiVoice();
+        int initialDelay = 4000; // 4 seconds
         for ( Voice voice : music.voices() ) {
             VoiceType voiceType = voice.voiceType();
             voiceTypes.add(voiceType);
             voices.put(voiceType, voice);
-            restingTimes.put(voiceType, 4000);
+            restingTimes.put(voiceType, initialDelay);
             notesOnScreen.put(voiceType, new LinkedList<MovingSound>());
         }
+        
+        this.orientation = 180;
     }
     
     @Override
     public void render(Graphics g) {
-        // TODO Auto-generated method stub
         for ( VoiceType voiceType : notesOnScreen.keySet() ) {
             Queue<MovingSound> notesOnScreenOfVoice = notesOnScreen.get(voiceType);
             for (MovingSound movingSound : notesOnScreenOfVoice) {
@@ -63,15 +72,30 @@ public class Round implements Scene {
         for (Button button : buttons) {
             button.render(g);
         }
+        
+        for ( Pair<Integer,VoiceType> pair : noteMarkers.keySet() ) {
+            NoteMarker noteMarker = noteMarkers.get(pair);
+            noteMarker.render(g);
+        }
     }
 
     @Override
     public void update(int t) {
-        // TODO Auto-generated method stub
         Input input = Interlude.GAME_CONTAINER.getInput();
         
-        for ( Button button : buttons ) {
-            button.update(t);
+        if ( input.isKeyPressed(Input.KEY_LEFT) ) {
+            Orientation.rotateClockwise();
+        } else if ( input.isKeyPressed(Input.KEY_RIGHT) ) {
+            Orientation.rotateCounterClockwise();
+        } else if ( input.isKeyPressed(Input.KEY_UP) ) {
+            Reflection.verticallyMirror();
+        } else if ( input.isKeyPressed(Input.KEY_DOWN) ) {
+            Reflection.horizontallyMirror();
+        }
+        
+        for ( Pair<Integer,VoiceType> pair : noteMarkers.keySet() ) {
+            NoteMarker noteMarker = noteMarkers.get(pair);
+            noteMarker.update(t);
         }
         
         for ( VoiceType voiceType : voiceTypes ) {
@@ -95,13 +119,22 @@ public class Round implements Scene {
                         }
                     } else {
                         SoundElement soundElement = (SoundElement) element;
-                        MovingSound movingSound = new MovingSound( soundElement, voiceType );
-                        movingSound.init();
+                        int soundElementLetter = soundElement.letter();
+                        float offScreen = 0.0f;
+                        Pair<Integer,VoiceType> pair = new Pair<Integer,VoiceType>(soundElementLetter,voiceType);
+                        if ( !isMultiVoice ) { 
+                            MovingSound movingSound = new MovingSound( offScreen, noteMarkers.get(pair).fractionY(), soundElement, voiceType );
+                            movingSound.init();
+                            notesOnScreenOfVoice.add( movingSound );
+                        } else {
+                            MovingSound movingSound = new MovingSound( offScreen, noteMarkers.get(pair).fractionY(), soundElement, voiceType );
+                            movingSound.init();
+                            notesOnScreenOfVoice.add( movingSound );
+                        }
                         if (!voice.ended()) {
                             restingTime = voice.timeUntilNextElement();
                             restingTimes.put(voiceType, restingTime);
                         }
-                        notesOnScreenOfVoice.add( movingSound );
                     }
                 }
             }
@@ -122,7 +155,7 @@ public class Round implements Scene {
         
         for ( VoiceType voiceType : voiceTypes ) {
             for ( int key : Controls.noteKeys( voiceType ) ) {
-                //if ( input.isKeyPressed(key) ) {
+                if ( input.isKeyPressed(key) ) {
                     Queue<MovingSound> notesOnScreenOfVoice = notesOnScreen.get(voiceType);
                     if ( !notesOnScreenOfVoice.isEmpty() ) {
                         int letter = Controls.correspondingNote(key, voiceType );
@@ -131,7 +164,7 @@ public class Round implements Scene {
                         SoundElement correspondingSoundElement = soundElement.correspondingSoundElement(letter);
                         soundElement.bePlayed(voices.get(voiceType).instrument());
                     }
-                //}
+                }
             }
         }
     }
@@ -143,7 +176,7 @@ public class Round implements Scene {
             for ( VoiceType voiceType : voiceTypes ) {
                 NoteMarker noteMarker = new NoteMarker(note, voiceType);
                 noteMarker.init();
-                buttons.add( noteMarker );
+                noteMarkers.put( new Pair<Integer,VoiceType>(note,voiceType), noteMarker );
             }
         }
     }

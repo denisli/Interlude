@@ -1,5 +1,6 @@
 package game.scenes;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 
@@ -11,6 +12,7 @@ public class SceneManager {
 //    }
     
     public static void render(Graphics g) {
+        g.setBackground( Color.white );
         currentScene.render(g);
     }
     

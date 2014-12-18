@@ -17,7 +17,7 @@ import org.newdawn.slick.geom.Rectangle;
 
 public class TextButton implements Button {
     private final String text;
-    private Color color = Color.yellow;
+    private Color color = Color.black;
     private UnicodeFont font;
     private Rectangle boundingBox;
     private boolean mouseWasDown;
@@ -53,12 +53,11 @@ public class TextButton implements Button {
                 mouseWasDown = true;
                 color = Color.red;
             } else {
-                //mouseWasDown = false;
                 color = Color.green;
             }
         } else {
             mouseWasDown = false;
-            color = Color.yellow;
+            color = Color.black;
         }
         if ( isClicked(input) ) {
             callEffect();

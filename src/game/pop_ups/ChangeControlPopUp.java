@@ -1,8 +1,12 @@
 package game.pop_ups;
 
+import java.awt.Font;
+
 import game.Controls;
 import game.Interlude;
+import game.SimpleFont;
 import game.VoiceType;
+import game.labels.Label;
 import game.scenes.Scene;
 
 import org.newdawn.slick.Color;
@@ -15,6 +19,8 @@ public class ChangeControlPopUp extends PopUp implements KeyListener {
     private final VoiceType voiceType;
     private boolean keyPressed = false;
     private int pressedKey;
+    private final Label instructionLabel = new Label("Press the button you want to change control to", 0.5f, 0.5f, Color.black,
+            SimpleFont.retrieve( "Arial", Font.PLAIN, 18) );
     
     public ChangeControlPopUp( int note, VoiceType voiceType, Scene scene ) {
         super( scene );
@@ -31,8 +37,7 @@ public class ChangeControlPopUp extends PopUp implements KeyListener {
         g.fillRect( containerWidth / 3, containerHeight / 3, containerWidth / 3, containerHeight / 3 );
         
         g.setColor( Color.black );
-        // TODO: Change the place where the string is drawn;
-        g.drawString( "Press the button you want to change control to", containerWidth / 2.5f, containerHeight / 2.5f);
+        instructionLabel.render(g);
     }
 
     @Override
@@ -52,6 +57,7 @@ public class ChangeControlPopUp extends PopUp implements KeyListener {
     public void init() {
         // TODO Auto-generated method stub
         Interlude.GAME_CONTAINER.getInput().addKeyListener(this);
+        instructionLabel.init();
     }
 
     @Override

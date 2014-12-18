@@ -22,7 +22,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
 public class SongSelectionPage implements Scene {
-    private final String[] songTitles = new String[] { "res/new_music3.txt" };
+    private final String[] songTitles = new String[] { "res/new_music3.txt", "res/music2.txt" };
     private List<Button> buttons = new ArrayList<Button>(Arrays.asList(Button.backButton(0.9f, 0.1f)));
     
     @Override
