@@ -20,6 +20,6 @@ public class MusicFile {
     
     public Music getMusic() throws FileNotFoundException {
         return Parser.fileToMusic( musicFile );
-        //return MidiParserThing.parse( musicFile, 0 );
+        //return MidiParser.parse( musicFile, 0 );
     }
 }

@@ -38,7 +38,6 @@ public class GeneralInstrument implements Instrument {
             @Override
             public void run() {
                 try {
-                    System.out.println( Note.toStringLetter(note.letter()) + ", " + note.duration() );
                     if ( currentPlayer == generalInstrument ) {
                         currentPlayer = otherGeneralInstrument;
                     } else {

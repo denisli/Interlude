@@ -8,34 +8,37 @@ import util.Pair;
  * come from.
  */
 public class Orientation {
-    /** Angle, in radians, of the orientation. The angle is counter-clockwise. */
-    private static double currentAngle = 0; // must have a value of 0, pi/2, pi, or 3pi/2
+    /** Angle, in degrees, of the orientation. The angle is counter-clockwise. */
+    private static double currentAngle = 0; // must have a value of 0, 90, 180, or 270
     
     /**
-     * Gets the position assuming that the screen has been rotated by currentAngle radians 
+     * Gets the position assuming that the screen has been rotated by currentAngle degrees 
      * counter-clockwise around the center. 
      * @param fractionX
      * @param fractionY
      * @return
      */
     public static Pair<Float,Float> getPosition( float fractionX, float fractionY ) {
-        float shiftedX = fractionX - 0.5f;
-        float shiftedY = fractionY - 0.5f;
-        float cosine = (float) Math.cos( currentAngle );
-        float sine = (float) Math.sin( currentAngle );
-        float newFractionX = (float) ( cosine * shiftedX + sine * shiftedY ) + 0.5f;
-        float newFractionY = (float) ( -sine * shiftedX + cosine * shiftedY ) + 0.5f;
-        
-        return new Pair<Float,Float>(newFractionX, newFractionY);
+        if ( currentAngle == 0 ) {
+            return new Pair<Float,Float>(fractionX,fractionY);
+        } else if ( currentAngle == 90 ) {
+            return new Pair<Float,Float>(fractionY, 1-fractionX);
+        } else if ( currentAngle == 180 ) {
+            return new Pair<Float,Float>(1-fractionX, fractionY);
+        } else if ( currentAngle == 270 ) {
+            return new Pair<Float,Float>(fractionY, fractionX);
+        } else {
+            throw new RuntimeException("You must've messed up implementing something bro");
+        }
     }
     
     /**
      * Rotates the orientation counter-clockwise by 90 degrees
      */
     public static void rotateCounterClockwise() {
-        currentAngle += Math.PI / 2;
-        while (currentAngle >= 2 * Math.PI) {
-            currentAngle -= 2 * Math.PI;
+        currentAngle += 90;
+        while (currentAngle >= 360) {
+            currentAngle -= 360;
         }
     }
     
@@ -43,9 +46,9 @@ public class Orientation {
      * Rotates the orientation clockwise by 90 degrees
      */
     public static void rotateClockwise() {
-        currentAngle -= Math.PI / 2;
+        currentAngle -= 90;
         while (currentAngle < 0) {
-            currentAngle += 2 * Math.PI;
+            currentAngle += 360;
         }
     }
 }

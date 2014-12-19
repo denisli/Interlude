@@ -2,7 +2,6 @@ package game.moving_sound;
 
 import game.Interlude;
 import game.Orientation;
-import game.Reflection;
 import game.VoiceType;
 import game.Renderable;
 import music.SoundElement;
@@ -13,7 +12,7 @@ import org.newdawn.slick.Graphics;
 import util.Pair;
 
 public class MovingSound implements Renderable {
-    private final static float SPEED = 1.0f/3;
+    private final static float SPEED = 1.0f/5;
     private float fractionX;
     private float fractionY;
     private int radius;
@@ -35,7 +34,7 @@ public class MovingSound implements Renderable {
     public void render(Graphics g) {
         int containerWidth = Interlude.GAME_CONTAINER.getWidth();
         int containerHeight = Interlude.GAME_CONTAINER.getHeight();
-        Pair<Float,Float> actualPosition = Reflection.getPosition(Orientation.getPosition( fractionX, fractionY ));
+        Pair<Float,Float> actualPosition = Orientation.getPosition( fractionX, fractionY );
         float actualFractionX = actualPosition.getLeft();
         float actualFractionY = actualPosition.getRight();
         int centerX = (int) ( actualFractionX * containerWidth );

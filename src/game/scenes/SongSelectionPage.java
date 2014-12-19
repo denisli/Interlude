@@ -15,7 +15,7 @@ import org.newdawn.slick.Input;
 
 public class SongSelectionPage implements Scene {
     private final String[] songTitles = new String[] { "res/new_music3.txt", "res/music2.txt", "God Knows....mid",
-            "res/new_music4.txt", "res/combined.txt"};
+            "res/new_music4.txt", "res/combined.txt", "suzumiya-haruhi-no-yuuutsu-bouken-desho-desho.mid"};
     private List<Button> buttons = new ArrayList<Button>(Arrays.asList(Button.backButton(0.9f, 0.1f)));
     
     @Override

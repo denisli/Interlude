@@ -3,7 +3,6 @@ package game.scenes;
 import game.Controls;
 import game.Interlude;
 import game.Orientation;
-import game.Reflection;
 import game.VoiceType;
 import game.buttons.Button;
 import game.moving_sound.MovingSound;
@@ -80,10 +79,6 @@ public class Round implements Scene {
             Orientation.rotateClockwise();
         } else if ( input.isKeyPressed(Input.KEY_RIGHT) ) {
             Orientation.rotateCounterClockwise();
-        } else if ( input.isKeyPressed(Input.KEY_UP) ) {
-            Reflection.verticallyMirror();
-        } else if ( input.isKeyPressed(Input.KEY_DOWN) ) {
-            Reflection.horizontallyMirror();
         }
         
         for ( Button button : buttons ) {
@@ -131,7 +126,6 @@ public class Round implements Scene {
                         if (!voice.ended()) {
                             restingTime = voice.timeUntilNextElement();
                             restingTimes.put(voiceType, restingTime);
-                            System.out.println(restingTime);
                         }
                     }
                 }
@@ -153,7 +147,7 @@ public class Round implements Scene {
         
         for ( VoiceType voiceType : voiceTypes ) {
             for ( int key : Controls.noteKeys( voiceType ) ) {
-                //if ( input.isKeyPressed(key) ) {
+                if ( input.isKeyPressed(key) ) {
                     Queue<MovingSound> notesOnScreenOfVoice = notesOnScreen.get(voiceType);
                     if ( !notesOnScreenOfVoice.isEmpty() ) {
                         int letter = Controls.correspondingNote(key, voiceType );
@@ -162,7 +156,7 @@ public class Round implements Scene {
                         SoundElement correspondingSoundElement = soundElement.correspondingSoundElement(letter);
                         soundElement.bePlayed(voices.get(voiceType).instrument());
                     }
-                //}
+                }
             }
         }
     }

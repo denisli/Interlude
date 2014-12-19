@@ -5,7 +5,6 @@ import java.awt.Font;
 import game.Controls;
 import game.Interlude;
 import game.Orientation;
-import game.Reflection;
 import game.SimpleFont;
 import game.VoiceType;
 import music.Note;
@@ -43,7 +42,7 @@ public class NoteMarker {
     public void render(Graphics g) {
         int containerWidth = Interlude.GAME_CONTAINER.getWidth();
         int containerHeight = Interlude.GAME_CONTAINER.getHeight();
-        Pair<Float,Float> actualPosition = Reflection.getPosition(Orientation.getPosition( fractionX, fractionY ));
+        Pair<Float,Float> actualPosition = Orientation.getPosition( fractionX, fractionY );
         float actualFractionX = actualPosition.getLeft();
         float actualFractionY = actualPosition.getRight();
         int centerX = (int) (actualFractionX * containerWidth);

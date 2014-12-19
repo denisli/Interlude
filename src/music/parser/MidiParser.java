@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MetaMessage;
 import javax.sound.midi.MidiEvent;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
@@ -89,20 +90,15 @@ public class MidiParser {
                 int value = noteMessage.value();
                 int volume = noteMessage.volume();
                 long tick = noteMessage.tick();
-                if ( noteMessage.on() ) {
-                    if ( noteMessages.isEmpty() ) { break; }
-                    int i = 0;
-                    NoteMessage nextNoteOffMessage = noteMessages.get(i);
-                    while ( nextNoteOffMessage.on() || nextNoteOffMessage.value() != value ) {
-                        i += 1;
-                        nextNoteOffMessage = noteMessages.get(i);
-                    }
-                    NoteMessage noteOffMessage = noteMessages.remove(i);
-                    long offTick = noteOffMessage.tick();
-                    notes.add( new Pair<Long,Note>( tick, new Note( value, (int) (offTick - tick), volume) ) );
-                } else {
-                    noteMessages.remove();
+                int i = 0;
+                NoteMessage nextNoteOffMessage = noteMessages.get(i);
+                while ( nextNoteOffMessage.on() || nextNoteOffMessage.value() != value ) {
+                    i += 1;
+                    nextNoteOffMessage = noteMessages.get(i);
                 }
+                NoteMessage noteOffMessage = noteMessages.remove(i);
+                long offTick = noteOffMessage.tick();
+                notes.add( new Pair<Long,Note>( tick, new Note( value, (int) (offTick - tick), volume) ) );
             }
             programNumberToNotes.put( programNumber, notes );
         }
@@ -142,8 +138,6 @@ public class MidiParser {
                     throw new RuntimeException("Something is wrong here...");
                 }
                 
-                for ( MusicElement note1 : simultaneousNotes ) { System.out.println(note1); }
-                
                 oldTick = tick;
                 
                 i++;
@@ -152,5 +146,49 @@ public class MidiParser {
         }
         
         return new Music( file.getName(), voices );
+    }
+    
+    public static void main(String[] args) throws InvalidMidiDataException, IOException {
+        Sequence sequence = MidiSystem.getSequence(new File("suzumiya-haruhi-no-yuuutsu-bouken-desho-desho.mid"));
+
+        int trackNumber = 0;
+        Track[] tracks = sequence.getTracks();
+        //System.out.println("Number of tracks: " + tracks.length);
+        for (Track track :  tracks) {
+            trackNumber++;
+            System.out.println("Track " + trackNumber + ": size = " + track.size());
+            System.out.println();
+            for (int i=0; i < track.size(); i++) { 
+                MidiEvent event = track.get(i);
+                System.out.print("@" + event.getTick() + " ");
+                MidiMessage message = event.getMessage();
+                if (message instanceof ShortMessage) {
+                    ShortMessage sm = (ShortMessage) message;
+                    System.out.print("Channel: " + sm.getChannel() + " ");
+                    if (sm.getCommand() == ShortMessage.NOTE_ON) {
+                        int key = sm.getData1();
+                        int octave = (key / 12)-1;
+                        int note = key % 12;
+                        String noteName = NOTE_NAMES[note];
+                        int velocity = sm.getData2();
+                        System.out.println("Note on, " + noteName + octave + " key=" + key + " velocity: " + velocity);
+                    } else if (sm.getCommand() == ShortMessage.NOTE_OFF) {
+                        int key = sm.getData1();
+                        int octave = (key / 12)-1;
+                        int note = key % 12;
+                        String noteName = NOTE_NAMES[note];
+                        int velocity = sm.getData2();
+                        System.out.println("Note off, " + noteName + octave + " key=" + key + " velocity: " + velocity);
+                    } else {
+                        System.out.println("Command:" + sm.getCommand());
+                    }
+                } else {
+                    MetaMessage mm = (MetaMessage) message;
+                    System.out.println("Type: " + mm.getType() + ", Data: " + mm.getData().length );
+                }
+            }
+
+            System.out.println();
+        }
     }
 }
