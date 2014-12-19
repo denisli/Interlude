@@ -8,12 +8,10 @@ import game.Orientation;
 import game.Reflection;
 import game.SimpleFont;
 import game.VoiceType;
-import game.buttons.Button;
 import music.Note;
 import music.Simultaneous;
 
 import org.newdawn.slick.Color;
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
@@ -24,7 +22,6 @@ import util.Pair;
 public class NoteMarker {
     private static final int NUM_LETTERS = 8; // number of letters to represent sound elements
     private final int note;
-    private Runnable effect = (Runnable) () -> {};
     private final VoiceType voiceType;
     private float fractionX;
     private float fractionY;

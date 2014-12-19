@@ -1,21 +1,13 @@
 package game.buttons;
 
-import game.InterludeGame;
 import game.scenes.Scene;
 import game.scenes.SceneManager;
 
-import java.awt.Font;
 
-import music.Music;
 import music.MusicFile;
 
-import org.newdawn.slick.Color;
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
-import org.newdawn.slick.UnicodeFont;
-import org.newdawn.slick.geom.Rectangle;
 
 public class SongSelectionButton implements Button {
     private final MusicFile musicFile;

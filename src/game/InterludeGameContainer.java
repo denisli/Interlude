@@ -3,9 +3,7 @@ package game;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
-import org.lwjgl.opengl.Display;
 import org.newdawn.slick.AppGameContainer;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 

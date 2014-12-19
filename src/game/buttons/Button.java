@@ -1,18 +1,11 @@
 package game.buttons;
 
-import game.Controls;
-import game.VoiceType;
-import game.InterludeGame;
 import game.Renderable;
 import game.scenes.Scene;
 import game.scenes.SceneManager;
-import music.Music;
 import music.MusicFile;
 
-import org.newdawn.slick.GameContainer;
-import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.geom.Rectangle;
 
 public interface Button extends Renderable {
     public static Button playButton(float fractionX, float fractionY) {

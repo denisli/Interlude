@@ -23,8 +23,6 @@ public class Orientation {
         float shiftedY = fractionY - 0.5f;
         float cosine = (float) Math.cos( currentAngle );
         float sine = (float) Math.sin( currentAngle );
-        System.out.println(currentAngle);
-        System.out.println(cosine + ", " + sine);
         float newFractionX = (float) ( cosine * shiftedX + sine * shiftedY ) + 0.5f;
         float newFractionY = (float) ( -sine * shiftedX + cosine * shiftedY ) + 0.5f;
         

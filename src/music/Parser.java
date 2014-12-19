@@ -102,7 +102,7 @@ public class Parser {
                                                    " is not valid!");
             }
         }
-        return new Voice(sequence, instrument, voiceType);
+        return new TextVoice(sequence, instrument, voiceType);
     }
     
     private static Rest parseRest(String rest, int tempo) {

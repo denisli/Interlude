@@ -1,10 +1,8 @@
 package game.scenes;
 
 import music.Music;
-import game.Controls;
 import game.pop_ups.PopUp;
 
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 
 public interface Scene {

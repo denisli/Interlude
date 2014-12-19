@@ -3,11 +3,7 @@ package music;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import javax.sound.midi.MidiChannel;
 
 /**
  * Note is an immutable class representing a musical note.
@@ -157,6 +153,10 @@ public class Note implements SoundElement {
     
     public int letter() {
         return name;
+    }
+    
+    public int octave() {
+        return octave;
     }
     
     public int pitch() {

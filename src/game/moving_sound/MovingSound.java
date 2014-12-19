@@ -5,12 +5,9 @@ import game.Orientation;
 import game.Reflection;
 import game.VoiceType;
 import game.Renderable;
-import music.Note;
-import music.Simultaneous;
 import music.SoundElement;
 
 import org.newdawn.slick.Color;
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 
 import util.Pair;

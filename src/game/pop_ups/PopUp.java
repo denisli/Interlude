@@ -4,9 +4,6 @@ import game.Renderable;
 import game.VoiceType;
 import game.scenes.Scene;
 
-import org.newdawn.slick.Graphics;
-import org.newdawn.slick.KeyListener;
-
 /**
  * PopUp represents a pop up in scene, but was not part of the scene. In other words, it is a large element 
  * that shows up on the scene due to some stimulus.

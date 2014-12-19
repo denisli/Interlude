@@ -1,16 +1,13 @@
 package game.scenes;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import game.Interlude;
-import game.InterludeGame;
 import game.buttons.Button;
 import game.labels.Label;
 import game.pop_ups.PopUp;
 
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 

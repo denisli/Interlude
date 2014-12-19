@@ -2,12 +2,10 @@ package game.scenes;
 
 import java.awt.Font;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import music.Note;
 import game.VoiceType;
-import game.Interlude;
 import game.Renderable;
 import game.SimpleFont;
 import game.buttons.Button;
@@ -15,9 +13,7 @@ import game.labels.Label;
 import game.pop_ups.PopUp;
 
 import org.newdawn.slick.Color;
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
 import org.newdawn.slick.UnicodeFont;
 
 public class ChangeControls implements Scene {

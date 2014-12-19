@@ -1,28 +1,21 @@
 package game.scenes;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import game.Controls;
 import game.Interlude;
-import game.InterludeGame;
 import game.buttons.Button;
 import game.pop_ups.PopUp;
-import music.Instrument;
-import music.Music;
 import music.MusicFile;
-import music.Note;
-import music.Parser;
 
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
 public class SongSelectionPage implements Scene {
-    private final String[] songTitles = new String[] { "res/new_music3.txt", "res/music2.txt" };
+    private final String[] songTitles = new String[] { "res/new_music3.txt", "res/music2.txt", "God Knows....mid",
+            "res/new_music4.txt", "res/combined.txt"};
     private List<Button> buttons = new ArrayList<Button>(Arrays.asList(Button.backButton(0.9f, 0.1f)));
     
     @Override

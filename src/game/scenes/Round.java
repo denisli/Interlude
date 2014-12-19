@@ -19,17 +19,14 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
 import util.Pair;
-import music.Instrument;
 import music.Music;
 import music.MusicElement;
 import music.Simultaneous;
 import music.SoundElement;
-import music.Rest;
 import music.Note;
 import music.Voice;
 
@@ -44,8 +41,6 @@ public class Round implements Scene {
     private final Map<VoiceType, Voice> voices = new HashMap<VoiceType, Voice>();
     private final Map<VoiceType,Integer> restingTimes = new HashMap<VoiceType,Integer>();
     
-    private int orientation;
-    
     public Round(Music music) {
         this.music = music;
         this.isMultiVoice = music.isMultiVoice();
@@ -57,8 +52,6 @@ public class Round implements Scene {
             restingTimes.put(voiceType, initialDelay);
             notesOnScreen.put(voiceType, new LinkedList<MovingSound>());
         }
-        
-        this.orientation = 180;
     }
     
     @Override
@@ -91,6 +84,10 @@ public class Round implements Scene {
             Reflection.verticallyMirror();
         } else if ( input.isKeyPressed(Input.KEY_DOWN) ) {
             Reflection.horizontallyMirror();
+        }
+        
+        for ( Button button : buttons ) {
+            button.update(t);
         }
         
         for ( Pair<Integer,VoiceType> pair : noteMarkers.keySet() ) {
@@ -134,6 +131,7 @@ public class Round implements Scene {
                         if (!voice.ended()) {
                             restingTime = voice.timeUntilNextElement();
                             restingTimes.put(voiceType, restingTime);
+                            System.out.println(restingTime);
                         }
                     }
                 }
@@ -155,7 +153,7 @@ public class Round implements Scene {
         
         for ( VoiceType voiceType : voiceTypes ) {
             for ( int key : Controls.noteKeys( voiceType ) ) {
-                if ( input.isKeyPressed(key) ) {
+                //if ( input.isKeyPressed(key) ) {
                     Queue<MovingSound> notesOnScreenOfVoice = notesOnScreen.get(voiceType);
                     if ( !notesOnScreenOfVoice.isEmpty() ) {
                         int letter = Controls.correspondingNote(key, voiceType );
@@ -164,7 +162,7 @@ public class Round implements Scene {
                         SoundElement correspondingSoundElement = soundElement.correspondingSoundElement(letter);
                         soundElement.bePlayed(voices.get(voiceType).instrument());
                     }
-                }
+                //}
             }
         }
     }
@@ -179,6 +177,8 @@ public class Round implements Scene {
                 noteMarkers.put( new Pair<Integer,VoiceType>(note,voiceType), noteMarker );
             }
         }
+        
+        buttons.add( Button.backButton(0.95f, 0.05f));
     }
     
     public Music music() {
@@ -198,7 +198,7 @@ public class Round implements Scene {
     @Override
     public Scene parentScene() {
         // TODO Auto-generated method stub
-        return null;
+        return Scene.songSelection();
     }
 
     @Override

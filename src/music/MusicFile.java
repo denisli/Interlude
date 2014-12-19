@@ -3,6 +3,8 @@ package music;
 import java.io.File;
 import java.io.FileNotFoundException;
 
+import music.parser.MidiParser;
+
 public class MusicFile {
     private final String musicTitle;
     private final File musicFile;
@@ -18,5 +20,6 @@ public class MusicFile {
     
     public Music getMusic() throws FileNotFoundException {
         return Parser.fileToMusic( musicFile );
+        //return MidiParserThing.parse( musicFile, 0 );
     }
 }

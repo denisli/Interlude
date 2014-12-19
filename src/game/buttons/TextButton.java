@@ -1,14 +1,11 @@
 package game.buttons;
 
 import game.Interlude;
-import game.InterludeGame;
 import game.SimpleFont;
 
 import java.awt.Font;
-import java.util.function.Function;
 
 import org.newdawn.slick.Color;
-import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
