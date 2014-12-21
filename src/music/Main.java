@@ -5,12 +5,19 @@ import java.util.List;
 
 public class Main {
     
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         System.out.println("YO");
         Instrument piano = Instrument.piano();
-        Note note = new Note( Note.G, Note.QUARTER_NOTE, 6, Note.SHARP, 127, 60 );
+        Note note = new Note( 88+12, 1000, 127 );
+        
         List<MusicElement> musicElements = Arrays.asList(note);
         Simultaneous simultaneous = new Simultaneous ( musicElements );
+        simultaneous.bePlayed(piano);
+        Thread.sleep(500);
+        simultaneous.bePlayed(piano);
+        Thread.sleep(500);
+        simultaneous.bePlayed(piano);
+        Thread.sleep(500);
         simultaneous.bePlayed(piano);
     }
 }

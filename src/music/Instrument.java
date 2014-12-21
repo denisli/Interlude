@@ -13,6 +13,8 @@ public interface Instrument {
         }
     }
     
+    public void update(int t);
+    
     public void play(Rest rest);
     
     public void play(Note note);

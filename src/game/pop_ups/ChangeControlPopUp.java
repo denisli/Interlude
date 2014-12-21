@@ -8,6 +8,7 @@ import game.SimpleFont;
 import game.VoiceType;
 import game.labels.Label;
 import game.scenes.Scene;
+import game.scenes.SceneManager;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -19,11 +20,10 @@ public class ChangeControlPopUp extends PopUp implements KeyListener {
     private final VoiceType voiceType;
     private boolean keyPressed = false;
     private int pressedKey;
-    private final Label instructionLabel = new Label("Press the button you want to change control to", 0.5f, 0.5f, Color.black,
+    private final Label instructionLabel = Label.label("Press the button you want to change control to", 0.5f, 0.5f, Color.black,
             SimpleFont.retrieve( "Arial", Font.PLAIN, 18) );
     
-    public ChangeControlPopUp( int note, VoiceType voiceType, Scene scene ) {
-        super( scene );
+    public ChangeControlPopUp( int note, VoiceType voiceType ) {
         this.note = note;
         this.voiceType = voiceType;
     }
@@ -48,7 +48,7 @@ public class ChangeControlPopUp extends PopUp implements KeyListener {
             if ( !input.isKeyPressed(pressedKey) ) {
                 Controls.setKey( note, voiceType, pressedKey );
                 Interlude.GAME_CONTAINER.getInput().removeKeyListener(this);
-                this.remove( scene() );
+                this.remove( SceneManager.currentScene() );
             }
         }
     }

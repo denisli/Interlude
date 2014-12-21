@@ -69,16 +69,6 @@ public class Instructions implements Scene {
         // TODO Auto-generated method stub
         return Scene.mainMenu();
     }
-    
-    @Override
-    public void fireActivatedButtons() {
-        Input input = Interlude.GAME_CONTAINER.getInput();
-        for (Button button : buttons) {
-            if (button.isClicked(input)) {
-                button.callEffect();
-            }
-        }
-    }
 
     @Override
     public void addPopUp(PopUp popUp) {

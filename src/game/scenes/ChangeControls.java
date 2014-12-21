@@ -65,7 +65,7 @@ public class ChangeControls implements Scene {
             renderables.add(
                 Button.textButton( noteLetter, singleVoiceX, singleVoiceInitialY + i * yIncrement, 
                     (Runnable) () -> {
-                        PopUp popUp = PopUp.changeControl( Note.toLetter(noteLetter), VoiceType.SINGLE, ChangeControls.this );
+                        PopUp popUp = PopUp.changeControl( Note.toLetter(noteLetter), VoiceType.SINGLE );
                         popUp.addOn( ChangeControls.this );
                     }
                 )
@@ -79,7 +79,7 @@ public class ChangeControls implements Scene {
             renderables.add(
                 Button.textButton( noteLetter, doubleVoiceLeftX, doubleVoiceInitialY + i * yIncrement, 
                     (Runnable) () -> {
-                        PopUp popUp = PopUp.changeControl( Note.toLetter(noteLetter), VoiceType.LEFT, ChangeControls.this );
+                        PopUp popUp = PopUp.changeControl( Note.toLetter(noteLetter), VoiceType.LEFT );
                         popUp.addOn( ChangeControls.this );
                     }
                 )
@@ -92,7 +92,7 @@ public class ChangeControls implements Scene {
             renderables.add(
                 Button.textButton( noteLetter, doubleVoiceRightX, doubleVoiceInitialY + i * yIncrement, 
                     (Runnable) () -> {
-                        PopUp popUp = PopUp.changeControl( Note.toLetter(noteLetter), VoiceType.RIGHT, ChangeControls.this );
+                        PopUp popUp = PopUp.changeControl( Note.toLetter(noteLetter), VoiceType.RIGHT );
                         popUp.addOn( ChangeControls.this );
                     }
                 )
@@ -102,12 +102,12 @@ public class ChangeControls implements Scene {
         renderables.add(Button.backButton(0.9f,  0.1f));
         // secondary section labels
         UnicodeFont secondaryFont = SimpleFont.retrieve("Arial", Font.PLAIN, 32);
-        renderables.add( new Label("Single Voice Controls", 0.25f, 0.2f, Color.cyan, secondaryFont ) );
-        renderables.add( new Label("Double Voice Controls", 0.75f, 0.2f, Color.cyan, secondaryFont ) );
+        renderables.add( Label.label("Single Voice Controls", 0.25f, 0.2f, Color.cyan, secondaryFont ) );
+        renderables.add( Label.label("Double Voice Controls", 0.75f, 0.2f, Color.cyan, secondaryFont ) );
         // tertiary section labels
         UnicodeFont tertiaryFont = SimpleFont.retrieve("Arial", Font.PLAIN, 24);
-        renderables.add( new Label("Left", 2f/3, 0.25f, Color.blue, tertiaryFont ) );
-        renderables.add( new Label("Right", 5f/6, 0.25f, Color.blue, tertiaryFont ) );
+        renderables.add( Label.label("Left", 2f/3, 0.25f, Color.blue, tertiaryFont ) );
+        renderables.add( Label.label("Right", 5f/6, 0.25f, Color.blue, tertiaryFont ) );
         
         // initialize all renderables
         for ( Renderable renderable : renderables ) {
@@ -119,11 +119,6 @@ public class ChangeControls implements Scene {
     public Scene parentScene() {
         // TODO Auto-generated method stub
         return Scene.mainMenu();
-    }
-    
-    @Override
-    public void fireActivatedButtons() {
-        return;
     }
 
     @Override

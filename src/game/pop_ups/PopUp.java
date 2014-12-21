@@ -9,20 +9,11 @@ import game.scenes.Scene;
  * that shows up on the scene due to some stimulus.
  */
 public abstract class PopUp implements Renderable {
-    private final Scene scene;
-    
-    public PopUp( Scene scene ) {
-        this.scene = scene;
-    }
-    
-    public static PopUp changeControl( int note, VoiceType voiceType, Scene scene ) {
-        PopUp popUp = new ChangeControlPopUp( note, voiceType, scene );
+
+    public static PopUp changeControl( int note, VoiceType voiceType ) {
+        PopUp popUp = new ChangeControlPopUp( note, voiceType );
         popUp.init();
         return popUp;
-    }
-    
-    public Scene scene() {
-        return scene;
     }
     
     public void remove(Scene scene) {

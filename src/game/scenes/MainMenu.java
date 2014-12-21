@@ -40,12 +40,7 @@ public class MainMenu implements Scene {
     
     @Override
     public void init() {
-        for (Button button : buttons) {
-            button.init();
-        }
-        for (Label label : labels) {
-            label.init();
-        }
+        
     }
 
     @Override
@@ -58,16 +53,6 @@ public class MainMenu implements Scene {
     public Scene parentScene() {
         // TODO Auto-generated method stub
         throw new RuntimeException("Main menu has no parent scene!");
-    }
-    
-    @Override
-    public void fireActivatedButtons() {
-        Input input = Interlude.GAME_CONTAINER.getInput();
-        for (Button button : buttons) {
-            if (button.isClicked(input)) {
-                button.callEffect();
-            }
-        }
     }
 
     @Override

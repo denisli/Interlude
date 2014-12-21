@@ -40,6 +40,14 @@ public interface Button extends Renderable {
         return button;
     }
     
+    public static Button startConnectionButton(float fractionX, float fractionY) {
+        Button button = new TextButton("Start Connection", fractionX, fractionY, (Runnable) () -> {
+            throw new RuntimeException("Ah, need to implement this!");
+        });
+        button.init();
+        return button;
+    }
+    
     public static Button textButton(String text, float fractionX, float fractionY, Runnable effect) {
         return new TextButton( text, fractionX, fractionY, effect );
     }

@@ -4,12 +4,15 @@ import game.VoiceType;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MetaMessage;
@@ -17,10 +20,12 @@ import javax.sound.midi.MidiEvent;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Sequence;
+import javax.sound.midi.Sequencer;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Track;
 
 import util.Pair;
+import util.Triple;
 import music.GeneralInstrument;
 import music.MidiVoice;
 import music.Music;
@@ -30,6 +35,8 @@ import music.Simultaneous;
 import music.Voice;
 
 public class MidiParser {
+    private static final int SET_TEMPO = 0x51;
+    private static final int TIME_SIGNATURE = 0x58;
     public static final String[] NOTE_NAMES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
     
     public static Music parse(File file, int splittingOctave) {
@@ -39,30 +46,66 @@ public class MidiParser {
         //      3. put in sound elements into the a sorted list (by tick time)
         //         and also put in time between elements into a list (sorted by the order in which they occur)
         
+        // step 0. sort every midievent by tick time.
+        PriorityQueue<MidiEvent> midiEvents = new PriorityQueue<MidiEvent>(new Comparator<MidiEvent>() {
+            @Override
+            public int compare(MidiEvent event, MidiEvent otherEvent) {
+                long eventTick = event.getTick();
+                long otherEventTick = otherEvent.getTick();
+                int tickDifference = (int) (eventTick - otherEventTick);
+                if ( tickDifference != 0 ) {
+                    return tickDifference;
+                } else {
+                    MidiMessage message = event.getMessage();
+                    if ( message instanceof MetaMessage ) { // the only meta mesage we care about now is 81.
+                        return 1;
+                    } else {
+                        return -1;
+                    }
+                }
+            }
+        });
+        int ticksPerQuarterNote = 0;
+        try {
+            Sequence sequence = MidiSystem.getSequence( file );
+            ticksPerQuarterNote = sequence.getResolution();
+            
+            for (Track track : sequence.getTracks()) {
+                for ( int i=0; i < track.size(); i++) {
+                    MidiEvent event = track.get(i);
+                    midiEvents.add(event);
+                }
+            }
+        } catch ( IOException | InvalidMidiDataException e ) {
+            e.printStackTrace();
+        }
+        
         // step 1.
         Map<Integer,LinkedList<NoteMessage>> programNumberToNoteMessages = new HashMap<Integer,LinkedList<NoteMessage>>();
         int currentProgramNumber = 1000; // dummy number for initial program number
         
-        try {
-            Sequence sequence = MidiSystem.getSequence( file );
-            for (Track track : sequence.getTracks()) {
-                for ( int i=0; i < track.size(); i++ ) {
-                    MidiEvent event = track.get(i);
+        double millisecondsPerTick = 500.0 / 24;
+        
+        while ( ! midiEvents.isEmpty() ) {
+                    MidiEvent event = midiEvents.poll();
                     long tick = event.getTick();
+                    
                     MidiMessage message = event.getMessage();
                     if ( message instanceof ShortMessage ) {
                         ShortMessage sm = (ShortMessage) message;
-                        if ( sm.getCommand() == ShortMessage.NOTE_ON ) {
+                        int command = sm.getCommand();
+                        if ( command == ShortMessage.NOTE_ON ) {
                             List<NoteMessage> noteMessages = programNumberToNoteMessages.get( currentProgramNumber );
+                            if (millisecondsPerTick < 4) System.out.println(millisecondsPerTick);
                             if ( sm.getData2() != 0 ) { 
-                                noteMessages.add( new NoteMessage( tick, sm.getData1(), sm.getData2(), true ) );
+                                noteMessages.add( new NoteMessage( tick, sm.getData1()+12, millisecondsPerTick, sm.getData2(), true ) );
                             } else {
-                                noteMessages.add( new NoteMessage( tick, sm.getData1(), sm.getData2(), false ) );
+                                noteMessages.add( new NoteMessage( tick, sm.getData1()+12, millisecondsPerTick, sm.getData2(), false ) );
                             }
-                        } else if ( sm.getCommand() == ShortMessage.NOTE_OFF ) {
+                        } else if ( command == ShortMessage.NOTE_OFF ) {
                             List<NoteMessage> noteMessages = programNumberToNoteMessages.get( currentProgramNumber );
-                            noteMessages.add( new NoteMessage( tick, sm.getData1(), sm.getData2(), false ) );
-                        } else if ( sm.getCommand() == ShortMessage.PROGRAM_CHANGE ) {
+                            noteMessages.add( new NoteMessage( tick, sm.getData1()+12, millisecondsPerTick, sm.getData2(), false ) );
+                        } else if ( command == ShortMessage.PROGRAM_CHANGE ) {
                             currentProgramNumber = sm.getData1();
                             if ( !programNumberToNoteMessages.containsKey(currentProgramNumber) ) {
                                 programNumberToNoteMessages.put( currentProgramNumber, new LinkedList<NoteMessage>() );
@@ -70,24 +113,35 @@ public class MidiParser {
                         } else {
                             continue; // just ignore the message if it doesn't relate to the note or instrument
                         }
+                    } else if ( message instanceof MetaMessage ){
+                        MetaMessage mm = (MetaMessage) message;
+                        int type = mm.getType();
+                        if ( type == SET_TEMPO ) {
+                            byte[] bytes = mm.getMessage();
+                            int MPQNByte1 = bytes[3] & 0xFF;
+                            int MPQNByte2 = bytes[4] & 0xFF;
+                            int MPQNByte3 = bytes[5] & 0xFF;
+                            
+                            int microsecondsPerQuarterNote = MPQNByte1 * 0xFF * 0xFF + MPQNByte2 * 0xFF + MPQNByte3; 
+                            millisecondsPerTick = microsecondsPerQuarterNote / (ticksPerQuarterNote * 1000.0);
+                        } else if ( type == TIME_SIGNATURE ) {
+                            // ticks per metronome click
+                        }
                     }
-                }
-            }
-        } catch ( IOException | InvalidMidiDataException e ) {
-            e.printStackTrace();
         }
         
         // step 2.
-        Map<Integer,LinkedList<Pair<Long,Note>>> programNumberToNotes = new HashMap<Integer,LinkedList<Pair<Long,Note>>>();
+        Map<Integer,LinkedList<Triple<Long,Double,Note>>> programNumberToNotes = new HashMap<Integer,LinkedList<Triple<Long,Double,Note>>>();
         for ( int programNumber : programNumberToNoteMessages.keySet() ) {
             LinkedList<NoteMessage> noteMessages = programNumberToNoteMessages.get(programNumber);
             Collections.sort(noteMessages);
             
-            LinkedList<Pair<Long,Note>> notes = new LinkedList<Pair<Long,Note>>();
+            LinkedList<Triple<Long,Double,Note>> notes = new LinkedList<Triple<Long,Double,Note>>();
             
             while ( !noteMessages.isEmpty() ) {
                 NoteMessage noteMessage = noteMessages.remove();
                 int value = noteMessage.value();
+                millisecondsPerTick = noteMessage.millisecondsPerTick();
                 int volume = noteMessage.volume();
                 long tick = noteMessage.tick();
                 int i = 0;
@@ -98,7 +152,8 @@ public class MidiParser {
                 }
                 NoteMessage noteOffMessage = noteMessages.remove(i);
                 long offTick = noteOffMessage.tick();
-                notes.add( new Pair<Long,Note>( tick, new Note( value, (int) (offTick - tick), volume) ) );
+                int duration = (int) ( (offTick - tick) * millisecondsPerTick );
+                notes.add( new Triple<Long,Double,Note>( tick, millisecondsPerTick, new Note( value, duration, volume) ) );
             }
             programNumberToNotes.put( programNumber, notes );
         }
@@ -110,21 +165,22 @@ public class MidiParser {
             long oldTick = 0; // arbitrary starting value with no meaning
             List<Integer> timesUntilNextElement = new ArrayList<Integer>();
             List<MusicElement> musicElements = new ArrayList<MusicElement>();
-            LinkedList<Pair<Long,Note>> notes = programNumberToNotes.get(programNumber);
+            LinkedList<Triple<Long,Double,Note>> notes = programNumberToNotes.get(programNumber);
             while ( !notes.isEmpty() ) {
                 List<MusicElement> simultaneousNotes = new ArrayList<MusicElement>();
-                Pair<Long,Note> pair = notes.remove();
-                long tick = pair.getLeft();
+                Triple<Long,Double,Note> triple = notes.remove();
+                long tick = triple.getLeft();
+                millisecondsPerTick = triple.getMiddle();
                 if ( i != 0 ) {
-                    timesUntilNextElement.add( (int) (tick - oldTick) );
+                    timesUntilNextElement.add( (int) ((tick - oldTick) * millisecondsPerTick) );
                 }
-                Note note = pair.getRight();
+                Note note = triple.getRight();
                 simultaneousNotes.add(note);
                 while ( !notes.isEmpty() ) {
-                    Pair<Long,Note> nextPair = notes.peek();
-                    if ( nextPair.getLeft() == tick ) {
+                    Triple<Long,Double,Note> nextTriple = notes.peek();
+                    if ( nextTriple.getLeft() == tick ) {
                         notes.remove();
-                        Note simultaneousNote = nextPair.getRight();
+                        Note simultaneousNote = nextTriple.getRight();
                         simultaneousNotes.add( simultaneousNote );
                     } else {
                         break;
@@ -148,10 +204,16 @@ public class MidiParser {
         return new Music( file.getName(), voices );
     }
     
-    public static void main(String[] args) throws InvalidMidiDataException, IOException {
-        Sequence sequence = MidiSystem.getSequence(new File("suzumiya-haruhi-no-yuuutsu-bouken-desho-desho.mid"));
+    private static final String desho = "suzumiya-haruhi-no-yuuutsu-bouken-desho-desho.mid";
+    private static final String god = "God Knows....mid";
+    
+    public static void test1() throws InvalidMidiDataException, IOException {
+        
+                
+        Sequence sequence = MidiSystem.getSequence(new File(desho));
 
         int trackNumber = 0;
+        System.out.println("Division Type: " + sequence.getDivisionType() + ", Resolution: " + sequence.getResolution());
         Track[] tracks = sequence.getTracks();
         //System.out.println("Number of tracks: " + tracks.length);
         for (Track track :  tracks) {
@@ -161,6 +223,7 @@ public class MidiParser {
             for (int i=0; i < track.size(); i++) { 
                 MidiEvent event = track.get(i);
                 System.out.print("@" + event.getTick() + " ");
+                if (event.getTick() > 10000) { continue; }
                 MidiMessage message = event.getMessage();
                 if (message instanceof ShortMessage) {
                     ShortMessage sm = (ShortMessage) message;
@@ -182,7 +245,7 @@ public class MidiParser {
                     } else {
                         System.out.println("Command:" + sm.getCommand());
                     }
-                } else {
+                } else if ( message instanceof MetaMessage ) {
                     MetaMessage mm = (MetaMessage) message;
                     System.out.println("Type: " + mm.getType() + ", Data: " + mm.getData().length );
                 }
@@ -190,5 +253,38 @@ public class MidiParser {
 
             System.out.println();
         }
+    }
+    
+    public static void test2() {
+        Sequencer sequencer = null;
+        try {
+            sequencer = MidiSystem.getSequencer();
+            sequencer.setSequence(MidiSystem.getSequence(new File(god)));
+            sequencer.open();
+            sequencer.start();
+            while(true) {
+                if(sequencer.isRunning()) {
+                    System.out.println(sequencer.getTickPosition());
+                    try {
+                        Thread.sleep(30); // Check every second
+                    } catch(InterruptedException ignore) {
+                        break;
+                    }
+                } else {
+                    break;
+                }
+            }
+
+        } catch(Exception e) {
+                System.out.println(e.toString());
+        } finally {
+            // Close resources
+            sequencer.stop();
+            sequencer.close();
+        }
+    }
+    
+    public static void main(String[] args) throws InvalidMidiDataException, IOException {
+        test1();
     }
 }

@@ -1,14 +1,23 @@
 package music;
 
+import java.util.Comparator;
+import java.util.PriorityQueue;
+import java.util.Queue;
+
 import javax.sound.midi.MidiChannel;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Synthesizer;
 
+import util.Triple;
+
 public class GeneralInstrument implements Instrument {
-    MidiChannel generalInstrument;
-    MidiChannel otherGeneralInstrument;
-    MidiChannel currentPlayer;
+    private OffTimesComparator comparator = new OffTimesComparator();
+    private PriorityQueue<Triple<Long,Integer,Integer>> offTimes = new PriorityQueue<Triple<Long,Integer,Integer>>(comparator);
+    private MidiChannel[] generalInstruments;
+    private MidiChannel currentPlayer;
+    private int idx = 0;
+    private long currentTime = 0;
     
     public GeneralInstrument( int programNumber ) {
         try {
@@ -18,61 +27,88 @@ public class GeneralInstrument implements Instrument {
             MidiChannel[] channels = synth.getChannels();
             channels[0].programChange( instruments[programNumber].getPatch().getProgram() );
             channels[1].programChange( instruments[programNumber].getPatch().getProgram() );
-            this.generalInstrument = channels[0];
-            this.otherGeneralInstrument = channels[1];
+            generalInstruments = channels;
+            currentPlayer = generalInstruments[0];
         } catch (MidiUnavailableException mue) {
             mue.printStackTrace();
+        }
+    }
+    
+    @Override
+    public void update(int t) {
+        currentTime += t;
+        while ( !offTimes.isEmpty() ) {
+            if ( currentTime >= offTimes.peek().getLeft() ) {
+                Triple<Long,Integer,Integer> pair = offTimes.poll();
+                int channelIdx = pair.getMiddle();
+                int pitch = pair.getRight();
+                generalInstruments[channelIdx].noteOff(pitch);
+            } else {
+                break;
+            }
+        }
+    }
+    
+    @Override
+    public void play(Note note) {
+        currentPlayer = generalInstruments[idx];
+        int pitch = note.pitch();
+        int volume = note.volume();
+        int duration = note.duration();
+        currentPlayer.noteOn( pitch, volume );
+        offTimes.add( new Triple<Long,Integer,Integer>( currentTime + duration, idx, pitch ) );
+        idx = ( idx + 1 ) % 8;
+    }
+    
+    @Override
+    public void play(Simultaneous simultaneous) {
+        for ( MusicElement musicElement : simultaneous.musicElements() ) {
+            musicElement.bePlayed( this );
         }
     }
 
     @Override
     public void play(Rest rest) {
-        // TODO Auto-generated method stub
         return;
     }
+    
 
-    @Override
-    public void play(Note note) {
-        // TODO Auto-generated method stub
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    if ( currentPlayer == generalInstrument ) {
-                        currentPlayer = otherGeneralInstrument;
-                    } else {
-                        currentPlayer = generalInstrument;
-                    }
-                    int pitch = note.pitch();
-                    int volume = note.volume();
-                    int duration = note.duration();
-                    currentPlayer.noteOn( pitch, volume );
-                    Thread.sleep( duration );
-                    currentPlayer.noteOff( pitch );
-                    
-                } catch (InterruptedException ie) {
-                    ie.printStackTrace();
-                }
-            }
-        }).start();
-    }
-
-    @Override
-    public void play(Simultaneous simultaneous) {
-        // TODO Auto-generated method stub
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                for (MusicElement element : simultaneous.musicElements()) {
-                    if ( element.isRest() ) {
-                        play( (Rest) element );
-                    } else {
-                        play( (Note) element );
-                    }
-                }
-            }
-         }).start();
-    }
+//    @Override
+//    public void play(Note note) {
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//                    currentPlayer = generalInstruments[idx];
+//                    idx++;
+//                    idx = idx % 8;
+//                    int pitch = note.pitch();
+//                    int volume = note.volume();
+//                    int duration = note.duration();
+//                    currentPlayer.noteOn( pitch, volume );
+//                    Thread.sleep( duration );
+//                    currentPlayer.noteOff( pitch );
+//                    
+//                } catch (InterruptedException ie) {
+//                    ie.printStackTrace();
+//                }
+//            }
+//        }).start();
+//    }
+//
+//    @Override
+//    public void play(Simultaneous simultaneous) {
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                for (MusicElement element : simultaneous.musicElements()) {
+//                    if ( !element.isRest() ) {
+//                        play( (Note) element );
+//                    }
+//                }
+//            }
+//         }).start();
+//    }
 
     @Override
     public String getInstrumentName() {

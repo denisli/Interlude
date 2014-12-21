@@ -25,13 +25,21 @@ public class Label implements Renderable {
         this.font = font;
     }
     
+    public static Label label(String text, float fractionX, float fractionY, Color color, UnicodeFont font) {
+        Label label = new Label( text, fractionX, fractionY, color, font );
+        label.init();
+        return label;
+    }
+    
     public static Label interludeLabel() {
         String text = "Interlude";
         float fractionX = 0.5f;
         float fractionY = 0.15f;
         Color color = Color.gray;
         UnicodeFont font = SimpleFont.retrieve( "Arial", Font.PLAIN, 54 );
-        return new Label( text, fractionX, fractionY, color, font );
+        Label label = new Label( text, fractionX, fractionY, color, font );
+        label.init();
+        return label;
     }
 
     @Override

@@ -19,7 +19,7 @@ public class MusicFile {
     }
     
     public Music getMusic() throws FileNotFoundException {
-        return Parser.fileToMusic( musicFile );
-        //return MidiParser.parse( musicFile, 0 );
+        //return Parser.fileToMusic( musicFile );
+        return MidiParser.parse( musicFile, 0 );
     }
 }

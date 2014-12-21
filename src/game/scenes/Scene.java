@@ -26,8 +26,6 @@ public interface Scene {
         return new ChangeControls();
     }
     
-    public void fireActivatedButtons();
-    
     public void addPopUp(PopUp popUp);
     
     public void destroyPopUp(PopUp popUp);

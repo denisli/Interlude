@@ -6,6 +6,7 @@ import java.awt.Toolkit;
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
+import org.newdawn.slick.gui.GUIContext;
 
 public class InterludeGameContainer {
     private final InterludeGame interludeGame;
@@ -20,8 +21,10 @@ public class InterludeGameContainer {
         int width = (int) Math.floor( screenSize.getWidth() );
         int height = (int) Math.floor( screenSize.getHeight() );
         app = new AppGameContainer( interludeGame );
-        app.setDisplayMode( width, height, false );
+        app.setDisplayMode( 600, 600, false );
         app.setTargetFrameRate(60);
+        app.setMinimumLogicUpdateInterval( 10 );
+        app.setMaximumLogicUpdateInterval( 30 );
     }
     
     public int getWidth() {
@@ -34,6 +37,10 @@ public class InterludeGameContainer {
     
     public Input getInput() {
         return app.getInput();
+    }
+    
+    public GUIContext context() {
+        return app;
     }
     
     public void start() throws SlickException {
