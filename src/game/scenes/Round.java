@@ -121,7 +121,7 @@ public class Round implements Scene {
                         }
                     } else {
                         SoundElement soundElement = (SoundElement) element;
-                        int soundElementLetter = soundElement.letter();
+                        int soundElementLetter = soundElement.integer();
                         float offScreen = 0.0f;
                         Pair<Integer,VoiceType> pair = new Pair<Integer,VoiceType>(soundElementLetter,voiceType);
                         if ( !isMultiVoice ) { 
@@ -135,8 +135,6 @@ public class Round implements Scene {
                         }
                         if (!voice.ended()) {
                             restingTime = voice.timeUntilNextElement();
-                            //System.out.println(restingTime);
-                            //System.out.println("1: " + new Date().getTime());
                             restingTimes.put(voiceType, restingTime);
                         }
                     }
@@ -164,7 +162,6 @@ public class Round implements Scene {
                         MovingSound movingSound = notesOnScreenOfVoice.remove();
                         SoundElement soundElement = movingSound.soundElement();
                         SoundElement correspondingSoundElement = soundElement.correspondingSoundElement(letter);
-                        //System.out.println("2: " + new Date().getTime());
                         soundElement.bePlayed(instrument);
                     }
                 //}

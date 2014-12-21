@@ -1,7 +1,7 @@
 package music;
 
 public interface SoundElement extends MusicElement {
-    public int letter();
+    public int integer();
     
     public SoundElement correspondingSoundElement( int letter );
 }

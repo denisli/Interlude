@@ -42,7 +42,7 @@ public class Note implements SoundElement {
     public static final int NATURAL = 0;
     public static final int SHARP = 1;
     
-    private final int name;
+    private final int integer;
     private final int duration;
     private final int volume;
     private final int octave;
@@ -59,8 +59,8 @@ public class Note implements SoundElement {
      *                           octave must be an integer between 0 and 10, inclusive
      */
     
-    public Note( int name, float durationType, int octave, int accidental, int volume, int tempo) {
-        this.name = name;
+    public Note( int integer, float durationType, int octave, int accidental, int volume, int tempo) {
+        this.integer = integer;
         this.octave = octave;
         this.accidental = accidental;
         this.volume = volume;
@@ -69,24 +69,24 @@ public class Note implements SoundElement {
         this.duration = (int) Math.floor( standard * durationType / tempo );
     }
     
-    public Note( int name, int octave, int accidental, int duration, int volume ) {
-        this.name = name;
+    public Note( int integer, int octave, int accidental, int duration, int volume ) {
+        this.integer = integer;
         this.octave = octave;
         this.accidental = accidental;
         this.duration = duration;
         this.volume = volume;
     }
     
-    public Note( int key, int duration, int volume ) {
-        int value = key % 12;
-        if ( !NOTES_IN_ALPHABETICAL_ORDER.contains(value) ) {
-            this.name = value - 1;
+    public Note( int value, int duration, int volume ) {
+        int integer = value % 12;
+        if ( !NOTES_IN_ALPHABETICAL_ORDER.contains(integer) ) {
+            this.integer = integer - 1;
             this.accidental = Note.SHARP;
         } else {
-            this.name = value;
+            this.integer = integer;
             this.accidental = Note.NATURAL;
         }
-        this.octave = key / 12 - 1;
+        this.octave = value / 12;
         this.duration = duration;
         this.volume = volume;
     }
@@ -107,29 +107,29 @@ public class Note implements SoundElement {
         return octave -= 1;
     }
     
-    public static String toStringLetter( int letter ) {
-        if ( letter == Note.A ) {
+    public static String toLetter( int integer ) {
+        if ( integer == Note.A ) {
             return "A";
-        } else if ( letter == Note.B ) {
+        } else if ( integer == Note.B ) {
             return "B";
-        } else if ( letter == Note.C ) {
+        } else if ( integer == Note.C ) {
             return "C";
-        } else if ( letter == Note.D ) {
+        } else if ( integer == Note.D ) {
             return "D";
-        } else if ( letter == Note.E ) {
+        } else if ( integer == Note.E ) {
             return "E";
-        } else if ( letter == Note.F ) {
+        } else if ( integer == Note.F ) {
             return "F";
-        } else if ( letter == Note.G ) {
+        } else if ( integer == Note.G ) {
             return "G";
-        } else if ( letter == Simultaneous.S ) {
+        } else if ( integer == Simultaneous.S ) {
             return "S";
         } else {
             throw new IllegalArgumentException("A valid note was not given");
         }
     }
     
-    public static int toLetter( String string ) {
+    public static int toInteger( String string ) {
         if ( string.equals("A") ) {
             return Note.A;
         } else if ( string.equals("B") ) {
@@ -151,8 +151,8 @@ public class Note implements SoundElement {
         }
     }
     
-    public int letter() {
-        return name;
+    public int integer() {
+        return integer;
     }
     
     public int octave() {
@@ -160,7 +160,7 @@ public class Note implements SoundElement {
     }
     
     public int pitch() {
-        return Math.max(0,Math.min(127,name + 12 * octave + accidental)); // bound the answer between 0 and 127
+        return Math.max(0,Math.min(127,integer + 12 * octave + accidental)); // bound the answer between 0 and 127
     }
     
     public int volume() {
@@ -209,7 +209,7 @@ public class Note implements SoundElement {
             return false;
         } else {
             Note otherNote = (Note) other;
-            return this.name == otherNote.name && this.duration == otherNote.duration &&
+            return this.integer == otherNote.integer && this.duration == otherNote.duration &&
                    this.volume == otherNote.volume && this.octave == otherNote.octave &&
                    this.accidental == otherNote.accidental;
         }
@@ -217,11 +217,11 @@ public class Note implements SoundElement {
     
     @Override
     public String toString() {
-        return String.format("Note: %d %d %d %d %d",name,octave,accidental,duration,volume);
+        return String.format("Note: %d %d %d %d %d",integer,octave,accidental,duration,volume);
     }
     
     @Override
     public int hashCode() {
-        return name + volume + duration;
+        return integer + volume + duration;
     }
 }

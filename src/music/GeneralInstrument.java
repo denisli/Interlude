@@ -71,44 +71,6 @@ public class GeneralInstrument implements Instrument {
     public void play(Rest rest) {
         return;
     }
-    
-
-//    @Override
-//    public void play(Note note) {
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    currentPlayer = generalInstruments[idx];
-//                    idx++;
-//                    idx = idx % 8;
-//                    int pitch = note.pitch();
-//                    int volume = note.volume();
-//                    int duration = note.duration();
-//                    currentPlayer.noteOn( pitch, volume );
-//                    Thread.sleep( duration );
-//                    currentPlayer.noteOff( pitch );
-//                    
-//                } catch (InterruptedException ie) {
-//                    ie.printStackTrace();
-//                }
-//            }
-//        }).start();
-//    }
-//
-//    @Override
-//    public void play(Simultaneous simultaneous) {
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                for (MusicElement element : simultaneous.musicElements()) {
-//                    if ( !element.isRest() ) {
-//                        play( (Note) element );
-//                    }
-//                }
-//            }
-//         }).start();
-//    }
 
     @Override
     public String getInstrumentName() {

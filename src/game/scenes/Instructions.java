@@ -11,7 +11,6 @@ import game.pop_ups.PopUp;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Input;
 
 public class Instructions implements Scene {
     private int upperLeftX;

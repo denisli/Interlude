@@ -7,7 +7,6 @@ import game.Interlude;
 import game.SimpleFont;
 import game.VoiceType;
 import game.labels.Label;
-import game.scenes.Scene;
 import game.scenes.SceneManager;
 
 import org.newdawn.slick.Color;

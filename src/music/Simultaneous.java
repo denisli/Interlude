@@ -40,7 +40,7 @@ public class Simultaneous implements SoundElement {
     }
     
     @Override
-    public int letter() {
+    public int integer() {
         return Simultaneous.S;
     }
 

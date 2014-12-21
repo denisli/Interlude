@@ -72,47 +72,6 @@ public class Piano implements Instrument {
         return;
     }
     
-//    @Override
-//    public void play(Note note) {
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-//                    if ( currentPlayer == piano ) {
-//                        currentPlayer = otherPiano;
-//                    } else {
-//                        currentPlayer = piano;
-//                    }
-//                    int pitch = note.pitch();
-//                    int volume = note.volume();
-//                    int duration = note.duration();
-//                    currentPlayer.noteOn( pitch, volume );
-//                    Thread.sleep( duration );
-//                    currentPlayer.noteOff( pitch );
-//                    
-//                } catch (InterruptedException ie) {
-//                    ie.printStackTrace();
-//                }
-//            }
-//        }).start();
-//    }
-//    
-//    @Override
-//    public void play(Simultaneous simultaneous) {
-//        new Thread(new Runnable() {
-//           @Override
-//           public void run() {
-//               for (MusicElement element : simultaneous.musicElements()) {
-//                   if ( element.isRest() ) {
-//                       play( (Rest) element );
-//                   } else {
-//                       play( (Note) element );
-//                   }
-//               }
-//           }
-//        }).start();
-//    }
-    
     @Override
     public String getInstrumentName() {
         return this.getClass().getSimpleName();

@@ -4,7 +4,6 @@ import game.VoiceType;
 
 import java.io.File;
 import java.io.IOException;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -20,11 +19,9 @@ import javax.sound.midi.MidiEvent;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Sequence;
-import javax.sound.midi.Sequencer;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Track;
 
-import util.Pair;
 import util.Triple;
 import music.GeneralInstrument;
 import music.MidiVoice;
@@ -96,15 +93,14 @@ public class MidiParser {
                         int command = sm.getCommand();
                         if ( command == ShortMessage.NOTE_ON ) {
                             List<NoteMessage> noteMessages = programNumberToNoteMessages.get( currentProgramNumber );
-                            if (millisecondsPerTick < 4) System.out.println(millisecondsPerTick);
                             if ( sm.getData2() != 0 ) { 
-                                noteMessages.add( new NoteMessage( tick, sm.getData1()+12, millisecondsPerTick, sm.getData2(), true ) );
+                                noteMessages.add( new NoteMessage( tick, sm.getData1(), millisecondsPerTick, sm.getData2(), true ) );
                             } else {
-                                noteMessages.add( new NoteMessage( tick, sm.getData1()+12, millisecondsPerTick, sm.getData2(), false ) );
+                                noteMessages.add( new NoteMessage( tick, sm.getData1(), millisecondsPerTick, sm.getData2(), false ) );
                             }
                         } else if ( command == ShortMessage.NOTE_OFF ) {
                             List<NoteMessage> noteMessages = programNumberToNoteMessages.get( currentProgramNumber );
-                            noteMessages.add( new NoteMessage( tick, sm.getData1()+12, millisecondsPerTick, sm.getData2(), false ) );
+                            noteMessages.add( new NoteMessage( tick, sm.getData1(), millisecondsPerTick, sm.getData2(), false ) );
                         } else if ( command == ShortMessage.PROGRAM_CHANGE ) {
                             currentProgramNumber = sm.getData1();
                             if ( !programNumberToNoteMessages.containsKey(currentProgramNumber) ) {
@@ -202,89 +198,5 @@ public class MidiParser {
         }
         
         return new Music( file.getName(), voices );
-    }
-    
-    private static final String desho = "suzumiya-haruhi-no-yuuutsu-bouken-desho-desho.mid";
-    private static final String god = "God Knows....mid";
-    
-    public static void test1() throws InvalidMidiDataException, IOException {
-        
-                
-        Sequence sequence = MidiSystem.getSequence(new File(desho));
-
-        int trackNumber = 0;
-        System.out.println("Division Type: " + sequence.getDivisionType() + ", Resolution: " + sequence.getResolution());
-        Track[] tracks = sequence.getTracks();
-        //System.out.println("Number of tracks: " + tracks.length);
-        for (Track track :  tracks) {
-            trackNumber++;
-            System.out.println("Track " + trackNumber + ": size = " + track.size());
-            System.out.println();
-            for (int i=0; i < track.size(); i++) { 
-                MidiEvent event = track.get(i);
-                System.out.print("@" + event.getTick() + " ");
-                if (event.getTick() > 10000) { continue; }
-                MidiMessage message = event.getMessage();
-                if (message instanceof ShortMessage) {
-                    ShortMessage sm = (ShortMessage) message;
-                    System.out.print("Channel: " + sm.getChannel() + " ");
-                    if (sm.getCommand() == ShortMessage.NOTE_ON) {
-                        int key = sm.getData1();
-                        int octave = (key / 12)-1;
-                        int note = key % 12;
-                        String noteName = NOTE_NAMES[note];
-                        int velocity = sm.getData2();
-                        System.out.println("Note on, " + noteName + octave + " key=" + key + " velocity: " + velocity);
-                    } else if (sm.getCommand() == ShortMessage.NOTE_OFF) {
-                        int key = sm.getData1();
-                        int octave = (key / 12)-1;
-                        int note = key % 12;
-                        String noteName = NOTE_NAMES[note];
-                        int velocity = sm.getData2();
-                        System.out.println("Note off, " + noteName + octave + " key=" + key + " velocity: " + velocity);
-                    } else {
-                        System.out.println("Command:" + sm.getCommand());
-                    }
-                } else if ( message instanceof MetaMessage ) {
-                    MetaMessage mm = (MetaMessage) message;
-                    System.out.println("Type: " + mm.getType() + ", Data: " + mm.getData().length );
-                }
-            }
-
-            System.out.println();
-        }
-    }
-    
-    public static void test2() {
-        Sequencer sequencer = null;
-        try {
-            sequencer = MidiSystem.getSequencer();
-            sequencer.setSequence(MidiSystem.getSequence(new File(god)));
-            sequencer.open();
-            sequencer.start();
-            while(true) {
-                if(sequencer.isRunning()) {
-                    System.out.println(sequencer.getTickPosition());
-                    try {
-                        Thread.sleep(30); // Check every second
-                    } catch(InterruptedException ignore) {
-                        break;
-                    }
-                } else {
-                    break;
-                }
-            }
-
-        } catch(Exception e) {
-                System.out.println(e.toString());
-        } finally {
-            // Close resources
-            sequencer.stop();
-            sequencer.close();
-        }
-    }
-    
-    public static void main(String[] args) throws InvalidMidiDataException, IOException {
-        test1();
     }
 }
