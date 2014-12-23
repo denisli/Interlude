@@ -21,7 +21,7 @@ public class InterludeGameContainer {
         int width = (int) Math.floor( screenSize.getWidth() );
         int height = (int) Math.floor( screenSize.getHeight() );
         app = new AppGameContainer( interludeGame );
-        app.setDisplayMode( 600, 600, false );
+        app.setDisplayMode( 800, 800, false );
         app.setTargetFrameRate(60);
         app.setMinimumLogicUpdateInterval( 10 );
         app.setMaximumLogicUpdateInterval( 30 );

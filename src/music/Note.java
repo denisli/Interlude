@@ -91,6 +91,16 @@ public class Note implements SoundElement {
         this.volume = volume;
     }
     
+    private long tick;
+    
+    public void setTick(long tick) {
+        this.tick = tick;
+    }
+    
+    public long tick() {
+        return tick;
+    }
+    
     public static int raiseAccidental(int accidental) {
         return accidental += 1;
     }

@@ -1,5 +1,6 @@
 package game.scenes;
 
+import music.Instrument;
 import music.Music;
 import game.pop_ups.PopUp;
 
@@ -10,6 +11,10 @@ public interface Scene {
         return new MainMenu();
     }
     
+    public static Scene connectWithFriends() {
+        return new ConnectWithFriends();
+    }
+    
     public static Scene songSelection() {
         return new SongSelectionPage();
     }
@@ -18,8 +23,12 @@ public interface Scene {
         return new Instructions();
     }
     
-    public static Scene round(Music music ) {
-        return new Round(music);
+    public static Scene instrumentSelection( Music music ) {
+        return new InstrumentSelectionPage( music );
+    }
+    
+    public static Scene round(Music music, Instrument selectedInstrument) {
+        return new Round(music, selectedInstrument);
     }
     
     public static Scene changeControlsPage() {

@@ -1,5 +1,6 @@
 package game;
 
+import music.Handedness;
 import music.Note;
 import music.Simultaneous;
 
@@ -35,16 +36,16 @@ public class Controls {
     private static int rightGNoteKey = Input.KEY_I;
     private static int rightSimultaneousKey = Input.KEY_O;
     
-    public static int[] noteKeys( VoiceType voiceType ) {
-        if ( voiceType == VoiceType.SINGLE ) {
+    public static int[] noteKeys( Handedness voiceType ) {
+        if ( voiceType == Handedness.SINGLE ) {
             return new int[] { ANoteKey, BNoteKey, CNoteKey, DNoteKey, 
                     ENoteKey, FNoteKey, GNoteKey, simultaneousKey
             };
-        } else if ( voiceType == VoiceType.LEFT ) {
+        } else if ( voiceType == Handedness.LEFT ) {
             return new int[] { leftANoteKey, leftBNoteKey, leftCNoteKey, leftDNoteKey,
                     leftENoteKey, leftFNoteKey, leftGNoteKey, leftSimultaneousKey
             };
-        } else if ( voiceType == VoiceType.RIGHT ) {
+        } else if ( voiceType == Handedness.RIGHT ) {
             return new int[] { rightANoteKey, rightBNoteKey, rightCNoteKey, rightDNoteKey,
                     rightENoteKey, rightFNoteKey, rightGNoteKey, rightSimultaneousKey 
             };
@@ -53,8 +54,8 @@ public class Controls {
         }
     }
     
-    public static void setKey( int note, VoiceType voiceType, int key ) {
-        if ( voiceType == VoiceType.SINGLE ) {
+    public static void setKey( int note, Handedness handedness, int key ) {
+        if ( handedness == Handedness.SINGLE ) {
             if ( note == Note.A ) {
                 setANoteKey( key );
             } else if ( note == Note.B ) {
@@ -74,7 +75,7 @@ public class Controls {
             } else {
                 throw new IllegalArgumentException( "Valid letter for note not given" );
             }
-        } else if ( voiceType == VoiceType.LEFT ) {
+        } else if ( handedness == Handedness.LEFT ) {
             if ( note == Note.A ) {
                 setLeftANoteKey( key );
             } else if ( note == Note.B ) {
@@ -94,7 +95,7 @@ public class Controls {
             } else {
                 throw new IllegalArgumentException( "Valid letter for note not given" );
             }
-        } else if ( voiceType == VoiceType.RIGHT ) {
+        } else if ( handedness == Handedness.RIGHT ) {
             if ( note == Note.A ) {
                 setRightANoteKey( key );
             } else if ( note == Note.B ) {
@@ -120,8 +121,8 @@ public class Controls {
     }
     
     // 
-    public static int correspondingNote(int key, VoiceType voiceType) {
-        if ( voiceType == VoiceType.SINGLE ) {
+    public static int correspondingNote(int key, Handedness voiceType) {
+        if ( voiceType == Handedness.SINGLE ) {
             if (key == ANoteKey) {
                 return Note.A;
             } else if (key == BNoteKey) {
@@ -164,8 +165,8 @@ public class Controls {
         }
     }
 
-    public static int correspondingKey(int letter, VoiceType voiceType ) {
-        if ( voiceType == VoiceType.SINGLE ) {
+    public static int correspondingKey(int letter, Handedness voiceType ) {
+        if ( voiceType == Handedness.SINGLE ) {
             if (letter == Note.A) {
                 return ANoteKey;
             } else if (letter == Note.B) {
@@ -185,7 +186,7 @@ public class Controls {
             } else {
                 throw new IllegalArgumentException("A valid note was not given!");
             }
-        } else if ( voiceType == VoiceType.LEFT ){
+        } else if ( voiceType == Handedness.LEFT ){
             if (letter == Note.A) {
                 return leftANoteKey;
             } else if (letter == Note.B) {
@@ -205,7 +206,7 @@ public class Controls {
             } else {
                 throw new IllegalArgumentException("A valid note was not given!");
             }
-        } else if ( voiceType == VoiceType.RIGHT ){
+        } else if ( voiceType == Handedness.RIGHT ){
             if (letter == Note.A) {
                 return rightANoteKey;
             } else if (letter == Note.B) {

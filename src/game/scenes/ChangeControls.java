@@ -4,8 +4,9 @@ import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
 
+import music.Handedness;
 import music.Note;
-import game.VoiceType;
+import game.InstrumentType;
 import game.Renderable;
 import game.SimpleFont;
 import game.buttons.Button;
@@ -65,7 +66,7 @@ public class ChangeControls implements Scene {
             renderables.add(
                 Button.textButton( noteLetter, singleVoiceX, singleVoiceInitialY + i * yIncrement, 
                     (Runnable) () -> {
-                        PopUp popUp = PopUp.changeControl( Note.toInteger(noteLetter), VoiceType.SINGLE );
+                        PopUp popUp = PopUp.changeControl( Note.toInteger(noteLetter), Handedness.SINGLE );
                         popUp.addOn( ChangeControls.this );
                     }
                 )
@@ -79,7 +80,7 @@ public class ChangeControls implements Scene {
             renderables.add(
                 Button.textButton( noteLetter, doubleVoiceLeftX, doubleVoiceInitialY + i * yIncrement, 
                     (Runnable) () -> {
-                        PopUp popUp = PopUp.changeControl( Note.toInteger(noteLetter), VoiceType.LEFT );
+                        PopUp popUp = PopUp.changeControl( Note.toInteger(noteLetter), Handedness.LEFT );
                         popUp.addOn( ChangeControls.this );
                     }
                 )
@@ -92,7 +93,7 @@ public class ChangeControls implements Scene {
             renderables.add(
                 Button.textButton( noteLetter, doubleVoiceRightX, doubleVoiceInitialY + i * yIncrement, 
                     (Runnable) () -> {
-                        PopUp popUp = PopUp.changeControl( Note.toInteger(noteLetter), VoiceType.RIGHT );
+                        PopUp popUp = PopUp.changeControl( Note.toInteger(noteLetter), Handedness.RIGHT );
                         popUp.addOn( ChangeControls.this );
                     }
                 )

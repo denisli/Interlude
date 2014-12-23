@@ -1,6 +1,6 @@
 package music;
 
-import game.VoiceType;
+import game.InstrumentType;
 
 public interface Voice {
     public MusicElement next();
@@ -10,6 +10,4 @@ public interface Voice {
     public Instrument instrument();
     
     public boolean ended();
-    
-    public VoiceType voiceType();
 }

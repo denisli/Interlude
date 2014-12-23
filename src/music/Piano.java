@@ -1,5 +1,7 @@
 package music;
 
+import game.InstrumentType;
+
 import java.util.PriorityQueue;
 import java.util.Queue;
 
@@ -75,5 +77,17 @@ public class Piano implements Instrument {
     @Override
     public String getInstrumentName() {
         return this.getClass().getSimpleName();
+    }
+
+    @Override
+    public InstrumentType type() {
+        // TODO Auto-generated method stub
+        return InstrumentType.DOUBLE;
+    }
+
+    @Override
+    public int getProgram() {
+        // TODO Auto-generated method stub
+        return 0;
     }
 }

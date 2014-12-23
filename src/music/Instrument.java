@@ -1,6 +1,14 @@
 package music;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import game.InstrumentType;
+
 public interface Instrument {
+    public static final List<Integer> TWO_HANDED_INSTRUMENTS = new ArrayList<Integer>(Arrays.asList(0));
+    
     public static Instrument piano() {
         return new Piano();
     }
@@ -22,4 +30,11 @@ public interface Instrument {
     public void play(Simultaneous simultaneous);
         
     public String getInstrumentName();
+    
+    public int getProgram();
+    
+    public InstrumentType type();
+    
+    @Override
+    public boolean equals(Object other);
 }

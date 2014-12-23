@@ -1,25 +1,25 @@
 package game.scenes;
 
-import java.awt.Font;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-import game.Interlude;
-import game.SimpleFont;
 import game.buttons.Button;
 import game.pop_ups.PopUp;
+import music.Instrument;
+import music.Music;
+import music.Voice;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.gui.TextField;
 
-public class ConnectWithFriends implements Scene {
-    TextField connectionIDTextField = 
-            new TextField( Interlude.GAME_CONTAINER.context(), 
-                           SimpleFont.retrieve("Arial",Font.PLAIN,36),
-                           300, 300, 400, 50);
-    List<Button> buttons = new ArrayList<Button>(Arrays.asList(Button.backButton(0.9f,0.1f))); 
+public class InstrumentSelectionPage implements Scene {
+    private final List<Button> buttons = new ArrayList<Button>();
+    private final Music music;
+    private Optional<Instrument> selectedInstrument;
+    
+    public InstrumentSelectionPage( Music music ) {
+        this.music = music;
+    }
     
     @Override
     public void addPopUp(PopUp popUp) {
@@ -36,7 +36,7 @@ public class ConnectWithFriends implements Scene {
     @Override
     public Scene parentScene() {
         // TODO Auto-generated method stub
-        return Scene.mainMenu();
+        return Scene.songSelection();
     }
 
     @Override
@@ -51,12 +51,6 @@ public class ConnectWithFriends implements Scene {
         for ( Button button : buttons ) {
             button.render(g);
         }
-        connectionIDTextField.setCursorVisible(true);
-        connectionIDTextField.setBorderColor( Color.red );
-        g.setColor( Color.lightGray );
-        connectionIDTextField.setBackgroundColor( Color.lightGray );
-        connectionIDTextField.setTextColor( Color.black );
-        connectionIDTextField.render(Interlude.GAME_CONTAINER.context(), g);
     }
 
     @Override
@@ -69,8 +63,18 @@ public class ConnectWithFriends implements Scene {
 
     @Override
     public void init() {
-        // TODO Auto-generated method stub
+        List<Voice> voices = music.voices();
+        int numVoices = voices.size();
+        for ( int i = 0; i < numVoices; i++ ) {
+            Voice voice = voices.get(i);
+            buttons.add( Button.textButton( voice.instrument().getInstrumentName(), ((float) (i+1)) / (numVoices + 1), 0.5f, (Runnable) () -> {
+                selectedInstrument = Optional.of(voice.instrument());
+            }));
+        }
         
+        buttons.add( Button.textButton("OK!", 0.5f, 0.9f, (Runnable) () -> {
+            SceneManager.setNewScene( Scene.round(music, selectedInstrument.get()) );
+        }));
     }
 
 }

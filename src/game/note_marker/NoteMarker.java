@@ -6,7 +6,8 @@ import game.Controls;
 import game.Interlude;
 import game.Orientation;
 import game.SimpleFont;
-import game.VoiceType;
+import game.InstrumentType;
+import music.Handedness;
 import music.Note;
 import music.Simultaneous;
 
@@ -21,7 +22,7 @@ import util.Pair;
 public class NoteMarker {
     private static final int NUM_LETTERS = 8; // number of letters to represent sound elements
     private final int note;
-    private final VoiceType voiceType;
+    private final Handedness handedness;
     private float fractionX;
     private float fractionY;
     private int radius;
@@ -29,10 +30,10 @@ public class NoteMarker {
     private final int key;
     private Color color = Color.yellow;
     
-    public NoteMarker( int note, VoiceType voiceType ) {
+    public NoteMarker( int note, Handedness handedness ) {
         this.note = note;
-        this.voiceType = voiceType;
-        this.key = Controls.correspondingKey( note, voiceType );
+        this.handedness = handedness;
+        this.key = Controls.correspondingKey( note, handedness );
     }
     
     public int note() {
@@ -51,7 +52,7 @@ public class NoteMarker {
         g.fillOval( centerX - radius, centerY - radius, 2 * radius, 2 * radius); 
         g.setColor( Color.red );
         g.setFont( font );
-        String noteText = Input.getKeyName( Controls.correspondingKey( note() , voiceType) );
+        String noteText = Input.getKeyName( Controls.correspondingKey( note(), handedness ) );
         int textWidth = font.getWidth(noteText);
         int textHeight = font.getHeight(noteText);
         g.drawString( noteText, centerX  - textWidth / 2, centerY - textHeight / 2);
@@ -69,7 +70,7 @@ public class NoteMarker {
     public void init() {
         int containerWidth = Interlude.GAME_CONTAINER.getWidth();
         int containerHeight = Interlude.GAME_CONTAINER.getHeight();
-        if ( voiceType == VoiceType.SINGLE ) {
+        if ( handedness == Handedness.SINGLE ) {
             float increment = 0.1f;
             fractionX = 0.9f;
             if (note() == Note.A) {
@@ -114,7 +115,7 @@ public class NoteMarker {
             } else {
                 throw new IllegalArgumentException("Note button not given a valid note to represent");
             }
-            if ( voiceType == VoiceType.RIGHT ) {
+            if ( handedness == Handedness.RIGHT ) {
                 fractionY += NUM_LETTERS * increment;
             }
             radius = (int) (Math.min(containerWidth, containerHeight) * increment * 2) / 5;

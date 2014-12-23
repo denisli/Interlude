@@ -5,9 +5,10 @@ import java.awt.Font;
 import game.Controls;
 import game.Interlude;
 import game.SimpleFont;
-import game.VoiceType;
+import game.InstrumentType;
 import game.labels.Label;
 import game.scenes.SceneManager;
+import music.Handedness;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -16,15 +17,15 @@ import org.newdawn.slick.KeyListener;
 
 public class ChangeControlPopUp extends PopUp implements KeyListener {
     private final int note;
-    private final VoiceType voiceType;
+    private final Handedness handedness;
     private boolean keyPressed = false;
     private int pressedKey;
     private final Label instructionLabel = Label.label("Press the button you want to change control to", 0.5f, 0.5f, Color.black,
             SimpleFont.retrieve( "Arial", Font.PLAIN, 18) );
     
-    public ChangeControlPopUp( int note, VoiceType voiceType ) {
+    public ChangeControlPopUp( int note, Handedness handedness ) {
         this.note = note;
-        this.voiceType = voiceType;
+        this.handedness = handedness;
     }
     
     @Override
@@ -45,7 +46,7 @@ public class ChangeControlPopUp extends PopUp implements KeyListener {
         Input input = Interlude.GAME_CONTAINER.getInput();
         if ( keyPressed ) {
             if ( !input.isKeyPressed(pressedKey) ) {
-                Controls.setKey( note, voiceType, pressedKey );
+                Controls.setKey( note, handedness, pressedKey );
                 Interlude.GAME_CONTAINER.getInput().removeKeyListener(this);
                 this.remove( SceneManager.currentScene() );
             }

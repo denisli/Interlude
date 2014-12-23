@@ -5,6 +5,7 @@ import game.SimpleFont;
 
 import java.awt.Font;
 
+import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;

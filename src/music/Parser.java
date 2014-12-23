@@ -1,6 +1,6 @@
 package music;
 
-import game.VoiceType;
+import game.InstrumentType;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -60,17 +60,10 @@ public class Parser {
                 
                 // second line
                 Queue<String> notes = new LinkedList<String>(Arrays.asList(br.readLine().split(" ")));
-                Voice voice = null;
-                if ( numVoices == 1 ) {
-                    voice = parseVoice(notes, octave, tempo, instrument, VoiceType.SINGLE);
-                } else if ( numVoices == 2 && i == 0) {
-                    voice = parseVoice(notes, octave, tempo, instrument, VoiceType.RIGHT);
-                } else if ( numVoices == 2 && i == 1) {
-                    voice = parseVoice(notes, octave, tempo, instrument, VoiceType.LEFT);
-                }
+                Voice voice = parseVoice(notes, octave, tempo, instrument);
                 voices.add(voice);
             }
-            return new Music(title, voices);
+            return new Music(title, voices, new ArrayList<Integer>());
         } catch (IOException ioe) {
             ioe.printStackTrace();
         } finally {
@@ -83,7 +76,7 @@ public class Parser {
         throw new IllegalArgumentException("This code is not reachable"); // not reached
     }
     
-    private static Voice parseVoice(Queue<String> notes, int octave, int tempo, Instrument instrument, VoiceType voiceType) {
+    private static Voice parseVoice(Queue<String> notes, int octave, int tempo, Instrument instrument) {
         List<MusicElement> sequence = new ArrayList<MusicElement>(); 
         while ( !notes.isEmpty() ) {
             String element = notes.remove();
@@ -102,7 +95,7 @@ public class Parser {
                                                    " is not valid!");
             }
         }
-        return new TextVoice(sequence, instrument, voiceType);
+        return new TextVoice(sequence, instrument);
     }
     
     private static Rest parseRest(String rest, int tempo) {

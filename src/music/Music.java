@@ -7,11 +7,16 @@ import java.util.List;
 public class Music {
     private final String title;
     private final List<Voice> voices;
+    private final List<Integer> timesUntilVoiceStarts;
     
     
-    public Music(String title, List<Voice> voices) {
+    public Music(String title, List<Voice> voices, List<Integer> timesUntilVoiceStarts) {
+        for ( Voice voice : voices ) {
+            System.out.println("Program Number of Voice: " + voice.instrument().getInstrumentName());
+        }
         this.title = title;
-        this.voices = voices;
+        this.voices = voices; // voices sorted by start time
+        this.timesUntilVoiceStarts = timesUntilVoiceStarts;
     }
     
     public static Music godKnows() {
@@ -25,6 +30,10 @@ public class Music {
     
     public boolean isMultiVoice() {
         return voices.size() > 1;
+    }
+    
+    public List<Integer> timesUntilVoiceStarts() {
+        return this.timesUntilVoiceStarts;
     }
     
     public String title() {

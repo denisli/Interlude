@@ -2,8 +2,9 @@ package game.moving_sound;
 
 import game.Interlude;
 import game.Orientation;
-import game.VoiceType;
+import game.InstrumentType;
 import game.Renderable;
+import music.Handedness;
 import music.SoundElement;
 
 import org.newdawn.slick.Color;
@@ -16,15 +17,15 @@ public class MovingSound implements Renderable {
     private float fractionX;
     private float fractionY;
     private int radius;
-    private VoiceType voiceType;
+    private Handedness handedness;
     
     private final SoundElement soundElement;
     
-    public MovingSound( float fractionX, float fractionY, SoundElement soundElement, VoiceType voiceType ) {
+    public MovingSound( float fractionX, float fractionY, SoundElement soundElement, Handedness handedness ) {
         this.fractionX = fractionX;
         this.fractionY = fractionY;
         this.soundElement = soundElement;
-        this.voiceType = voiceType;
+        this.handedness = handedness;
     }
     
     public SoundElement soundElement() {
@@ -56,7 +57,7 @@ public class MovingSound implements Renderable {
         return fractionX > 1;
     }
     
-    public VoiceType voiceType() {
-        return voiceType;
+    public Handedness handedness() {
+        return handedness;
     }
 }

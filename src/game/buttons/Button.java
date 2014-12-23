@@ -16,6 +16,14 @@ public interface Button extends Renderable {
         return button;
     }
     
+    public static Button playWithFriendsButton( float fractionX, float fractionY ) {
+        Button button = new TextButton("Play with friends!", fractionX, fractionY, (Runnable) () -> {
+            SceneManager.setNewScene(Scene.connectWithFriends());
+        });
+        button.init();
+        return button;
+    }
+    
     public static Button instructionsButton(float fractionX, float fractionY) {
         Button button = new TextButton("Instructions", fractionX, fractionY, (Runnable) () -> {
             SceneManager.setNewScene(Scene.instructionsPage());
@@ -49,7 +57,9 @@ public interface Button extends Renderable {
     }
     
     public static Button textButton(String text, float fractionX, float fractionY, Runnable effect) {
-        return new TextButton( text, fractionX, fractionY, effect );
+        Button button = new TextButton( text, fractionX, fractionY, effect );
+        button.init();
+        return button;
     }
     
     public static Button songSelectionButton(MusicFile musicFile, float fractionX, float fractionY) {

@@ -14,8 +14,10 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
 public class SongSelectionPage implements Scene {
-    private final String[] songTitles = new String[] { "res/new_music3.txt", "res/music2.txt", "God Knows....mid",
-            "res/new_music4.txt", "res/combined.txt", "suzumiya-haruhi-no-yuuutsu-bouken-desho-desho.mid"};
+    private final String[] songTitles = new String[] { "Spirited Away - Itsumo Nando Demo.mid", "Sword Art Online - Crossing Field.mid", "God Knows....mid",
+            "Card Captor Sakura - Arigatou.mid", "Rurouni Kenshin - Sobakasu.mid", "suzumiya-haruhi-no-yuuutsu-bouken-desho-desho.mid",
+            "angel-beats-my-soul-your-beats.mid", "Bakemonogatari - Kimi no Shiranai Monogatari.mid",
+            "The Melancholy of Haruhi Suzumiya - Lost my music.mid"};
     private List<Button> buttons = new ArrayList<Button>(Arrays.asList(Button.backButton(0.9f, 0.1f)));
     
     @Override

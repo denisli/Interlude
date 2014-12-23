@@ -1,5 +1,7 @@
 package music;
 
+import game.InstrumentType;
+
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -12,26 +14,31 @@ import javax.sound.midi.Synthesizer;
 import util.Triple;
 
 public class GeneralInstrument implements Instrument {
+    
+    private String instrumentName;
     private OffTimesComparator comparator = new OffTimesComparator();
     private PriorityQueue<Triple<Long,Integer,Integer>> offTimes = new PriorityQueue<Triple<Long,Integer,Integer>>(comparator);
-    private MidiChannel[] generalInstruments;
     private MidiChannel currentPlayer;
+    private MidiChannel[] channels;
+    private int[] occupiedChannels;
     private int idx = 0;
     private long currentTime = 0;
+    private final int programNumber;
     
-    public GeneralInstrument( int programNumber ) {
-        try {
-            Synthesizer synth = MidiSystem.getSynthesizer();
-            synth.open();
-            javax.sound.midi.Instrument[] instruments = synth.getDefaultSoundbank().getInstruments();
-            MidiChannel[] channels = synth.getChannels();
-            channels[0].programChange( instruments[programNumber].getPatch().getProgram() );
-            channels[1].programChange( instruments[programNumber].getPatch().getProgram() );
-            generalInstruments = channels;
-            currentPlayer = generalInstruments[0];
-        } catch (MidiUnavailableException mue) {
-            mue.printStackTrace();
+    public GeneralInstrument( int programNumber, Synthesizer synth, int... occupiedChannels ) {
+        javax.sound.midi.Instrument[] instruments = synth.getDefaultSoundbank().getInstruments();
+        this.programNumber = programNumber;
+        this.instrumentName = instruments[programNumber].getName();
+        MidiChannel[] channels = synth.getChannels();
+        
+        for ( int i : occupiedChannels ) {
+            channels[i].programChange( instruments[programNumber].getPatch().getProgram() );
         }
+        
+        System.out.println(instruments[programNumber].getName());
+        this.channels = channels;
+        this.currentPlayer = channels[occupiedChannels[0]];
+        this.occupiedChannels = occupiedChannels;
     }
     
     @Override
@@ -42,7 +49,7 @@ public class GeneralInstrument implements Instrument {
                 Triple<Long,Integer,Integer> pair = offTimes.poll();
                 int channelIdx = pair.getMiddle();
                 int pitch = pair.getRight();
-                generalInstruments[channelIdx].noteOff(pitch);
+                channels[channelIdx].noteOff(pitch);
             } else {
                 break;
             }
@@ -51,13 +58,15 @@ public class GeneralInstrument implements Instrument {
     
     @Override
     public void play(Note note) {
-        currentPlayer = generalInstruments[idx];
+        int channelIdx = occupiedChannels[idx];
+        currentPlayer = channels[ channelIdx ];
         int pitch = note.pitch();
         int volume = note.volume();
         int duration = note.duration();
+        System.out.println("Note tick: " + note.tick() + ", Program Number: " + currentPlayer.getProgram() + ", Pitch: " + pitch + ", Volume: " + volume);
         currentPlayer.noteOn( pitch, volume );
-        offTimes.add( new Triple<Long,Integer,Integer>( currentTime + duration, idx, pitch ) );
-        idx = ( idx + 1 ) % 8;
+        offTimes.add( new Triple<Long,Integer,Integer>( currentTime + duration, channelIdx, pitch ) );
+        idx = ( idx + 1 ) % occupiedChannels.length;
     }
     
     @Override
@@ -71,10 +80,35 @@ public class GeneralInstrument implements Instrument {
     public void play(Rest rest) {
         return;
     }
+    
+    @Override
+    public InstrumentType type() {
+        //if ( TWO_HANDED_INSTRUMENTS.contains( currentPlayer.getProgram() ) ) {
+        //    return InstrumentType.DOUBLE;
+        //} else {
+            return InstrumentType.SINGLE;
+        //}
+    }
 
     @Override
     public String getInstrumentName() {
         // TODO Auto-generated method stub
-        return null;
+        return instrumentName;
+    }
+    
+    @Override
+    public boolean equals(Object other) {
+        if ( ! (other instanceof Instrument) ) {
+            return false;
+        } else {
+            Instrument otherInstrument = (Instrument) other;
+            return this.instrumentName.equals(otherInstrument.getInstrumentName());
+        }
+    }
+
+    @Override
+    public int getProgram() {
+        // TODO Auto-generated method stub
+        return programNumber;
     }
 }

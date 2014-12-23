@@ -17,7 +17,7 @@ public class SongSelectionButton implements Button {
         this.musicFile = musicFile;
         this.textComponent = new TextButton( musicFile.musicTitle(), fractionX, fractionY, (Runnable) () -> {
             try {
-                SceneManager.setNewScene( Scene.round( musicFile.getMusic() ) );
+                SceneManager.setNewScene( Scene.instrumentSelection( musicFile.getMusic() ) );
             } catch (Exception e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
