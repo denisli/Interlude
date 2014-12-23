@@ -1,9 +1,13 @@
 package game.buttons;
 
+import java.io.FileNotFoundException;
+
 import game.scenes.Scene;
 import game.scenes.SceneManager;
 
 
+import music.Instrument;
+import music.Music;
 import music.MusicFile;
 
 import org.newdawn.slick.Graphics;
@@ -17,10 +21,16 @@ public class SongSelectionButton implements Button {
         this.musicFile = musicFile;
         this.textComponent = new TextButton( musicFile.musicTitle(), fractionX, fractionY, (Runnable) () -> {
             try {
-                SceneManager.setNewScene( Scene.instrumentSelection( musicFile.getMusic() ) );
-            } catch (Exception e) {
+                Music music = musicFile.getMusic();
+                if ( music.isMultiVoice() ) {
+                    SceneManager.setNewScene( Scene.instrumentSelection( musicFile.getMusic() ) );
+                } else {
+                    Instrument selectedInstrument = music.voices().get(0).instrument();
+                    SceneManager.setNewScene( Scene.round( music, selectedInstrument ));
+                }
+            } catch (FileNotFoundException e) {
                 // TODO Auto-generated catch block
-                e.printStackTrace();
+                System.err.println("File cannot be found");
             }
         });
     }
@@ -71,5 +81,29 @@ public class SongSelectionButton implements Button {
     public void callEffect() {
         // TODO Auto-generated method stub
         textComponent.callEffect();
+    }
+    
+    @Override
+    public void moveLeft(float fractionX) {
+        // TODO Auto-generated method stub
+        textComponent.moveLeft( fractionX );
+    }
+
+    @Override
+    public void moveRight(float fractionX) {
+        // TODO Auto-generated method stub
+        textComponent.moveRight( fractionX );
+    }
+
+    @Override
+    public void moveDown(float fractionY) {
+        // TODO Auto-generated method stub
+        textComponent.moveDown( fractionY );
+    }
+
+    @Override
+    public void moveUp(float fractionY) {
+        // TODO Auto-generated method stub
+        textComponent.moveUp( fractionY );
     }
 }

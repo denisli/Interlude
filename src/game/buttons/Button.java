@@ -1,13 +1,15 @@
 package game.buttons;
 
+import game.Movable;
 import game.Renderable;
+import game.Server;
 import game.scenes.Scene;
 import game.scenes.SceneManager;
 import music.MusicFile;
 
 import org.newdawn.slick.Input;
 
-public interface Button extends Renderable {
+public interface Button extends Renderable, Movable {
     public static Button playButton(float fractionX, float fractionY) {
         Button button = new TextButton("Play", fractionX, fractionY, (Runnable) () -> {
             SceneManager.setNewScene(Scene.songSelection());
@@ -50,7 +52,11 @@ public interface Button extends Renderable {
     
     public static Button startConnectionButton(float fractionX, float fractionY) {
         Button button = new TextButton("Start Connection", fractionX, fractionY, (Runnable) () -> {
-            throw new RuntimeException("Ah, need to implement this!");
+            try {
+                Server.start();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
         button.init();
         return button;

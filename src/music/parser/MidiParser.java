@@ -118,10 +118,16 @@ public class MidiParser {
                             int programNumber = 0; // default program number is 0 if channel doesn't exist.
                             if ( channelToProgramNumber.containsKey(channel) ) {
                                 programNumber = channelToProgramNumber.get( channel );
+                            } else {
+                                channelToProgramNumber.put( channel, 0 );
+                                programNumber = 0;
                             }
-                            //System.out.println("Program Number: " + programNumber + ", Channel: " + channel);
-                            List<NoteMessage> noteMessages = programNumberToNoteMessages.get( programNumber );
                             
+                            if ( !programNumberToNoteMessages.containsKey(programNumber) ) {
+                                programNumberToNoteMessages.put(programNumber, new LinkedList<NoteMessage>());
+                            }
+                            List<NoteMessage> noteMessages = programNumberToNoteMessages.get( programNumber );
+                        
                             if ( sm.getData2() != 0 ) { 
                                 noteMessages.add( new NoteMessage( tick, sm.getData1(), millisecondsPerTick, sm.getData2(), true ) );
                             } else {
@@ -139,7 +145,6 @@ public class MidiParser {
                                 programNumberToNoteMessages.put( currentProgramNumber, new LinkedList<NoteMessage>() );
                             }
                             channelToProgramNumber.put( channel, currentProgramNumber );
-                            System.out.println(channelToProgramNumber);
                         } else {
                             continue; // just ignore the message if it doesn't relate to the note or instrument
                         }
@@ -179,7 +184,12 @@ public class MidiParser {
                 int volume = noteMessage.volume();
                 long tick = noteMessage.tick();
                 int i = 0;
-                NoteMessage nextNoteOffMessage = noteMessages.get(i);
+                NoteMessage nextNoteOffMessage = null;
+                if ( i != noteMessages.size() ) {
+                    nextNoteOffMessage = noteMessages.get(i);
+                } else {
+                    nextNoteOffMessage = new NoteMessage( tick, value, millisecondsPerTick, volume, false );
+                }
                 while ( nextNoteOffMessage.on() || nextNoteOffMessage.value() != value ) {
                     i += 1;
                     if ( i == noteMessages.size() ) {
@@ -259,7 +269,6 @@ public class MidiParser {
                 i++;
             }
             
-            System.out.println("Program Number: " + programNumber + "Time until next: " + timesUntilNextElement);
             synth.loadInstrument(instruments[programNumber]);
             
             int numberOfChannelsPickedOff = (int) Math.ceil( ((double) numberOfProgramsLeft) / numberOfChannelsLeft );
@@ -294,10 +303,8 @@ public class MidiParser {
                    lastTick = otherTick;
                    if ( i == 0 ) {
                        timeUntilVoiceStarts += (int) (otherTick * millisecondsPerTick);
-                       System.out.println("Time until ...: " + timeUntilVoiceStarts);
                    } else {
                        timeUntilVoiceStarts += (int) ((otherTick - millisecondsPerTickAtTick.get(i-1).getLeft()) * millisecondsPerTick);
-                       System.out.println("Time until ...: " + timeUntilVoiceStarts);
                    }
                } else {
                    break;
@@ -317,11 +324,6 @@ public class MidiParser {
                 timesUntilVoiceStart.add( 0 );
             }
         }
-        System.out.println(millisecondsPerTickAtTick);
-        System.out.println(millisecondsPerTick);
-        System.out.println("Times un voice start: " + timesUntilVoiceStart);
-        System.out.println(firstTicks);
-        
         return new Music( file.getName(), voices, timesUntilVoiceStart );
     }
     
@@ -329,7 +331,7 @@ public class MidiParser {
     public static final int NOTE_OFF = 0x80;
 
     public static void test1() throws Exception {
-        Sequence sequence = MidiSystem.getSequence(new File("lostmymusic.mid"));
+        Sequence sequence = MidiSystem.getSequence(new File("vmysan27.mid"));
         System.out.println("Division Type: " + sequence.getDivisionType());
         
         int trackNumber = 0;
@@ -381,7 +383,7 @@ public class MidiParser {
         Sequencer sequencer = null;
         try {
             sequencer = MidiSystem.getSequencer();
-            sequencer.setSequence(MidiSystem.getSequence(new File("lostmymusic.mid")));
+            sequencer.setSequence(MidiSystem.getSequence(new File("vmysan27.mid")));
             sequencer.open();
             sequencer.start();
             while(true) {

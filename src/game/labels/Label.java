@@ -11,7 +11,7 @@ import game.Interlude;
 import game.Renderable;
 
 public class Label implements Renderable {
-    private final String text;
+    private String text;
     private final float fractionX;
     private final float fractionY;
     private final Color color;
@@ -27,6 +27,16 @@ public class Label implements Renderable {
     
     public static Label label(String text, float fractionX, float fractionY, Color color, UnicodeFont font) {
         Label label = new Label( text, fractionX, fractionY, color, font );
+        label.init();
+        return label;
+    }
+    
+    public static Label scoreLabel() {
+        float fractionX = 0.5f;
+        float fractionY = 0.05f;
+        Color color = Color.darkGray;
+        UnicodeFont font = SimpleFont.retrieve( "Arial", Font.PLAIN, 32);
+        Label label = new Label( "0", fractionX, fractionY, color, font );
         label.init();
         return label;
     }
@@ -64,5 +74,9 @@ public class Label implements Renderable {
     public void init() {
         // TODO Auto-generated method stub
         return;
+    }
+    
+    public void setText( String text ) {
+        this.text = text;
     }
 }

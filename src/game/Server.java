@@ -23,22 +23,26 @@ public class Server {
      * Thread Safety Argument:
      *      thread safety?
      */
-    private static Optional<ServerSocket> serverSocket; 
+    private static Optional<ServerSocket> serverSocket = Optional.empty(); 
     private static Set<Socket> friends;
     
     public static void start() throws UnknownHostException, IOException {
-        serverSocket = Optional.of(new ServerSocket(4444));
-        serve();
+        if ( !serverSocket.isPresent() ) {
+            System.out.println("Server started");
+            serverSocket = Optional.of(new ServerSocket(4888));
+            serve();
+        } else {
+            System.err.println("Server is already operating");
+        }
     }
     
     private static void serve() throws IOException {
         boolean operating = serverSocket.isPresent();
-        while ( operating ) {
-            Socket clientSocket = serverSocket.get().accept();
-            
-            new Thread(new Runnable() {
-                public void run() {
-                    try{ 
+        new Thread(new Runnable() {
+            public void run() {
+                while ( operating ) {
+                    try{
+                        Socket clientSocket = serverSocket.get().accept();
                         try {
                             handleClientMessages( clientSocket );
                         } finally {
@@ -48,19 +52,27 @@ public class Server {
                         
                     }
                 }
-            }).start(); 
-        }
+            }
+        }).start();
     }
     
-    private static void handleClientMessages( Socket clientSocket ) throws IOException {
-        BufferedReader br = new BufferedReader( new InputStreamReader(clientSocket.getInputStream()) );
-        
-        for ( String line = br.readLine(); line != null; line = br.readLine() ) {
-            for ( Socket friend : friends ) {
-                BufferedWriter bw = new BufferedWriter( new OutputStreamWriter(friend.getOutputStream()) );
-                bw.write(line + "\n");
+    private static void handleClientMessages( Socket clientSocket ) {
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    BufferedReader br = new BufferedReader( new InputStreamReader(clientSocket.getInputStream()) );
+                    
+                    for ( String line = br.readLine(); line != null; line = br.readLine() ) {
+                        for ( Socket friend : friends ) {
+                            BufferedWriter bw = new BufferedWriter( new OutputStreamWriter(friend.getOutputStream()) );
+                            bw.write(line + "\n");
+                        }
+                    }
+                } catch ( IOException ioe ) {
+                    ioe.printStackTrace();
+                }
             }
-        }
+        }).start();
     }
     
     public static boolean isOperating() {

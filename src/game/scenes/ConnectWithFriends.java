@@ -1,10 +1,13 @@
 package game.scenes;
 
 import java.awt.Font;
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import game.Client;
 import game.Interlude;
 import game.SimpleFont;
 import game.buttons.Button;
@@ -15,11 +18,12 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.gui.TextField;
 
 public class ConnectWithFriends implements Scene {
+    
     TextField connectionIDTextField = 
             new TextField( Interlude.GAME_CONTAINER.context(), 
                            SimpleFont.retrieve("Arial",Font.PLAIN,36),
                            300, 300, 400, 50);
-    List<Button> buttons = new ArrayList<Button>(Arrays.asList(Button.backButton(0.9f,0.1f))); 
+    List<Button> buttons = new ArrayList<Button>(Arrays.asList(Button.backButton(0.9f,0.1f),Button.startConnectionButton(0.5f, 0.3f))); 
     
     @Override
     public void addPopUp(PopUp popUp) {
@@ -70,7 +74,21 @@ public class ConnectWithFriends implements Scene {
     @Override
     public void init() {
         // TODO Auto-generated method stub
-        
+        Button button = Button.textButton("Connect to server", 0.5f, 0.5f, (Runnable) () ->  { });
+        button.setEffect( (Runnable) () -> {
+            if ( button.isClicked( Interlude.GAME_CONTAINER.getInput() ) ) {
+                if ( connectionIDTextField.getText().equals( "4444" ) ) {
+                    try {
+                        Client.connectToServer( "localhost", 4888 );
+                    } catch (UnknownHostException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        buttons.add(button);
     }
 
 }

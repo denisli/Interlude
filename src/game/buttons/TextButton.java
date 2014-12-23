@@ -19,8 +19,8 @@ public class TextButton implements Button {
     private UnicodeFont font;
     private Rectangle boundingBox;
     private boolean mouseWasDown;
-    private final float fractionX;
-    private final float fractionY;
+    private float fractionX;
+    private float fractionY;
     private Runnable effect;
     
     public TextButton( String text, float fractionX, float fractionY, Runnable effect) {
@@ -100,7 +100,11 @@ public class TextButton implements Button {
     @Override
     public boolean isClicked(Input input) {
         // TODO Auto-generated method stub
-        return mouseWasDown && !input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON);
+        boolean isClicked = mouseWasDown && !input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON);
+        if ( isClicked ) {
+            mouseWasDown = false;
+        }
+        return isClicked;
     }
     
     @Override
@@ -111,5 +115,33 @@ public class TextButton implements Button {
     @Override
     public void callEffect() {
         effect.run();
+    }
+
+    @Override
+    public void moveLeft(float fractionX) {
+        // TODO Auto-generated method stub
+        this.fractionX -= fractionX;
+        this.boundingBox = boundingBox();
+    }
+
+    @Override
+    public void moveRight(float fractionX) {
+        // TODO Auto-generated method stub
+        this.fractionX += fractionX;
+        this.boundingBox = boundingBox();
+    }
+
+    @Override
+    public void moveDown(float fractionY) {
+        // TODO Auto-generated method stub
+        this.fractionY += fractionY;
+        this.boundingBox = boundingBox();
+    }
+
+    @Override
+    public void moveUp(float fractionY) {
+        // TODO Auto-generated method stub
+        this.fractionY -= fractionY;
+        this.boundingBox = boundingBox();
     }
 }

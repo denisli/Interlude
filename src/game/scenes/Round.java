@@ -1,10 +1,12 @@
 package game.scenes;
 
+import game.Client;
 import game.Controls;
 import game.Interlude;
 import game.Orientation;
 import game.InstrumentType;
 import game.buttons.Button;
+import game.labels.Label;
 import game.moving_sound.MovingSound;
 import game.note_marker.NoteMarker;
 import game.pop_ups.PopUp;
@@ -39,18 +41,18 @@ public class Round implements Scene {
     /** Each note value and voicetype corresponds to a notemarker */
     private final Map<Pair<Integer,Handedness>,NoteMarker> noteMarkers = new HashMap<Pair<Integer,Handedness>,NoteMarker>();
     private final Queue<MovingSound> notesOnScreen = new LinkedList<MovingSound>();
-    private final Queue<SoundElement> automaticNotes = new LinkedList<SoundElement>();
     private final List<Voice> voices;
     /** restingTimes: Key is the voice index. The value is the resting time */
     private final Map<Integer,Integer> restingTimes = new HashMap<Integer,Integer>();
-    
+    private final Label scoreLabel = Label.scoreLabel();
     private final Instrument selectedInstrument;
     private final List<Handedness> handednesses = new ArrayList<Handedness>();
+    private int totalScore = 0;
     
     public Round(Music music, Instrument selectedInstrument) {
         this.music = music;
         this.isMultiVoice = music.isMultiVoice();
-        int initialDelay = 4000; // 4 seconds
+        int initialDelay = 6000; // 6 seconds
         List<Integer> timesUntilVoiceStart = music.timesUntilVoiceStarts();
         this.voices = music.voices();
 
@@ -79,6 +81,8 @@ public class Round implements Scene {
         for (Button button : buttons) {
             button.render(g);
         }
+        
+        scoreLabel.render(g);
     }
 
     long oldTime = 0;
@@ -142,7 +146,7 @@ public class Round implements Scene {
                             notesOnScreen.add( movingSound );
                         } else {
                             System.out.println(instrument.getInstrumentName());
-                            automaticNotes.add( soundElement );
+                            soundElement.bePlayed(instrument);
                         }
                         if (!voice.ended()) {
                             restingTime += voice.timeUntilNextElement();
@@ -150,11 +154,6 @@ public class Round implements Scene {
                         }
                     }
                 }
-            }
-            
-            if ( !automaticNotes.isEmpty() ) {
-                SoundElement soundElement = automaticNotes.remove();
-                soundElement.bePlayed(instrument);
             }
             
             if ( !notesOnScreen.isEmpty() ) { 
@@ -180,6 +179,12 @@ public class Round implements Scene {
                                 SoundElement soundElement = movingSound.soundElement();
                                 SoundElement correspondingSoundElement = soundElement.correspondingSoundElement(letter);
                                 soundElement.bePlayed(instrument);
+                                if ( letter != movingSound.soundElement().integer() ) {
+                                    totalScore -= 30;
+                                } else {
+                                    totalScore += (int) (100 * ( 1 - ( ( Math.abs( 0.9f - movingSound.fraction() ) ) / 0.9f ) ) );
+                                }
+                                scoreLabel.setText( Integer.toString( totalScore ) );
                             }
                         //}
                     }

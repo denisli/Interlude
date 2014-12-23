@@ -13,7 +13,7 @@ import org.newdawn.slick.Graphics;
 import util.Pair;
 
 public class MovingSound implements Renderable {
-    private final static float SPEED = 1.0f/5;
+    private final static float SPEED = 1.0f/3.5f;
     private float fractionX;
     private float fractionY;
     private int radius;
@@ -42,6 +42,10 @@ public class MovingSound implements Renderable {
         int centerY = (int) ( actualFractionY * containerHeight );
         g.setColor(Color.black);
         g.fillOval( centerX - radius, centerY - radius, 2 * radius, 2 * radius ); 
+    }
+    
+    public float fraction() {
+        return fractionX;
     }
     
     public void update(int t) {

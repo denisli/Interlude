@@ -71,24 +71,25 @@ public class NoteMarker {
         int containerWidth = Interlude.GAME_CONTAINER.getWidth();
         int containerHeight = Interlude.GAME_CONTAINER.getHeight();
         if ( handedness == Handedness.SINGLE ) {
-            float increment = 0.1f;
+            float initial = 0.2f;
+            float increment = (1.0f - 2 * initial) / (NUM_LETTERS - 1);
             fractionX = 0.9f;
             if (note() == Note.A) {
-                fractionY = increment;
+                fractionY = initial;
             } else if (note() == Note.B) {
-                fractionY = 2 * increment;
+                fractionY = initial + increment;
             } else if (note() == Note.C) {
-                fractionY = 3 * increment;
+                fractionY = initial + 2 * increment;
             } else if (note() == Note.D) {
-                fractionY = 4 * increment;
+                fractionY = initial + 3 * increment;
             } else if (note() == Note.E) {
-                fractionY = 5 * increment;
+                fractionY = initial + 4 * increment;
             } else if (note() == Note.F) {
-                fractionY = 6 * increment;
+                fractionY = initial + 5 * increment;
             } else if (note() == Note.G) {
-                fractionY = 7 * increment;
+                fractionY = initial + 6 * increment;
             } else if (note() == Simultaneous.S) {
-                fractionY = 8 * increment;
+                fractionY = initial + 7 * increment;
             } else {
                 throw new IllegalArgumentException("Note button not given a valid note to represent");
             }
