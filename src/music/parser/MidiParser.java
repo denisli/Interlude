@@ -148,6 +148,15 @@ public class MidiParser {
             }
         }
         
+        // Step 1.5: sort the time at ticks by the tick.
+        Collections.sort(timeAtTicks, new Comparator<Pair<Long,Long>>() {
+            @Override
+            public int compare(Pair<Long, Long> pair, Pair<Long, Long> otherPair) {
+                // TODO Auto-generated method stub
+                return (int) (pair.getLeft() - otherPair.getLeft());
+            }
+        });
+        
         
         // step 2. put in notes (but not simultaneous) into a sorted list (by tick time)
         
@@ -200,6 +209,7 @@ public class MidiParser {
         
         List<Voice> voices = new ArrayList<Voice>();
         Map<Integer,Long> firstTicks = new HashMap<Integer,Long>();
+        Map<Integer,Integer> programNumberToTimeUntilVoiceStarts = new HashMap<Integer,Integer>();
         
         int numberOfProgramsLeft = programNumberToNotes.keySet().size();
         int numberOfChannelsLeft = 15;
@@ -254,23 +264,17 @@ public class MidiParser {
                 channelIdx++;
             }
             voices.add( new MidiVoice( soundElements, timesUntilNextElement, new GeneralInstrument( programNumber, channelsToUse ) ) );
-        }
+        //}
         
         
         // step 4. compute time until voices start
-        Collections.sort(timeAtTicks, new Comparator<Pair<Long,Long>>() {
-            @Override
-            public int compare(Pair<Long, Long> pair, Pair<Long, Long> otherPair) {
-                // TODO Auto-generated method stub
-                return (int) (pair.getLeft() - otherPair.getLeft());
-            }
-        });
-        Map<Integer,Integer> programNumberToTimeUntilVoiceStarts = new HashMap<Integer,Integer>();
-        for ( int programNumber : firstTicks.keySet() ) {
+        
+        //Map<Integer,Integer> programNumberToTimeUntilVoiceStarts = new HashMap<Integer,Integer>();
+        //for ( int programNumber : firstTicks.keySet() ) {
            long tick = firstTicks.get(programNumber);
            int timeUntilVoiceStarts = 0;
-           for ( int i=0; i < timeAtTicks.size(); i++ ) {
-               Pair<Long,Long> pair = timeAtTicks.get(i);
+           for ( int j=0; j < timeAtTicks.size(); j++ ) {
+               Pair<Long,Long> pair = timeAtTicks.get(j);
                long otherTick = pair.getLeft();
                long timeAtTick = pair.getRight();
                if ( tick == otherTick ) {
