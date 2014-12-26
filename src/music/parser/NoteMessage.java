@@ -3,14 +3,12 @@ package music.parser;
 public class NoteMessage implements Comparable<NoteMessage> {
     private final long tick;
     private final int value;
-    private final double millisecondsPerTick;
     private final int volume;
     private final boolean on;
     
-    public NoteMessage( long tick, int value, double millisecondsPerTick, int volume, boolean on ) {
+    public NoteMessage( long tick, int value, int volume, boolean on ) {
         this.tick = tick;
         this.value = value;
-        this.millisecondsPerTick = millisecondsPerTick;
         this.volume = volume;
         this.on = on;
     }
@@ -27,10 +25,6 @@ public class NoteMessage implements Comparable<NoteMessage> {
     
     public int value() {
         return value;
-    }
-    
-    public double millisecondsPerTick() {
-        return millisecondsPerTick;
     }
     
     public int volume() {

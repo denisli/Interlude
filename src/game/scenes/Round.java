@@ -59,7 +59,7 @@ public class Round extends Scene {
         this.endTime = music.duration();
         this.endTimeLabel = Label.endTimeLabel( endTime );
         this.isMultiVoice = music.isMultiVoice();
-        int initialDelay = 6000; // 6 seconds
+        int initialDelay = 3000; // 3 seconds
         List<Integer> timesUntilVoiceStart = music.timesUntilVoiceStarts();
         this.voices = music.voices();
 

@@ -72,26 +72,33 @@ public class MidiParser {
             if ( message instanceof ShortMessage ) {
                 ShortMessage sm = (ShortMessage) message;
                 int command = sm.getCommand();
-                if ( command == ShortMessage.NOTE_ON ) {
-                    int channel = sm.getChannel();
-                    int programNumber = 0; // default program number is 0 if channel doesn't exist.
-                    if ( channelToProgramNumber.containsKey(channel) ) {
-                        programNumber = channelToProgramNumber.get( channel );
-                    } else {
-                        System.out.println("They didn't even set the program number!");
-                        channelToProgramNumber.put( channel, 0 );
-                        programNumber = 0;
-                    }
+                if ( command == ShortMessage.NOTE_ON || command == ShortMessage.NOTE_OFF ) {
+                    if ( command == ShortMessage.NOTE_ON ) {
+                        int channel = sm.getChannel();
+                        int programNumber = 0; // default program number is 0 if channel doesn't exist.
+                        if ( channelToProgramNumber.containsKey(channel) ) {
+                            programNumber = channelToProgramNumber.get( channel );
+                        } else {
+                            System.out.println("They didn't even set the program number!");
+                            channelToProgramNumber.put( channel, 0 );
+                            programNumber = 0;
+                        }
+                        
+                        if ( !programNumberToNoteMessages.containsKey(programNumber) ) {
+                            programNumberToNoteMessages.put(programNumber, new LinkedList<NoteMessage>());
+                        }
+                        List<NoteMessage> noteMessages = programNumberToNoteMessages.get( programNumber );
                     
-                    if ( !programNumberToNoteMessages.containsKey(programNumber) ) {
-                        programNumberToNoteMessages.put(programNumber, new LinkedList<NoteMessage>());
-                    }
-                    List<NoteMessage> noteMessages = programNumberToNoteMessages.get( programNumber );
-                
-                    if ( sm.getData2() != 0 ) { 
-                        noteMessages.add( new NoteMessage( tick, sm.getData1(), millisecondsPerTick, sm.getData2(), true ) );
-                    } else {
-                        noteMessages.add( new NoteMessage( tick, sm.getData1(), millisecondsPerTick, sm.getData2(), false ) );
+                        if ( sm.getData2() != 0 ) { 
+                            noteMessages.add( new NoteMessage( tick, sm.getData1(), sm.getData2(), true ) );
+                        } else {
+                            noteMessages.add( new NoteMessage( tick, sm.getData1(), sm.getData2(), false ) );
+                        }
+                    } else if ( command == ShortMessage.NOTE_OFF ) {
+                        int channel = sm.getChannel();
+                        int programNumber = channelToProgramNumber.get( channel );
+                        List<NoteMessage> noteMessages = programNumberToNoteMessages.get( programNumber );
+                        noteMessages.add( new NoteMessage( tick, sm.getData1(), sm.getData2(), false ) );
                     }
                     
                     Pair<Long,Long> lastPair = timeAtTicks.get( timeAtTicks.size() - 1 );
@@ -100,18 +107,7 @@ public class MidiParser {
                     long currentTime = (long) (lastTime + ( tick - lastTick ) * millisecondsPerTick );
                     timeAtTicks.add( new Pair<Long,Long>( tick, currentTime ) );
                     tickToTime.put( tick, currentTime );
-                } else if ( command == ShortMessage.NOTE_OFF ) {
-                    int channel = sm.getChannel();
-                    int programNumber = channelToProgramNumber.get( channel );
-                    List<NoteMessage> noteMessages = programNumberToNoteMessages.get( programNumber );
-                    noteMessages.add( new NoteMessage( tick, sm.getData1(), millisecondsPerTick, sm.getData2(), false ) );
-                
-                    Pair<Long,Long> lastPair = timeAtTicks.get( timeAtTicks.size() - 1 );
-                    long lastTick = lastPair.getLeft();
-                    long lastTime = lastPair.getRight();
-                    long currentTime = (long) (lastTime + ( tick - lastTick ) * millisecondsPerTick );
-                    timeAtTicks.add( new Pair<Long,Long>( tick, currentTime ) );
-                    tickToTime.put( tick, currentTime );
+                    
                 } else if ( command == ShortMessage.PROGRAM_CHANGE ) {
                     int channel = sm.getChannel();
                     currentProgramNumber = sm.getData1();
@@ -165,7 +161,6 @@ public class MidiParser {
             while ( !noteMessages.isEmpty() ) {
                 NoteMessage noteMessage = noteMessages.remove();
                 int value = noteMessage.value();
-                millisecondsPerTick = noteMessage.millisecondsPerTick();
                 int volume = noteMessage.volume();
                 long tick = noteMessage.tick();
                 int i = 0;
@@ -173,7 +168,7 @@ public class MidiParser {
                 if ( i != noteMessages.size() ) {
                     nextNoteOffMessage = noteMessages.get(i);
                 } else {
-                    nextNoteOffMessage = new NoteMessage( tick, value, millisecondsPerTick, volume, false );
+                    nextNoteOffMessage = new NoteMessage( tick, value, volume, false );
                 }
                 while ( nextNoteOffMessage.on() || nextNoteOffMessage.value() != value ) {
                     i += 1;
@@ -186,7 +181,7 @@ public class MidiParser {
                 if ( i != noteMessages.size() ) {
                     NoteMessage noteOffMessage = noteMessages.remove(i);
                     long offTick = noteOffMessage.tick();
-                    int duration = (int) ( (offTick - tick) * millisecondsPerTick );
+                    int duration = (int) ( (tickToTime.get(offTick) - tickToTime.get(tick)) );
                     Note note = new Note( value, duration, volume);
                     note.setTick(tick);
                     notes.add( new Pair<Long,Note>( tick, note ) );
