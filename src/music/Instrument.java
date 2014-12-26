@@ -19,6 +19,14 @@ public interface Instrument {
         }
     }
     
+    public static InstrumentType typeOfInstrument( int programNumber ) {
+        if ( programNumber == 0 ) {
+            return InstrumentType.DOUBLE;
+        } else {
+            return InstrumentType.SINGLE;
+        }
+    }
+    
     public void update(int t);
     
     public void play(Note note);

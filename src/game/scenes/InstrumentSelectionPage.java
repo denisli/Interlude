@@ -7,6 +7,7 @@ import java.util.Optional;
 import game.buttons.Button;
 import game.pop_ups.PopUp;
 import music.Instrument;
+import music.InstrumentPiece;
 import music.Music;
 import music.Voice;
 
@@ -57,12 +58,12 @@ public class InstrumentSelectionPage extends Scene {
 
     @Override
     public void init() {
-        List<Voice> voices = music.voices();
-        int numVoices = voices.size();
+        List<InstrumentPiece> instrumentPieces = music.instrumentPieces();
+        int numVoices = instrumentPieces.size();
         for ( int i = 0; i < numVoices; i++ ) {
-            Voice voice = voices.get(i);
-            buttons.add( Button.textButton( voice.instrument().getInstrumentName(), 0.5f, ((float) (i+1)) / (numVoices + 1), (Runnable) () -> {
-                selectedInstrument = Optional.of(voice.instrument());
+            InstrumentPiece instrumentPiece = instrumentPieces.get(i);
+            buttons.add( Button.textButton( instrumentPiece.instrument().getInstrumentName(), 0.5f, ((float) (i+1)) / (numVoices + 1), (Runnable) () -> {
+                selectedInstrument = Optional.of(instrumentPiece.instrument());
             }));
         }
         

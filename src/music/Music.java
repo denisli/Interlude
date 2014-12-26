@@ -2,28 +2,23 @@ package music;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
 public class Music {
     private final String title;
-    private final List<Voice> voices;
-    private final List<Integer> timesUntilVoiceStarts;
+    private final List<InstrumentPiece> instrumentPieces;
     
     
-    public Music(String title, List<Voice> voices, List<Integer> timesUntilVoiceStarts) {
+    public Music(String title, List<InstrumentPiece> instrumentPieces ) {
         this.title = title;
-        this.voices = voices; // voices sorted by start time
-        this.timesUntilVoiceStarts = timesUntilVoiceStarts;
+        this.instrumentPieces = instrumentPieces;
     }
     
-    public boolean isMultiVoice() {
-        return voices.size() > 1;
-    }
-    
-    public List<Integer> timesUntilVoiceStarts() {
-        return this.timesUntilVoiceStarts;
+    public boolean isMultiInstrument() {
+        return instrumentPieces.size() > 1;
     }
     
     public String title() {
@@ -31,13 +26,33 @@ public class Music {
     }
     
     public List<Voice> voices() {
+        List<Voice> voices = new ArrayList<Voice>();
+        for ( InstrumentPiece instrumentPiece : instrumentPieces ) {
+            for ( Voice voice : instrumentPiece.voices() ) {
+                voices.add(voice);
+            }
+        }
         return voices;
+    }
+    
+    public List<Integer> timesUntilVoicesStart() {
+        List<Integer> timesUntilVoicesStart = new ArrayList<Integer>();
+        for (InstrumentPiece instrumentPiece : instrumentPieces) {
+            for ( int timeUntilVoiceStarts : instrumentPiece.timesUntilVoicesStart() ) {
+                timesUntilVoicesStart.add(timeUntilVoiceStarts);
+            }
+        }
+        return timesUntilVoicesStart;
+    }
+    
+    public List<InstrumentPiece> instrumentPieces() {
+        return instrumentPieces;
     }
     
     public int duration() {
         int longestDuration = 0;
-        for ( Voice voice : voices ) {
-            longestDuration = Math.max( longestDuration, voice.duration() );
+        for ( InstrumentPiece instrumentPiece : instrumentPieces ) {
+            longestDuration = Math.max( longestDuration, instrumentPiece.duration() );
         }
         return longestDuration;
     }

@@ -6,6 +6,8 @@ public interface Voice {
     
     public int timeUntilNextElement();
     
+    public Handedness handedness();
+    
     public Instrument instrument();
     
     public boolean ended();

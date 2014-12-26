@@ -27,6 +27,8 @@ import util.Pair;
 import util.Triple;
 import music.GeneralInstrument;
 import music.Handedness;
+import music.Instrument;
+import music.InstrumentPiece;
 import music.InstrumentType;
 import music.MidiVoice;
 import music.Music;
@@ -37,6 +39,7 @@ import music.SoundElement;
 import music.Voice;
 
 public class MidiParser {
+    private static final int MIDDLE_C = 60;
     private static final int SET_TEMPO = 0x51;
     private static final int TIME_SIGNATURE = 0x58;
     
@@ -160,16 +163,17 @@ public class MidiParser {
         
         // step 2. put in notes (but not simultaneous) into a sorted list (by tick time)
         
-        Map<Integer,LinkedList<Pair<Long,Note>>> programNumberToNotes = new HashMap<Integer,LinkedList<Pair<Long,Note>>>();
+        Map<Integer,Map<Handedness,LinkedList<Pair<Long,Note>>>> programNumberTo_HandToNotes = new HashMap<Integer,Map<Handedness,LinkedList<Pair<Long,Note>>>>();
         for ( int programNumber : programNumberToNoteMessages.keySet() ) {
             LinkedList<NoteMessage> noteMessages = programNumberToNoteMessages.get(programNumber);
             Collections.sort(noteMessages);
             
-            LinkedList<Pair<Long,Note>> notes = new LinkedList<Pair<Long,Note>>();
+            Map<Handedness,LinkedList<Pair<Long,Note>>> handToNotes = new HashMap<Handedness,LinkedList<Pair<Long,Note>>>();
             
             while ( !noteMessages.isEmpty() ) {
                 NoteMessage noteMessage = noteMessages.remove();
                 int value = noteMessage.value();
+                Handedness handedness = handedness( programNumber, value );
                 int volume = noteMessage.volume();
                 long tick = noteMessage.tick();
                 int i = 0;
@@ -193,68 +197,40 @@ public class MidiParser {
                     int duration = (int) ( (tickToTime.get(offTick) - tickToTime.get(tick)) );
                     Note note = new Note( value, duration, volume);
                     note.setTick(tick);
-                    notes.add( new Pair<Long,Note>( tick, note ) );
+                    
+                    if ( handToNotes.containsKey(handedness) ) {
+                        LinkedList<Pair<Long,Note>> notes = handToNotes.get(handedness);
+                        notes.add( new Pair<Long,Note>( tick, note ) );
+                    } else {
+                        LinkedList<Pair<Long,Note>> notes = new LinkedList<Pair<Long,Note>>();
+                        notes.add( new Pair<Long,Note>( tick, note ) );
+                        handToNotes.put( handedness, notes );
+                    }
                 } else {
                     int duration = 0;
                     Note note = new Note( value, duration, volume);
                     note.setTick(tick);
-                    notes.add( new Pair<Long,Note>( tick, note ) );
+                    
+                    if ( handToNotes.containsKey(handedness) ) {
+                        LinkedList<Pair<Long,Note>> notes = handToNotes.get(handedness);
+                        notes.add( new Pair<Long,Note>( tick, note ) );
+                    } else {
+                        LinkedList<Pair<Long,Note>> notes = new LinkedList<Pair<Long,Note>>();
+                        notes.add( new Pair<Long,Note>( tick, note ) );
+                        handToNotes.put( handedness, notes );
+                    }
                 }
             }
-            programNumberToNotes.put( programNumber, notes );
+            programNumberTo_HandToNotes.put( programNumber, handToNotes );
         }
         
-        // step 3. put in sound elements into the a sorted list (by tick time)
-        //         and also put in time between elements into a list (sorted by the order in which they occur)
-        
-        List<Voice> voices = new ArrayList<Voice>();
-        Map<Integer,Long> firstTicks = new HashMap<Integer,Long>();
-        Map<Integer,Integer> programNumberToTimeUntilVoiceStarts = new HashMap<Integer,Integer>();
-        
-        int numberOfProgramsLeft = programNumberToNotes.keySet().size();
+        // Step X: set program number to instruments
+        Map<Integer,Instrument> programNumberToInstrument = new HashMap<Integer,Instrument>();
+        int numberOfProgramsLeft = programNumberTo_HandToNotes.keySet().size();
         int numberOfChannelsLeft = 15;
         int channelIdx = 0;
         int[] availableChannels = new int[] { 0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 11, 12, 13, 14, 15 };
-        for ( int programNumber : programNumberToNotes.keySet() ) {
-            int i = 0;
-            long oldTick = 0; // arbitrary starting value with no meaning
-            List<Integer> timesUntilNextElement = new ArrayList<Integer>();
-            List<SoundElement> soundElements = new ArrayList<SoundElement>();
-            LinkedList<Pair<Long,Note>> notes = programNumberToNotes.get(programNumber);
-            while ( !notes.isEmpty() ) {
-                List<SoundElement> simultaneousNotes = new ArrayList<SoundElement>();
-                Pair<Long,Note> pair = notes.remove();
-                long tick = pair.getLeft();
-                if ( i != 0 ) {
-                    timesUntilNextElement.add( (int) (tickToTime.get(tick) - tickToTime.get(oldTick)) );
-                } else {
-                    firstTicks.put(programNumber,tick);
-                }
-                Note note = pair.getRight();
-                simultaneousNotes.add(note);
-                while ( !notes.isEmpty() ) {
-                    Pair<Long,Note> nextPair = notes.peek();
-                    if ( nextPair.getLeft() == tick ) {
-                        notes.remove();
-                        Note simultaneousNote = nextPair.getRight();
-                        simultaneousNotes.add( simultaneousNote );
-                    } else {
-                        break;
-                    }
-                }
-                if ( simultaneousNotes.size() == 1 ) {
-                    soundElements.add(simultaneousNotes.get(0));
-                } else if ( simultaneousNotes.size() > 1 ) {
-                    soundElements.add( new Simultaneous(simultaneousNotes) );
-                } else {
-                    throw new RuntimeException("Something is wrong here...");
-                }
-                
-                oldTick = tick;
-                
-                i++;
-            }
-            
+        for ( int programNumber : programNumberToNoteMessages.keySet() ) {
             int numberOfChannelsPickedOff = (int) Math.ceil( ((double) numberOfChannelsLeft) / numberOfProgramsLeft );
             numberOfProgramsLeft--;
             numberOfChannelsLeft -= numberOfChannelsPickedOff;
@@ -263,39 +239,118 @@ public class MidiParser {
                 channelsToUse[j] = availableChannels[channelIdx];
                 channelIdx++;
             }
-            voices.add( new MidiVoice( soundElements, timesUntilNextElement, new GeneralInstrument( programNumber, channelsToUse ) ) );
-        //}
+            
+            programNumberToInstrument.put( programNumber, new GeneralInstrument( programNumber, channelsToUse ) );
+        }
         
+        // step 3. put in sound elements into the a sorted list (by tick time)
+        //         and also put in time between elements into a list (sorted by the order in which they occur)
         
-        // step 4. compute time until voices start
+        Map<Integer,Map<Handedness,Long>> firstTicks = new HashMap<Integer,Map<Handedness,Long>>();
+        Map<Integer,Map<Handedness,Integer>> programNumberTo_HandToTimeUntilVoiceStarts = new HashMap<Integer,Map<Handedness,Integer>>();
+        Map<Integer,Map<Handedness,Voice>> programNumberTo_HandToVoice = new HashMap<Integer,Map<Handedness,Voice>>();
         
-        //Map<Integer,Integer> programNumberToTimeUntilVoiceStarts = new HashMap<Integer,Integer>();
-        //for ( int programNumber : firstTicks.keySet() ) {
-           long tick = firstTicks.get(programNumber);
-           int timeUntilVoiceStarts = 0;
-           for ( int j=0; j < timeAtTicks.size(); j++ ) {
-               Pair<Long,Long> pair = timeAtTicks.get(j);
-               long otherTick = pair.getLeft();
-               long timeAtTick = pair.getRight();
-               if ( tick == otherTick ) {
-                   timeUntilVoiceStarts = (int) timeAtTick;
+        for ( int programNumber : programNumberTo_HandToNotes.keySet() ) {
+            Map<Handedness,Long> handToFirstTick = new HashMap<Handedness,Long>();
+            Map<Handedness,Voice> handToVoice = new HashMap<Handedness,Voice>();
+            Map<Handedness,Integer> handToTimeUntilVoiceStarts = new HashMap<Handedness,Integer>();
+            Map<Handedness,LinkedList<Pair<Long,Note>>> handToNotes = programNumberTo_HandToNotes.get(programNumber);
+            
+            for ( Handedness handedness : handToNotes.keySet() ) {
+                int i = 0;
+                long oldTick = 0; // arbitrary starting value with no meaning
+                List<Voice> voices = new ArrayList<Voice>();
+                List<Integer> timesUntilNextElement = new ArrayList<Integer>();
+                List<SoundElement> soundElements = new ArrayList<SoundElement>();
+                LinkedList<Pair<Long,Note>> notes = handToNotes.get(handedness);
+                while ( !notes.isEmpty() ) {
+                    List<SoundElement> simultaneousNotes = new ArrayList<SoundElement>();
+                    Pair<Long,Note> pair = notes.remove();
+                    long tick = pair.getLeft();
+                    if ( i != 0 ) {
+                        timesUntilNextElement.add( (int) (tickToTime.get(tick) - tickToTime.get(oldTick)) );
+                    } else {
+                        handToFirstTick.put(handedness,tick);
+                    }
+                    Note note = pair.getRight();
+                    simultaneousNotes.add(note);
+                    while ( !notes.isEmpty() ) {
+                        Pair<Long,Note> nextPair = notes.peek();
+                        if ( nextPair.getLeft() == tick ) {
+                            notes.remove();
+                            Note simultaneousNote = nextPair.getRight();
+                            simultaneousNotes.add( simultaneousNote );
+                        } else {
+                            break;
+                        }
+                    }
+                    if ( simultaneousNotes.size() == 1 ) {
+                        soundElements.add(simultaneousNotes.get(0));
+                    } else if ( simultaneousNotes.size() > 1 ) {
+                        soundElements.add( new Simultaneous(simultaneousNotes) );
+                    } else {
+                        throw new RuntimeException("Something is wrong here...");
+                    }
+                    
+                    oldTick = tick;
+                    
+                    i++;
+                }
+                
+                Instrument instrument = programNumberToInstrument.get(programNumber);
+                Voice voice = new MidiVoice( soundElements, timesUntilNextElement, handedness, instrument );
+                handToVoice.put(handedness, voice);
+            //}
+            
+            
+            // step 4. compute time until voices start
+            
+            //Map<Integer,Integer> programNumberToTimeUntilVoiceStarts = new HashMap<Integer,Integer>();
+            //for ( int programNumber : firstTicks.keySet() ) {
+               long tick = handToFirstTick.get(handedness);
+               int timeUntilVoiceStarts = 0;
+               for ( int j=0; j < timeAtTicks.size(); j++ ) {
+                   Pair<Long,Long> pair = timeAtTicks.get(j);
+                   long otherTick = pair.getLeft();
+                   long timeAtTick = pair.getRight();
+                   if ( tick == otherTick ) {
+                       timeUntilVoiceStarts = (int) timeAtTick;
+                   }
                }
-           }
-           
-           programNumberToTimeUntilVoiceStarts.put(programNumber,timeUntilVoiceStarts);
-        }
-        
-        List<Integer> timesUntilVoiceStart = new ArrayList<Integer>();
-        for ( Voice voice : voices ) {
-            int programNumber = voice.instrument().getProgram();
-            if ( programNumberToTimeUntilVoiceStarts.containsKey(programNumber) ) {
-                timesUntilVoiceStart.add( programNumberToTimeUntilVoiceStarts.get( programNumber ) );
-            } else {
-                timesUntilVoiceStart.add( 0 );
+               
+               handToTimeUntilVoiceStarts.put(handedness, timeUntilVoiceStarts);
+               
+               
             }
+            programNumberTo_HandToTimeUntilVoiceStarts.put(programNumber,handToTimeUntilVoiceStarts);
+            programNumberTo_HandToVoice.put(programNumber, handToVoice);
         }
         
-        return new Music( musicTitle, voices, timesUntilVoiceStart );
+        List<InstrumentPiece> instrumentPieces = new ArrayList<InstrumentPiece>();
+        
+        for ( int programNumber : programNumberTo_HandToTimeUntilVoiceStarts.keySet() ) {
+            Map<Handedness,Integer> handToTimeUntilVoiceStarts = programNumberTo_HandToTimeUntilVoiceStarts.get(programNumber);
+            Map<Handedness,Voice> handToVoice = programNumberTo_HandToVoice.get(programNumber);
+            List<Voice> voices = new ArrayList<Voice>();
+            List<Integer> timesUntilVoicesStart = new ArrayList<Integer>();
+            for ( Handedness handedness : handToVoice.keySet() ) {
+                Voice voice = handToVoice.get(handedness);
+                voices.add(voice);
+                
+                if ( handToTimeUntilVoiceStarts.containsKey(handedness) ) {
+                    timesUntilVoicesStart.add( handToTimeUntilVoiceStarts.get( handedness ) );
+                } else {
+                    timesUntilVoicesStart.add( 0 );
+                }
+            }
+            
+            Instrument instrument = programNumberToInstrument.get(programNumber);
+            
+            InstrumentPiece instrumentPiece = new InstrumentPiece( voices, timesUntilVoicesStart, instrument );
+            instrumentPieces.add(instrumentPiece);
+        }
+        
+        return new Music( musicTitle, instrumentPieces );
     }
     
     private static Pair<PriorityQueue<MidiEvent>,Integer> sortedMidiEvents( File file ) {
@@ -344,6 +399,18 @@ public class MidiParser {
         }
         
         return new Pair<PriorityQueue<MidiEvent>,Integer>(midiEvents,ticksPerBeat);
+    }
+    
+    private static Handedness handedness( int programNumber, int value ) {
+        if ( Instrument.typeOfInstrument( programNumber ) == InstrumentType.SINGLE ) {
+            return Handedness.SINGLE;
+        } else {
+            if ( value > MIDDLE_C ) {
+                return Handedness.LEFT;
+            } else {
+                return Handedness.RIGHT;
+            }
+        }
     }
     
     public static void analyze() throws Exception {

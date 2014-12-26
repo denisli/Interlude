@@ -5,14 +5,16 @@ import java.util.List;
 public class MidiVoice implements Voice {
     private final List<SoundElement> sequence;
     private final List<Integer> timesUntilNextElement;
+    private final Handedness handedness;
     private final Instrument instrument;
     
     private int index = -1; // index of the music element currently playing
     private SoundElement currentElement;
     
-    public MidiVoice(List<SoundElement> sequence, List<Integer> timesUntilNextElement, Instrument instrument) {
+    public MidiVoice(List<SoundElement> sequence, List<Integer> timesUntilNextElement, Handedness handedness, Instrument instrument) {
         this.sequence = sequence;
         this.timesUntilNextElement = timesUntilNextElement;
+        this.handedness = handedness;
         this.instrument = instrument;
     }
     
@@ -24,6 +26,10 @@ public class MidiVoice implements Voice {
     
     public int timeUntilNextElement() {
         return timesUntilNextElement.get(index);
+    }
+    
+    public Handedness handedness() {
+        return handedness;
     }
     
     public Instrument instrument() {

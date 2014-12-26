@@ -26,6 +26,7 @@ import org.newdawn.slick.Input;
 import util.Pair;
 import music.Handedness;
 import music.Instrument;
+import music.InstrumentPiece;
 import music.InstrumentType;
 import music.Music;
 import music.Simultaneous;
@@ -35,11 +36,10 @@ import music.Voice;
 
 public class Round extends Scene {
     private final Music music;
-    private final boolean isMultiVoice;
     private final List<Button> buttons = new ArrayList<Button>();
     /** Each note value and voicetype corresponds to a notemarker */
     private final Map<Pair<Integer,Handedness>,NoteMarker> noteMarkers = new HashMap<Pair<Integer,Handedness>,NoteMarker>();
-    private final Queue<MovingSound> notesOnScreen = new LinkedList<MovingSound>();
+    private final Map<Handedness,Queue<MovingSound>> notesOnScreenOfHand = new HashMap<Handedness,Queue<MovingSound>>();
     private final List<Voice> voices;
     /** restingTimes: Key is the voice index. The value is the resting time */
     private final Map<Integer,Integer> restingTimes = new HashMap<Integer,Integer>();
@@ -58,13 +58,12 @@ public class Round extends Scene {
         this.music = music;
         this.endTime = music.duration();
         this.endTimeLabel = Label.endTimeLabel( endTime );
-        this.isMultiVoice = music.isMultiVoice();
         int initialDelay = 3000; // 3 seconds
-        List<Integer> timesUntilVoiceStart = music.timesUntilVoiceStarts();
+        List<Integer> timesUntilVoicesStart = music.timesUntilVoicesStart();
         this.voices = music.voices();
 
         for ( int voiceIndex = 0; voiceIndex < voices.size(); voiceIndex++ ) {
-            restingTimes.put(voiceIndex, initialDelay + timesUntilVoiceStart.get(voiceIndex));
+            restingTimes.put(voiceIndex, initialDelay + timesUntilVoicesStart.get(voiceIndex));
         }
         this.selectedInstrument = selectedInstrument;
         if ( selectedInstrument.type() == InstrumentType.SINGLE ) {
@@ -73,6 +72,12 @@ public class Round extends Scene {
             handednesses.add(Handedness.LEFT);
             handednesses.add(Handedness.RIGHT);
         }
+        
+        for ( Handedness handedness : handednesses ) {
+            notesOnScreenOfHand.put(handedness,new LinkedList<MovingSound>());
+        }
+        
+        System.out.println(timesUntilVoicesStart);
     }
     
     @Override
@@ -82,9 +87,12 @@ public class Round extends Scene {
             noteMarker.render(g);
         }
         
-        for ( MovingSound movingSound : notesOnScreen ) {
-            movingSound.render(g);
+        for ( Handedness handedness : handednesses ) {
+            for ( MovingSound movingSound : notesOnScreenOfHand.get(handedness) ) {
+                movingSound.render(g);
+            }
         }
+            
         for (Button button : buttons) {
             button.render(g);
         }
@@ -135,6 +143,8 @@ public class Round extends Scene {
         // Update resting times and put a sound element on screen if it is time.
         for ( int voiceIndex = 0; voiceIndex < voices.size(); voiceIndex++ ) {
             Voice voice = voices.get(voiceIndex);
+            Handedness handedness = voice.handedness();
+            Queue<MovingSound> notesOnScreen = notesOnScreenOfHand.get(handedness);
             
             Instrument instrument = voice.instrument();
             instrument.update(t);
@@ -156,8 +166,9 @@ public class Round extends Scene {
                     //TODO: Change handedness!
                     if ( instrument.equals(selectedInstrument) ) {
                         System.out.println(instrument.getInstrumentName());
-                        Pair<Integer,Handedness> pair = new Pair<Integer,Handedness>(soundElementLetter, Handedness.SINGLE);
-                        MovingSound movingSound = new MovingSound( offScreen, noteMarkers.get(pair).fractionY(), soundElement, Handedness.SINGLE );
+                        Pair<Integer,Handedness> pair = new Pair<Integer,Handedness>(soundElementLetter, handedness);
+                        System.out.println(handedness);
+                        MovingSound movingSound = new MovingSound( offScreen, noteMarkers.get(pair).fractionY(), soundElement, handedness );
                         movingSound.init();
                         notesOnScreen.add( movingSound );
                     } else {
@@ -198,7 +209,7 @@ public class Round extends Scene {
             // If a user plays a note, perform all necessary actions due to his input.
             // This includes playing a note and updating score.
             if ( instrument.equals(selectedInstrument) ) {
-                for ( Handedness handedness : handednesses ) {
+                //for ( Handedness handedness : handednesses ) {
                     for ( int key : Controls.noteKeys( handedness ) ) {
                         //if ( input.isKeyPressed(key) ) {
                             if ( !notesOnScreen.isEmpty() ) {
@@ -216,7 +227,7 @@ public class Round extends Scene {
                             }
                         //}
                     }
-                }
+                //}
             }
         }
     }
@@ -237,10 +248,6 @@ public class Round extends Scene {
     
     public Music music() {
         return music;
-    }
-    
-    public boolean isMultiVoice() {
-        return isMultiVoice;
     }
 
     @Override

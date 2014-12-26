@@ -22,7 +22,7 @@ public class SongSelectionButton implements Button {
         this.textComponent = new TextButton( musicFile.musicTitle(), fractionX, fractionY, (Runnable) () -> {
             try {
                 Music music = musicFile.getMusic();
-                if ( music.isMultiVoice() ) {
+                if ( music.isMultiInstrument() ) {
                     SceneManager.setNewScene( Scene.instrumentSelection( musicFile.getMusic() ) );
                 } else {
                     Instrument selectedInstrument = music.voices().get(0).instrument();

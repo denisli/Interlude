@@ -77,11 +77,7 @@ public class GeneralInstrument implements Instrument {
     
     @Override
     public InstrumentType type() {
-        //if ( TWO_HANDED_INSTRUMENTS.contains( currentPlayer.getProgram() ) ) {
-        //    return InstrumentType.DOUBLE;
-        //} else {
-            return InstrumentType.SINGLE;
-        //}
+        return Instrument.typeOfInstrument(programNumber);
     }
 
     @Override
