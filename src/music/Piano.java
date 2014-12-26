@@ -1,7 +1,5 @@
 package music;
 
-import game.InstrumentType;
-
 import java.util.PriorityQueue;
 import java.util.Queue;
 
@@ -64,14 +62,9 @@ public class Piano implements Instrument {
     
     @Override
     public void play(Simultaneous simultaneous) {
-        for ( MusicElement musicElement : simultaneous.musicElements() ) {
-            musicElement.bePlayed( this );
+        for ( SoundElement soundElement : simultaneous.soundElements() ) {
+            soundElement.bePlayed( this );
         }
-    }
-    
-    @Override
-    public void play(Rest rest) {
-        return;
     }
     
     @Override
@@ -89,5 +82,11 @@ public class Piano implements Instrument {
     public int getProgram() {
         // TODO Auto-generated method stub
         return 0;
+    }
+
+    @Override
+    public void clear() {
+        // TODO Auto-generated method stub
+        
     }
 }

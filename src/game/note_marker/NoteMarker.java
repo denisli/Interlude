@@ -1,20 +1,17 @@
 package game.note_marker;
 
-import java.awt.Font;
+import java.util.List;
 
 import game.Controls;
 import game.Interlude;
 import game.Orientation;
-import game.SimpleFont;
-import game.InstrumentType;
+import game.fonts.GameFonts;
 import music.Handedness;
 import music.Note;
-import music.Simultaneous;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 
 import util.Pair;
@@ -50,9 +47,18 @@ public class NoteMarker {
         int centerY = (int) (actualFractionY * containerHeight);
         g.setColor( color );
         g.fillOval( centerX - radius, centerY - radius, 2 * radius, 2 * radius); 
-        g.setColor( Color.red );
+        g.setColor( color );
+        
+        Pair<Float,Float> otherEndPosition = Orientation.getPosition( 0, fractionY );
+        float otherEndFractionX = otherEndPosition.getLeft();
+        float otherEndFractionY = otherEndPosition.getRight();
+        int otherEndCenterX = (int) (otherEndFractionX * containerWidth);
+        int otherEndCenterY = (int) (otherEndFractionY * containerHeight);
+        g.drawLine( centerX, centerY, otherEndCenterX, otherEndCenterY);
+        
+        g.setColor( Color.black );
         g.setFont( font );
-        String noteText = Input.getKeyName( Controls.correspondingKey( note(), handedness ) );
+        String noteText = Note.toLetter(note());//Input.getKeyName( Controls.correspondingKey( note(), handedness ) );
         int textWidth = font.getWidth(noteText);
         int textHeight = font.getHeight(noteText);
         g.drawString( noteText, centerX  - textWidth / 2, centerY - textHeight / 2);
@@ -61,60 +67,35 @@ public class NoteMarker {
     public void update(int t) {
         Input input = Interlude.GAME_CONTAINER.getInput();
         if (input.isKeyDown( key )) {
-            color = Color.blue;
+            color = Color.darkGray;
         } else {
-            color = Color.yellow;
+            color = Color.lightGray;
         };
     }
     
     public void init() {
         int containerWidth = Interlude.GAME_CONTAINER.getWidth();
         int containerHeight = Interlude.GAME_CONTAINER.getHeight();
+        List<Integer> notesInOrder = Controls.notesInOrder();
         if ( handedness == Handedness.SINGLE ) {
             float initial = 0.2f;
             float increment = (1.0f - 2 * initial) / (NUM_LETTERS - 1);
-            fractionX = 0.9f;
-            if (note() == Note.A) {
-                fractionY = initial;
-            } else if (note() == Note.B) {
-                fractionY = initial + increment;
-            } else if (note() == Note.C) {
-                fractionY = initial + 2 * increment;
-            } else if (note() == Note.D) {
-                fractionY = initial + 3 * increment;
-            } else if (note() == Note.E) {
-                fractionY = initial + 4 * increment;
-            } else if (note() == Note.F) {
-                fractionY = initial + 5 * increment;
-            } else if (note() == Note.G) {
-                fractionY = initial + 6 * increment;
-            } else if (note() == Simultaneous.S) {
-                fractionY = initial + 7 * increment;
-            } else {
-                throw new IllegalArgumentException("Note button not given a valid note to represent");
+            fractionX = 0.85f;
+            
+            for ( int i = 0; i < notesInOrder.size(); i++ ) {
+                if ( note == notesInOrder.get(i) ) {
+                    fractionY = initial + i * increment;
+                }
             }
             radius = (int) (Math.min(containerWidth, containerHeight) * increment * 2) / 5;
         } else {
+            float initial = 0.1f;
             float increment = 0.05f;
-            fractionX = 0.9f;
-            if (note() == Note.A) {
-                fractionY = 2 * increment;
-            } else if (note() == Note.B) {
-                fractionY = 3 * increment;
-            } else if (note() == Note.C) {
-                fractionY = 4 * increment;
-            } else if (note() == Note.D) {
-                fractionY = 5 * increment;
-            } else if (note() == Note.E) {
-                fractionY = 6 * increment;
-            } else if (note() == Note.F) {
-                fractionY = 7 * increment;
-            } else if (note() == Note.G) {
-                fractionY = 8 * increment;
-            } else if (note() == Simultaneous.S) {
-                fractionY = 9 * increment;
-            } else {
-                throw new IllegalArgumentException("Note button not given a valid note to represent");
+            fractionX = 0.85f;
+            for ( int i = 0; i < notesInOrder.size(); i++ ) {
+                if ( note == notesInOrder.get(i) ) {
+                    fractionY = initial + i * increment;
+                }
             }
             if ( handedness == Handedness.RIGHT ) {
                 fractionY += NUM_LETTERS * increment;
@@ -122,11 +103,7 @@ public class NoteMarker {
             radius = (int) (Math.min(containerWidth, containerHeight) * increment * 2) / 5;
         }
         
-        try {
-            font = (new SimpleFont( "Arial", Font.PLAIN, 36 )).get();
-        } catch (SlickException se) {
-            se.printStackTrace();
-        }
+        font = GameFonts.ARIAL_PLAIN_36;
     }
     
     public float fractionX() {

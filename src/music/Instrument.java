@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import game.InstrumentType;
-
 public interface Instrument {
     public static final List<Integer> TWO_HANDED_INSTRUMENTS = new ArrayList<Integer>(Arrays.asList(0));
     
@@ -23,8 +21,6 @@ public interface Instrument {
     
     public void update(int t);
     
-    public void play(Rest rest);
-    
     public void play(Note note);
     
     public void play(Simultaneous simultaneous);
@@ -34,6 +30,8 @@ public interface Instrument {
     public int getProgram();
     
     public InstrumentType type();
+    
+    public void clear();
     
     @Override
     public boolean equals(Object other);

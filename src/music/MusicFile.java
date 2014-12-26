@@ -20,10 +20,14 @@ public class MusicFile {
         return musicTitle;
     }
     
+    public File file() {
+        return musicFile;
+    }
+    
     public Music getMusic() throws FileNotFoundException {
         //return Parser.fileToMusic( musicFile );
         try {
-            return MidiParser.parse( musicFile, 0 );
+            return MidiParser.parse( musicTitle, musicFile, 0 );
         } catch (MidiUnavailableException mue) {
             // TODO: do something else with this exception;
             throw new RuntimeException("Midi not available");

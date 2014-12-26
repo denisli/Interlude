@@ -13,7 +13,6 @@ public class Interlude {
         System.setProperty("org.lwjgl.librarypath",
                 new File(new File(System.getProperty("user.dir"),"native"),
                         LWJGLUtil.getPlatformName()).getAbsolutePath());
-        //System.setProperty("org.lwjgl.opengl.Window.undecorated", "true");
         GAME_CONTAINER.init();
         GAME_CONTAINER.start();
     }

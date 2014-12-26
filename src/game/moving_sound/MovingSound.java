@@ -2,9 +2,9 @@ package game.moving_sound;
 
 import game.Interlude;
 import game.Orientation;
-import game.InstrumentType;
 import game.Renderable;
 import music.Handedness;
+import music.InstrumentType;
 import music.SoundElement;
 
 import org.newdawn.slick.Color;
@@ -17,6 +17,7 @@ public class MovingSound implements Renderable {
     private float fractionX;
     private float fractionY;
     private int radius;
+    private Color color = Color.black;
     private Handedness handedness;
     
     private final SoundElement soundElement;
@@ -40,7 +41,7 @@ public class MovingSound implements Renderable {
         float actualFractionY = actualPosition.getRight();
         int centerX = (int) ( actualFractionX * containerWidth );
         int centerY = (int) ( actualFractionY * containerHeight );
-        g.setColor(Color.black);
+        g.setColor( color );
         g.fillOval( centerX - radius, centerY - radius, 2 * radius, 2 * radius ); 
     }
     
@@ -63,5 +64,17 @@ public class MovingSound implements Renderable {
     
     public Handedness handedness() {
         return handedness;
+    }
+    
+    public void setFront() {
+        color = Color.red;
+    }
+    
+    public void setSecond() {
+        color = Color.black;
+    }
+    
+    public void setThird() {
+        color = Color.black;
     }
 }

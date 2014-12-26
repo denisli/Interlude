@@ -2,6 +2,8 @@ package music;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class Music {
@@ -11,21 +13,9 @@ public class Music {
     
     
     public Music(String title, List<Voice> voices, List<Integer> timesUntilVoiceStarts) {
-        for ( Voice voice : voices ) {
-            System.out.println("Program Number of Voice: " + voice.instrument().getInstrumentName());
-        }
         this.title = title;
         this.voices = voices; // voices sorted by start time
         this.timesUntilVoiceStarts = timesUntilVoiceStarts;
-    }
-    
-    public static Music godKnows() {
-        try {
-            return Parser.fileToMusic(new File("res/new_music2.txt"));
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            throw new RuntimeException("I should be able to find the file...");
-        }
     }
     
     public boolean isMultiVoice() {
@@ -42,5 +32,13 @@ public class Music {
     
     public List<Voice> voices() {
         return voices;
+    }
+    
+    public int duration() {
+        int longestDuration = 0;
+        for ( Voice voice : voices ) {
+            longestDuration = Math.max( longestDuration, voice.duration() );
+        }
+        return longestDuration;
     }
 }

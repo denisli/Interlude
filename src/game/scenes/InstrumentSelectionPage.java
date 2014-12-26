@@ -12,7 +12,7 @@ import music.Voice;
 
 import org.newdawn.slick.Graphics;
 
-public class InstrumentSelectionPage implements Scene {
+public class InstrumentSelectionPage extends Scene {
     private final List<Button> buttons = new ArrayList<Button>();
     private final Music music;
     private Optional<Instrument> selectedInstrument;
@@ -40,12 +40,6 @@ public class InstrumentSelectionPage implements Scene {
     }
 
     @Override
-    public String name() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public void render(Graphics g) {
         // TODO Auto-generated method stub
         for ( Button button : buttons ) {
@@ -67,7 +61,7 @@ public class InstrumentSelectionPage implements Scene {
         int numVoices = voices.size();
         for ( int i = 0; i < numVoices; i++ ) {
             Voice voice = voices.get(i);
-            buttons.add( Button.textButton( voice.instrument().getInstrumentName(), ((float) (i+1)) / (numVoices + 1), 0.5f, (Runnable) () -> {
+            buttons.add( Button.textButton( voice.instrument().getInstrumentName(), 0.5f, ((float) (i+1)) / (numVoices + 1), (Runnable) () -> {
                 selectedInstrument = Optional.of(voice.instrument());
             }));
         }
@@ -75,6 +69,12 @@ public class InstrumentSelectionPage implements Scene {
         buttons.add( Button.textButton("OK!", 0.5f, 0.9f, (Runnable) () -> {
             SceneManager.setNewScene( Scene.round(music, selectedInstrument.get()) );
         }));
+    }
+
+    @Override
+    public void cleanUp() {
+        // TODO Auto-generated method stub
+        
     }
 
 }

@@ -5,28 +5,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 import music.Handedness;
+import music.InstrumentType;
 import music.Note;
-import game.InstrumentType;
 import game.Renderable;
-import game.SimpleFont;
 import game.buttons.Button;
+import game.fonts.GameFonts;
+import game.fonts.SimpleFont;
 import game.labels.Label;
+import game.note_orderer.NoteOrderer;
 import game.pop_ups.PopUp;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.UnicodeFont;
 
-public class ChangeControls implements Scene {
+public class ChangeControls extends Scene {
     private final List<Renderable> renderables = new ArrayList<Renderable>();
     private final List<PopUp> popUps = new ArrayList<PopUp>();
     private final List<PopUp> popUpsToBeRemoved = new ArrayList<PopUp>();
+    private final NoteOrderer noteOrderer = NoteOrderer.noteOrderer();
     
-    @Override
-    public String name() {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
     @Override
     public void render(Graphics g) {
@@ -37,6 +35,8 @@ public class ChangeControls implements Scene {
         for ( PopUp popUp : popUps ) {
             popUp.render(g);
         }
+        
+        noteOrderer.render(g);
     }
 
     @Override
@@ -51,6 +51,8 @@ public class ChangeControls implements Scene {
         for ( PopUp popUp : popUpsToBeRemoved) {
             popUps.remove(popUp);
         }
+        
+        noteOrderer.update(t);
     }
 
     @Override
@@ -102,11 +104,11 @@ public class ChangeControls implements Scene {
         // general purpose buttons
         renderables.add(Button.backButton(0.9f,  0.1f));
         // secondary section labels
-        UnicodeFont secondaryFont = SimpleFont.retrieve("Arial", Font.PLAIN, 32);
+        UnicodeFont secondaryFont = GameFonts.ARIAL_PLAIN_32;
         renderables.add( Label.label("Single Voice Controls", 0.25f, 0.2f, Color.cyan, secondaryFont ) );
         renderables.add( Label.label("Double Voice Controls", 0.75f, 0.2f, Color.cyan, secondaryFont ) );
         // tertiary section labels
-        UnicodeFont tertiaryFont = SimpleFont.retrieve("Arial", Font.PLAIN, 24);
+        UnicodeFont tertiaryFont = GameFonts.ARIAL_PLAIN_24;
         renderables.add( Label.label("Left", 2f/3, 0.25f, Color.blue, tertiaryFont ) );
         renderables.add( Label.label("Right", 5f/6, 0.25f, Color.blue, tertiaryFont ) );
         
@@ -132,5 +134,11 @@ public class ChangeControls implements Scene {
     public void destroyPopUp(PopUp popUp) {
         // TODO Auto-generated method stub
         popUpsToBeRemoved.add(popUp);
+    }
+
+    @Override
+    public void cleanUp() {
+        // TODO Auto-generated method stub
+        
     }
 }

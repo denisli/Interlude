@@ -42,6 +42,14 @@ public interface Button extends Renderable, Movable {
         return button;
     }
     
+    public static Button mainMenuButton(float fractionX, float fractionY) {
+        Button button = new TextButton("Main Menu", fractionX, fractionY, (Runnable) () -> {
+            SceneManager.setNewScene(Scene.mainMenu());
+        });
+        button.init();
+        return button;
+    }
+    
     public static Button backButton(float fractionX, float fractionY) {
         Button button = new TextButton("Back", fractionX, fractionY, (Runnable) () -> {
             SceneManager.setNewScene(SceneManager.currentScene().parentScene());

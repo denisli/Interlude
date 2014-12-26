@@ -1,5 +1,10 @@
 package game;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+
 import music.Handedness;
 import music.Note;
 import music.Simultaneous;
@@ -7,6 +12,17 @@ import music.Simultaneous;
 import org.newdawn.slick.Input;
 
 public class Controls {
+    private static final List<Integer> NOTES_IN_ORDER = new ArrayList<Integer>(Arrays.asList(
+            Note.A,
+            Note.B,
+            Note.C,
+            Note.D,
+            Note.E,
+            Note.F,
+            Note.G,
+            Simultaneous.S
+            ));
+    
     // single voice controls
     private static int ANoteKey = Input.KEY_A;
     private static int BNoteKey = Input.KEY_S;
@@ -35,6 +51,10 @@ public class Controls {
     private static int rightFNoteKey = Input.KEY_U;
     private static int rightGNoteKey = Input.KEY_I;
     private static int rightSimultaneousKey = Input.KEY_O;
+    
+    public static List<Integer> notesInOrder() {
+        return NOTES_IN_ORDER;
+    }
     
     public static int[] noteKeys( Handedness voiceType ) {
         if ( voiceType == Handedness.SINGLE ) {
@@ -229,6 +249,19 @@ public class Controls {
         } else {
             throw new IllegalArgumentException("Not a valid voice type");
         }
+    }
+    
+    
+    /**
+     * Changes the order of the notes that appear in a round via swapping a note's position.
+     * @param positionMoved
+     *          the rank of the note moved (0 rank is leftmost/topmost, 8 rank is rightmost/bottommost)
+     * @param newPosition
+     *          the rank to move the note into (0 rank is leftmost/topmost, 8 rank is rightmost/bottommost)
+     */
+    public static void changeNoteOrder( int positionMoved, int newPosition ) {
+        int noteIntegerRemoved = NOTES_IN_ORDER.remove( positionMoved );
+        NOTES_IN_ORDER.add( newPosition, noteIntegerRemoved );
     }
     
     // one voice key getters and setters

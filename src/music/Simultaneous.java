@@ -1,13 +1,14 @@
 package music;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Simultaneous implements SoundElement {
     public static final int S = 128;
     
-    private final List<MusicElement> elements;
+    private final List<SoundElement> elements;
     
-    public Simultaneous(List<MusicElement> elements) {
+    public Simultaneous(List<SoundElement> elements) {
         this.elements = elements;
     }
     
@@ -15,28 +16,14 @@ public class Simultaneous implements SoundElement {
     @Override
     public int duration() {
         int maxNoteDuration = 0;
-        for (MusicElement element : elements) {
+        for (SoundElement element : elements) {
             maxNoteDuration = Math.max(maxNoteDuration, element.duration());
         }
         return maxNoteDuration;
     }
-
-    public int timeUntilNextElement() {
-        return elements.get(0).timeUntilNextElement();
-    }
     
-    public List<MusicElement> musicElements() {
+    public List<SoundElement> soundElements() {
         return elements;
-    }
-    
-    @Override
-    public boolean isRest() {
-        for ( MusicElement element : elements ) {
-            if ( !element.isRest() ) {
-                return false;
-            }
-        }
-        return true;
     }
     
     @Override
@@ -54,6 +41,10 @@ public class Simultaneous implements SoundElement {
         if (letter == Simultaneous.S) {
             return this;
         }
-        return new Note(Note.A, Note.QUARTER_NOTE, 5, Note.SHARP, 127, 60);
+        List<SoundElement> correspondingElements = new ArrayList<SoundElement>();
+        for ( SoundElement element : elements ) {
+            correspondingElements.add( element.correspondingSoundElement(letter) );
+        }
+        return new Simultaneous( correspondingElements );
     }
 }

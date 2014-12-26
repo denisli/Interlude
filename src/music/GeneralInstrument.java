@@ -1,7 +1,5 @@
 package music;
 
-import game.InstrumentType;
-
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -25,7 +23,8 @@ public class GeneralInstrument implements Instrument {
     private long currentTime = 0;
     private final int programNumber;
     
-    public GeneralInstrument( int programNumber, Synthesizer synth, int... occupiedChannels ) {
+    public GeneralInstrument( int programNumber, int... occupiedChannels ) {
+        Synthesizer synth = LoadSynthesizer.getSynthesizer();
         javax.sound.midi.Instrument[] instruments = synth.getDefaultSoundbank().getInstruments();
         this.programNumber = programNumber;
         this.instrumentName = instruments[programNumber].getName();
@@ -63,7 +62,7 @@ public class GeneralInstrument implements Instrument {
         int pitch = note.pitch();
         int volume = note.volume();
         int duration = note.duration();
-        System.out.println("Note tick: " + note.tick() + ", Program Number: " + currentPlayer.getProgram() + ", Pitch: " + pitch + ", Volume: " + volume);
+        System.out.println("Note tick: " + note.tick() + ", Program Number: " + currentPlayer.getProgram() + ", Index: " + idx + ", Pitch: " + pitch + ", Volume: " + volume + ", Duration: " + duration);
         currentPlayer.noteOn( pitch, volume );
         offTimes.add( new Triple<Long,Integer,Integer>( currentTime + duration, channelIdx, pitch ) );
         idx = ( idx + 1 ) % occupiedChannels.length;
@@ -71,14 +70,9 @@ public class GeneralInstrument implements Instrument {
     
     @Override
     public void play(Simultaneous simultaneous) {
-        for ( MusicElement musicElement : simultaneous.musicElements() ) {
+        for ( SoundElement musicElement : simultaneous.soundElements() ) {
             musicElement.bePlayed( this );
         }
-    }
-
-    @Override
-    public void play(Rest rest) {
-        return;
     }
     
     @Override
@@ -110,5 +104,16 @@ public class GeneralInstrument implements Instrument {
     public int getProgram() {
         // TODO Auto-generated method stub
         return programNumber;
+    }
+
+    @Override
+    public void clear() {
+        // TODO Auto-generated method stub
+        while ( !offTimes.isEmpty() ) {
+            Triple<Long,Integer,Integer> triple = offTimes.remove();
+            int channelIdx = triple.getMiddle();
+            int pitch = triple.getRight();
+            channels[channelIdx].noteOff(pitch);
+        }
     }
 }

@@ -9,15 +9,15 @@ import java.util.List;
 
 import game.Client;
 import game.Interlude;
-import game.SimpleFont;
 import game.buttons.Button;
+import game.fonts.SimpleFont;
 import game.pop_ups.PopUp;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.gui.TextField;
 
-public class ConnectWithFriends implements Scene {
+public class ConnectWithFriends extends Scene {
     
     TextField connectionIDTextField = 
             new TextField( Interlude.GAME_CONTAINER.context(), 
@@ -41,12 +41,6 @@ public class ConnectWithFriends implements Scene {
     public Scene parentScene() {
         // TODO Auto-generated method stub
         return Scene.mainMenu();
-    }
-
-    @Override
-    public String name() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     @Override
@@ -89,6 +83,12 @@ public class ConnectWithFriends implements Scene {
             }
         });
         buttons.add(button);
+    }
+
+    @Override
+    public void cleanUp() {
+        // TODO Auto-generated method stub
+        
     }
 
 }

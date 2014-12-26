@@ -1,7 +1,8 @@
 package game.buttons;
 
 import game.Interlude;
-import game.SimpleFont;
+import game.fonts.GameFonts;
+import game.fonts.SimpleFont;
 
 import java.awt.Font;
 
@@ -70,11 +71,7 @@ public class TextButton implements Button {
     }
     
     private UnicodeFont getFont() {
-        try {
-            return (new SimpleFont( "Arial", Font.PLAIN, 36 )).get();
-        } catch (SlickException se) {
-            return null;
-        }
+        return GameFonts.ARIAL_PLAIN_36;
     }
     
     private Rectangle boundingBox() {;

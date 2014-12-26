@@ -1,5 +1,7 @@
 package game;
 
+import game.fonts.GameFonts;
+
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
@@ -23,8 +25,6 @@ public class InterludeGameContainer {
         app = new AppGameContainer( interludeGame );
         app.setDisplayMode( 900, 900, false );
         app.setTargetFrameRate(60);
-        app.setMinimumLogicUpdateInterval( 10 );
-        app.setMaximumLogicUpdateInterval( 30 );
     }
     
     public int getWidth() {

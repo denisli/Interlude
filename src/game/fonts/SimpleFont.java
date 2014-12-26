@@ -1,4 +1,4 @@
-package game;
+package game.fonts;
 
 /**
  * The code here can be found at http://slickrpg.blogspot.com/2011/07/unicode-font.html

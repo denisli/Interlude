@@ -9,7 +9,7 @@ import game.pop_ups.PopUp;
 
 import org.newdawn.slick.Graphics;
 
-public class MainMenu implements Scene {
+public class MainMenu extends Scene {
     private final List<Button> buttons = Arrays.asList(Button.playButton(0.5f,0.5f), Button.playWithFriendsButton(0.5f,0.6f), Button.instructionsButton(0.5f,0.7f),Button.controlsButton(0.5f,0.8f));
     private String name = "Main Menu";
     private final List<Label> labels = Arrays.asList(Label.interludeLabel());
@@ -42,12 +42,6 @@ public class MainMenu implements Scene {
     }
 
     @Override
-    public String name() {
-        // TODO Auto-generated method stub
-        return name;
-    }
-
-    @Override
     public Scene parentScene() {
         // TODO Auto-generated method stub
         throw new RuntimeException("Main menu has no parent scene!");
@@ -61,6 +55,12 @@ public class MainMenu implements Scene {
 
     @Override
     public void destroyPopUp(PopUp popUp) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void cleanUp() {
         // TODO Auto-generated method stub
         
     }

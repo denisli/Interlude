@@ -1,29 +1,27 @@
 package music;
 
-import game.InstrumentType;
-
 import java.util.List;
 
 public class TextVoice implements Voice {
-    private final List<MusicElement> sequence;
+    private final List<SoundElement> sequence;
     private final Instrument instrument;
     
     private int index = -1; // index of the music element currently playing
-    private MusicElement currentElement;
+    private SoundElement currentElement;
     
-    public TextVoice(List<MusicElement> sequence, Instrument instrument) {
+    public TextVoice(List<SoundElement> sequence, Instrument instrument) {
         this.sequence = sequence;
         this.instrument = instrument;
     }
     
-    public MusicElement next() {
+    public SoundElement next() {
         index += 1;
         currentElement = sequence.get(index);
         return currentElement;
     }
     
     public int timeUntilNextElement() {
-        return currentElement.timeUntilNextElement();
+        throw new RuntimeException("Not implemented yet");
     }
     
     public Instrument instrument() {
@@ -32,5 +30,13 @@ public class TextVoice implements Voice {
     
     public boolean ended() {
         return index == sequence.size() - 1;
+    }
+    
+    public int duration() {
+        int duration = 0;
+        for ( SoundElement soundElement: sequence ) {
+            duration += soundElement.duration();
+        }
+        return duration;
     }
 }

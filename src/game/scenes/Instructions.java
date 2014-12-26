@@ -12,17 +12,11 @@ import game.pop_ups.PopUp;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
-public class Instructions implements Scene {
+public class Instructions extends Scene {
     private int upperLeftX;
     private int upperLeftY;
     private final List<Button> buttons = new ArrayList<Button>(Arrays.asList(Button.backButton(0.9f, 0.1f)));
     private final List<Label> labels = new ArrayList<Label>(Arrays.asList(Label.interludeLabel()));
-
-    @Override
-    public String name() {
-        // TODO Auto-generated method stub
-        return null;
-    }
 
     @Override
     public void render(Graphics g) {
@@ -77,6 +71,12 @@ public class Instructions implements Scene {
 
     @Override
     public void destroyPopUp(PopUp popUp) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    public void cleanUp() {
         // TODO Auto-generated method stub
         
     }

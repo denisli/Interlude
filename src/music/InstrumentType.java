@@ -1,4 +1,4 @@
-package game;
+package music;
 
 public enum InstrumentType {
     SINGLE, DOUBLE;

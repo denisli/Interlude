@@ -190,10 +190,6 @@ public class Note implements SoundElement {
      * Returns the time (in milliseconds) until the next element
      * @return time until next note
      */
-    @Override
-    public int timeUntilNextElement() {
-        return duration();
-    }
     
     @Override
     public void bePlayed(Instrument instrument) {
@@ -201,16 +197,11 @@ public class Note implements SoundElement {
     }
     
     @Override
-    public Note correspondingSoundElement( int letter ) {
-        if (letter == Simultaneous.S) {
-            return new Note( 3, octave, accidental, duration, volume ); // TODO: FIX THIS TO SOMETHING MORE LEGIT
+    public Note correspondingSoundElement( int integer ) {
+        if (integer == Simultaneous.S) {
+            return new Note( this.integer, Math.abs(octave-1), accidental, duration, volume);
         }
-        return new Note( letter, duration, octave, accidental, volume );
-    }
-    
-    @Override
-    public boolean isRest() {
-        return false;
+        return new Note( integer, octave, accidental, duration, volume );
     }
     
     @Override

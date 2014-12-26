@@ -4,11 +4,11 @@ import java.awt.Font;
 
 import game.Controls;
 import game.Interlude;
-import game.SimpleFont;
-import game.InstrumentType;
+import game.fonts.SimpleFont;
 import game.labels.Label;
 import game.scenes.SceneManager;
 import music.Handedness;
+import music.InstrumentType;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
