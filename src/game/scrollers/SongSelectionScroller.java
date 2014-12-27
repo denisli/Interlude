@@ -55,7 +55,9 @@ public class SongSelectionScroller implements Scroller {
             "True Tears - Reflectia",
             "Ouran High School Host Club - Sakura Kiss (Full)",
             "Slam Dunk - Sekai ga Owaru Made wa",
-            "Pachelbel Canon"
+            "Pachelbel Canon",
+            "Girls Generation - Gee",
+            "Slam Dunk - Kimi ga Suki Da to Sakebitai",
     };
     private final String[] fileNames = new String[] { 
             "Little Busters!.mid", 
@@ -96,7 +98,9 @@ public class SongSelectionScroller implements Scroller {
             "omoiwooitekite.mid",
             "ouran-high-school-host-club-sakura-kiss-full-version.mid",
             "sdsekai.mid",
-            "canon4.mid"
+            "canon4.mid",
+            "Girls Generation - Gee[ic3zz86].mid",
+            "sdopening.mid"
             };
     
     private List<Button> songSelectionButtons = new ArrayList<Button>();

@@ -309,14 +309,8 @@ public class MidiParser {
             //for ( int programNumber : firstTicks.keySet() ) {
                long tick = handToFirstTick.get(handedness);
                int timeUntilVoiceStarts = 0;
-               for ( int j=0; j < timeAtTicks.size(); j++ ) {
-                   Pair<Long,Long> pair = timeAtTicks.get(j);
-                   long otherTick = pair.getLeft();
-                   long timeAtTick = pair.getRight();
-                   if ( tick == otherTick ) {
-                       timeUntilVoiceStarts = (int) timeAtTick;
-                   }
-               }
+               long timeAtTick = tickToTime.get(tick);
+               timeUntilVoiceStarts = (int) timeAtTick;
                
                handToTimeUntilVoiceStarts.put(handedness, timeUntilVoiceStarts);
                
