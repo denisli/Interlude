@@ -5,10 +5,8 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.HashSet;
 import java.util.Optional;
@@ -24,12 +22,12 @@ public class Server {
      *      thread safety?
      */
     private static Optional<ServerSocket> serverSocket = Optional.empty(); 
-    private static Set<Socket> friends;
+    private static Set<Socket> friends = new HashSet<Socket>();
     
-    public static void start() throws UnknownHostException, IOException {
+    public static void startServer() throws UnknownHostException, IOException {
         if ( !serverSocket.isPresent() ) {
             System.out.println("Server started");
-            serverSocket = Optional.of(new ServerSocket(4888));
+            serverSocket = Optional.of(new ServerSocket(8888));
             serve();
         } else {
             System.err.println("Server is already operating");
@@ -43,13 +41,11 @@ public class Server {
                 while ( operating ) {
                     try{
                         Socket clientSocket = serverSocket.get().accept();
-                        try {
-                            handleClientMessages( clientSocket );
-                        } finally {
-                            clientSocket.close();
-                        }
-                    } catch ( IOException ioe ) {
                         
+                    	friends.add(clientSocket);
+                        handleClientMessages( clientSocket );
+                    } catch ( IOException ioe ) {
+                    	
                     }
                 }
             }
@@ -61,11 +57,11 @@ public class Server {
             public void run() {
                 try {
                     BufferedReader br = new BufferedReader( new InputStreamReader(clientSocket.getInputStream()) );
-                    
                     for ( String line = br.readLine(); line != null; line = br.readLine() ) {
-                        for ( Socket friend : friends ) {
+                    	for ( Socket friend : friends ) {
                             BufferedWriter bw = new BufferedWriter( new OutputStreamWriter(friend.getOutputStream()) );
                             bw.write(line + "\n");
+                            bw.flush();
                         }
                     }
                 } catch ( IOException ioe ) {
@@ -81,7 +77,8 @@ public class Server {
         }
     }
     
-    public static void stopRunning() {
+    public static void stopRunning() throws IOException {
+    	serverSocket.get().close();
         serverSocket = Optional.empty();
     }
 }

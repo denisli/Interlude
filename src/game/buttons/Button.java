@@ -58,10 +58,10 @@ public interface Button extends Renderable, Movable {
         return button;
     }
     
-    public static Button startConnectionButton(float fractionX, float fractionY) {
+    public static Button startServerButton(float fractionX, float fractionY) {
         Button button = new TextButton("Start Connection", fractionX, fractionY, (Runnable) () -> {
             try {
-                Server.start();
+                Server.startServer();
             } catch (Exception e) {
                 e.printStackTrace();
             }

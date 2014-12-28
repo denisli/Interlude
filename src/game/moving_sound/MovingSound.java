@@ -13,7 +13,7 @@ import org.newdawn.slick.Graphics;
 import util.Pair;
 
 public class MovingSound implements Renderable {
-    private final static float SPEED = 1.0f/3.5f;
+    private final static float SPEED = 1.0f/3500.0f; // how much of the screen in moves in 1 millisecond
     private float fractionX;
     private float fractionY;
     private int radius;
@@ -50,12 +50,16 @@ public class MovingSound implements Renderable {
     }
     
     public void update(int t) {
-        fractionX += (SPEED * t) / 1000;
+        fractionX += SPEED * t;
+    }
+    
+    public static float speed() {
+    	return SPEED;
     }
     
     public void init() {
         int containerHeight = Interlude.GAME_CONTAINER.getHeight();
-        radius = containerHeight / 45;
+        radius = containerHeight / 50;
     }
     
     public boolean offScreen() {

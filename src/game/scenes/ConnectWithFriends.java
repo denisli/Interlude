@@ -23,7 +23,7 @@ public class ConnectWithFriends extends Scene {
             new TextField( Interlude.GAME_CONTAINER.context(), 
                            SimpleFont.retrieve("Arial",Font.PLAIN,36),
                            300, 300, 400, 50);
-    List<Button> buttons = new ArrayList<Button>(Arrays.asList(Button.backButton(0.9f,0.1f),Button.startConnectionButton(0.5f, 0.3f))); 
+    List<Button> buttons = new ArrayList<Button>(Arrays.asList(Button.backButton(0.9f,0.1f),Button.startServerButton(0.5f, 0.3f))); 
     
     @Override
     public void addPopUp(PopUp popUp) {
@@ -70,17 +70,17 @@ public class ConnectWithFriends extends Scene {
         // TODO Auto-generated method stub
         Button button = Button.textButton("Connect to server", 0.5f, 0.5f, (Runnable) () ->  { });
         button.setEffect( (Runnable) () -> {
-            if ( button.isClicked( Interlude.GAME_CONTAINER.getInput() ) ) {
-                if ( connectionIDTextField.getText().equals( "4444" ) ) {
+            	System.out.println("Clicked?");
+                if ( connectionIDTextField.getText().equals( "8888" ) ) {
+                	System.out.println("equals?");
                     try {
-                        Client.connectToServer( "localhost", 4888 );
+                        Client.connectToServer( "localhost", 8888 );
                     } catch (UnknownHostException e) {
                         e.printStackTrace();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
-            }
         });
         buttons.add(button);
     }

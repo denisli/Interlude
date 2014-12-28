@@ -1,25 +1,14 @@
 package game;
 
-import music.Instrument;
-import music.MusicElement;
-import music.Note;
-import music.Simultaneous;
-import music.SoundElement;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Optional;
-import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Client {
@@ -27,18 +16,46 @@ public class Client {
     // Thread for writing.
     // Thread safe queue for collecting messages to send.
     private static ConcurrentLinkedQueue<String> messagesToSend = new ConcurrentLinkedQueue<String>();
+    private static ConcurrentLinkedQueue<String> messagesToProcess = new ConcurrentLinkedQueue<String>();
     private static Optional<Socket> serverSocket;
-    private static Instrument piano;
     
     public static void connectToServer( String host, int port ) throws UnknownHostException, IOException {
-        // TODO: Change this out for an actual instrument. Or consider switchng to a different design.
-        piano = Instrument.piano();
-        // TODO: Change the above.
-        
         System.out.println("Connected to server");
         serverSocket = Optional.of(new Socket(host, port));
         receiveMessages();
         sendMessages();
+    }
+    
+    /**
+     * Tells whether or not there are any messages to process
+     * @return boolean, true if there are no more messages to process and false otherwise.
+     */
+    public static boolean noMoreMessagesToProcess() {
+    	return messagesToProcess.isEmpty();
+    }
+    
+    /**
+     * Picks off a message sent from server that needs to be processed
+     * @return a message that needs to be processed
+     */
+    public static String removeMessageToProcess() {
+    	return messagesToProcess.remove();
+    }
+    
+    /**
+     * Adds a message to a queue of messages that will be sent to server.
+     * @param message
+     */
+    public static void addMessageToSend(String message) {
+    	messagesToSend.add(message);
+    }
+    
+    /**
+     * Returns whether or not the client is currently connected to a server.
+     * @return whether or not the client is connected to a server.
+     */
+    public static boolean isConnected() {
+        return serverSocket.isPresent();
     }
     
     /**
@@ -63,25 +80,8 @@ public class Client {
                 try {
                     BufferedReader br = new BufferedReader(new InputStreamReader(serverSocket.get().getInputStream()));
                     for ( String line = br.readLine(); line != null; line = br.readLine() ) {
-                        Queue<String> tokens = new LinkedList<String>(Arrays.asList(line.split(" ")));
-                        String token = tokens.remove();
-                        if ( token.equals("play") ) {
-                            int programNumber = Integer.parseInt(tokens.remove());
-                            List<MusicElement> simultaneousNotes = new ArrayList<MusicElement>();
-                            while ( !tokens.isEmpty() ) {
-                                int value = Integer.parseInt(tokens.remove());
-                                int duration = Integer.parseInt(tokens.remove());
-                                int volume = Integer.parseInt(tokens.remove());
-                                Note note = new Note(value, duration, volume);
-                                simultaneousNotes.add( note );
-                            }
-                            if ( simultaneousNotes.size() == 1 ) {
-                                SoundElement simultaneous = new Simultaneous( simultaneousNotes );
-                                simultaneous.bePlayed( piano );
-                            }
-                        }
+                        messagesToProcess.add(line);
                     }
-                    br.close();
                 } catch (IOException ioe) {
                     ioe.printStackTrace();
                 }
@@ -89,6 +89,10 @@ public class Client {
         }).start();
     }
     
+    /**
+     * Sends all enqueued message requests to the server.
+     * @throws IOException
+     */
     private static void sendMessages() throws IOException {
         new Thread(new Runnable() {
             public void run() {
@@ -98,6 +102,7 @@ public class Client {
                         if ( !messagesToSend.isEmpty() ) {
                             String message = messagesToSend.remove();
                             bw.write(message + "\n");
+                            bw.flush();
                         }
                     }
                 } catch (IOException ioe) {
@@ -105,9 +110,5 @@ public class Client {
                 }
             }
         }).start();
-    }
-    
-    public static boolean isConnected() {
-        return serverSocket.isPresent();
     }
 }

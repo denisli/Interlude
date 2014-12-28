@@ -62,15 +62,21 @@ public class Round extends Scene {
         List<Integer> timesUntilVoicesStart = music.timesUntilVoicesStart();
         this.voices = music.voices();
 
-        for ( int voiceIndex = 0; voiceIndex < voices.size(); voiceIndex++ ) {
-            restingTimes.put(voiceIndex, initialDelay + timesUntilVoicesStart.get(voiceIndex));
-        }
         this.selectedInstrument = selectedInstrument;
         if ( selectedInstrument.type() == InstrumentType.SINGLE ) {
             handednesses.add(Handedness.SINGLE);
         } else {
             handednesses.add(Handedness.LEFT);
             handednesses.add(Handedness.RIGHT);
+        }
+        
+        for ( int voiceIndex = 0; voiceIndex < voices.size(); voiceIndex++ ) {
+        	Voice voice = voices.get(voiceIndex);
+        	if ( !voice.instrument().equals(selectedInstrument) ) {
+        		restingTimes.put(voiceIndex, initialDelay + (int) ( 0.85f / (MovingSound.speed()) ) + timesUntilVoicesStart.get(voiceIndex));
+        	} else {
+        		restingTimes.put(voiceIndex, initialDelay + timesUntilVoicesStart.get(voiceIndex));
+        	}
         }
         
         for ( Handedness handedness : handednesses ) {
@@ -182,14 +188,14 @@ public class Round extends Scene {
             if ( instrument.equals(selectedInstrument) ) {
                 Handedness handedness = voice.handedness();
                 for ( int key : Controls.noteKeys( handedness ) ) {
-                    //if ( input.isKeyPressed(key) ) {
+                    if ( input.isKeyPressed(key) ) {
                         Queue<MovingSound> notesOnScreen = notesOnScreenOfHand.get(handedness);
                         if ( !notesOnScreen.isEmpty() ) {
                             int letter = Controls.correspondingNote(key, handedness );
                             MovingSound movingSound = notesOnScreen.remove();
                             SoundElement soundElementToPlay = movingSound.soundElement();
-                            SoundElement correspondingSoundElement = soundElementToPlay.correspondingSoundElement(letter);
-                            soundElementToPlay.bePlayed(instrument);
+                            SoundElement correspondingSoundElementToPlay = soundElementToPlay.correspondingSoundElement(letter);
+                            correspondingSoundElementToPlay.bePlayed(instrument);
                             if ( letter != movingSound.soundElement().integer() ) {
                                 totalScore -= 30;
                             } else {
@@ -197,36 +203,36 @@ public class Round extends Scene {
                             }
                             scoreLabel.setText( Integer.toString( totalScore ) );
                         }
-                    //}
+                    }
                 }
             }
-            
-            // Remove any notes that are no longer on screen.
-            for ( Handedness handedness : handednesses ) {
-                Queue<MovingSound> notesOnScreen = notesOnScreenOfHand.get(handedness);
-                if ( !notesOnScreen.isEmpty() ) { 
-                    while ( notesOnScreen.peek().offScreen() ) {
-                        notesOnScreen.remove();
-                        if (notesOnScreen.isEmpty()) {
-                            break;
-                        }
+        }
+        
+     // Remove any notes that are no longer on screen.
+        for ( Handedness handedness : handednesses ) {
+            Queue<MovingSound> notesOnScreen = notesOnScreenOfHand.get(handedness);
+            if ( !notesOnScreen.isEmpty() ) { 
+                while ( notesOnScreen.peek().offScreen() ) {
+                    notesOnScreen.remove();
+                    if (notesOnScreen.isEmpty()) {
+                        break;
                     }
                 }
-            
-            
-                // Move each moving sound, also make the first third a particular color
-                int counter = 0;
-                for ( MovingSound movingSound : notesOnScreen ) {
-                    if ( counter == 0 ) {
-                        movingSound.setFront();
-                    } else if ( counter == 1 ) {
-                        movingSound.setSecond();
-                    } else if ( counter == 2 ) {
-                        movingSound.setThird();
-                    }
-                    movingSound.update(t);
-                    counter++;
+            }
+        
+        
+            // Move each moving sound, also make the first third a particular color
+            int counter = 0;
+            for ( MovingSound movingSound : notesOnScreen ) {
+                if ( counter == 0 ) {
+                    movingSound.setFront();
+                } else if ( counter == 1 ) {
+                    movingSound.setSecond();
+                } else if ( counter == 2 ) {
+                    movingSound.setThird();
                 }
+                movingSound.update(t);
+                counter++;
             }
         }
     }
