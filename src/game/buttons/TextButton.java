@@ -2,15 +2,10 @@ package game.buttons;
 
 import game.Interlude;
 import game.fonts.GameFonts;
-import game.fonts.SimpleFont;
 
-import java.awt.Font;
-
-import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.SlickException;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.Rectangle;
 

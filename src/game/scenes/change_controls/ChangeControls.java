@@ -1,19 +1,16 @@
-package game.scenes;
+package game.scenes.change_controls;
 
-import java.awt.Font;
 import java.util.ArrayList;
 import java.util.List;
 
 import music.Handedness;
-import music.InstrumentType;
 import music.Note;
 import game.Renderable;
 import game.buttons.Button;
 import game.fonts.GameFonts;
-import game.fonts.SimpleFont;
 import game.labels.Label;
-import game.note_orderer.NoteOrderer;
 import game.pop_ups.PopUp;
+import game.scenes.Scene;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -21,43 +18,38 @@ import org.newdawn.slick.UnicodeFont;
 
 public class ChangeControls extends Scene {
     private final List<Renderable> renderables = new ArrayList<Renderable>();
-    private final List<PopUp> popUps = new ArrayList<PopUp>();
-    private final List<PopUp> popUpsToBeRemoved = new ArrayList<PopUp>();
     private final NoteOrderer noteOrderer = NoteOrderer.noteOrderer();
     
 
     @Override
     public void render(Graphics g) {
         // TODO Auto-generated method stub
-        for ( Renderable renderable : renderables ) {
-            renderable.render(g);
-        }
-        for ( PopUp popUp : popUps ) {
-            popUp.render(g);
-        }
-        
-        noteOrderer.render(g);
+        super.render(g);
+        renderables.stream().forEach( renderable -> renderable.render(g) );
     }
 
     @Override
     public void update(int t) {
         // TODO Auto-generated method stub
-        for ( Renderable renderable : renderables ) {
-            renderable.update(t);
-        }
-        for ( PopUp popUp : popUps ) {
-            popUp.update(t);
-        }
-        for ( PopUp popUp : popUpsToBeRemoved) {
-            popUps.remove(popUp);
-        }
-        
-        noteOrderer.update(t);
+        super.update(t);
+        renderables.stream().forEach( renderable -> renderable.update(t) );
     }
 
     @Override
-    public void init() {
-        // first add all the renderables to the list of renderables
+    public Scene parentScene() {
+        // TODO Auto-generated method stub
+        return Scene.mainMenu();
+    }
+
+    @Override
+    public void cleanUp() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    protected void layout() {
+        // put in all buttons
         final String[] noteLetters = new String[] { "A", "B", "C", "D", "E", "F", "G", "S" };
         final float yIncrement = 0.05f;
         // single voice controls
@@ -105,39 +97,19 @@ public class ChangeControls extends Scene {
         renderables.add(Button.backButton(0.9f,  0.1f));
         // secondary section labels
         UnicodeFont secondaryFont = GameFonts.ARIAL_PLAIN_32;
-        renderables.add( Label.label("Single Voice Controls", 0.25f, 0.2f, Color.cyan, secondaryFont ) );
-        renderables.add( Label.label("Double Voice Controls", 0.75f, 0.2f, Color.cyan, secondaryFont ) );
+        renderables.add( Label.textLabel("Single Voice Controls", 0.25f, 0.2f, Color.cyan, secondaryFont ) );
+        renderables.add( Label.textLabel("Double Voice Controls", 0.75f, 0.2f, Color.cyan, secondaryFont ) );
         // tertiary section labels
         UnicodeFont tertiaryFont = GameFonts.ARIAL_PLAIN_24;
-        renderables.add( Label.label("Left", 2f/3, 0.25f, Color.blue, tertiaryFont ) );
-        renderables.add( Label.label("Right", 5f/6, 0.25f, Color.blue, tertiaryFont ) );
+        renderables.add( Label.textLabel("Left", 2f/3, 0.25f, Color.blue, tertiaryFont ) );
+        renderables.add( Label.textLabel("Right", 5f/6, 0.25f, Color.blue, tertiaryFont ) );
         
-        // initialize all renderables
-        for ( Renderable renderable : renderables ) {
-            renderable.init();
-        }
+        // put in note orderer
+        renderables.add(noteOrderer);
     }
 
     @Override
-    public Scene parentScene() {
-        // TODO Auto-generated method stub
-        return Scene.mainMenu();
-    }
-
-    @Override
-    public void addPopUp(PopUp popUp) {
-        // TODO Auto-generated method stub
-        popUps.add(popUp);
-    }
-
-    @Override
-    public void destroyPopUp(PopUp popUp) {
-        // TODO Auto-generated method stub
-        popUpsToBeRemoved.add(popUp);
-    }
-
-    @Override
-    public void cleanUp() {
+    protected void handleServerMessages() {
         // TODO Auto-generated method stub
         
     }

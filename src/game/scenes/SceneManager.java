@@ -1,6 +1,5 @@
 package game.scenes;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 public class SceneManager {
@@ -19,7 +18,7 @@ public class SceneManager {
     }
     
     public static void init() {
-        currentScene.init();
+        //currentScene.init();
     }
     
     public static Scene currentScene() {
@@ -34,6 +33,5 @@ public class SceneManager {
     public static void setNewScene(Scene scene) {
         currentScene.cleanUp();
         currentScene = scene;
-        currentScene.init();
     }
 }

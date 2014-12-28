@@ -1,10 +1,9 @@
-package game.moving_sound;
+package game.scenes.round;
 
 import game.Interlude;
-import game.Orientation;
 import game.Renderable;
+import game.settings.Orientation;
 import music.Handedness;
-import music.InstrumentType;
 import music.SoundElement;
 
 import org.newdawn.slick.Color;

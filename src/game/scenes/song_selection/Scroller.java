@@ -1,4 +1,4 @@
-package game.scrollers;
+package game.scenes.song_selection;
 
 import game.Renderable;
 

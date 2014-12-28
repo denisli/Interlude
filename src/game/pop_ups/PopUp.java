@@ -1,7 +1,6 @@
 package game.pop_ups;
 
 import music.Handedness;
-import music.InstrumentType;
 import game.Renderable;
 import game.scenes.Scene;
 

@@ -11,7 +11,6 @@ public class InstrumentPiece {
         this.voices = voices;
         this.timesUntilVoicesStart = timesUntilVoicesStart;
         this.instrument = instrument;
-        System.out.println("Voice size: " + voices.size());
     }
     
     public List<Voice> voices() {

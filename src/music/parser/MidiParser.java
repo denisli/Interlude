@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,12 +18,10 @@ import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Sequence;
-import javax.sound.midi.Sequencer;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Track;
 
 import util.Pair;
-import util.Triple;
 import music.GeneralInstrument;
 import music.Handedness;
 import music.Instrument;
@@ -32,7 +29,6 @@ import music.InstrumentPiece;
 import music.InstrumentType;
 import music.MidiVoice;
 import music.Music;
-import music.MusicFile;
 import music.Note;
 import music.Simultaneous;
 import music.SoundElement;
@@ -43,7 +39,7 @@ public class MidiParser {
     private static final int SET_TEMPO = 0x51;
     private static final int TIME_SIGNATURE = 0x58;
     
-    public static Music parse( String musicTitle, File file, int splittingOctave) throws MidiUnavailableException {
+    public static Music parse( String musicTitle, File file ) throws MidiUnavailableException {
         // There are 3 steps to this:
         //      1. put in the note messages into a sorted list (by tick time)
         //      2. put in notes (but not simultaneous) into a sorted list (by tick time)
@@ -246,7 +242,6 @@ public class MidiParser {
         // step 3. put in sound elements into the a sorted list (by tick time)
         //         and also put in time between elements into a list (sorted by the order in which they occur)
         
-        Map<Integer,Map<Handedness,Long>> firstTicks = new HashMap<Integer,Map<Handedness,Long>>();
         Map<Integer,Map<Handedness,Integer>> programNumberTo_HandToTimeUntilVoiceStarts = new HashMap<Integer,Map<Handedness,Integer>>();
         Map<Integer,Map<Handedness,Voice>> programNumberTo_HandToVoice = new HashMap<Integer,Map<Handedness,Voice>>();
         
@@ -259,12 +254,11 @@ public class MidiParser {
             for ( Handedness handedness : handToNotes.keySet() ) {
                 int i = 0;
                 long oldTick = 0; // arbitrary starting value with no meaning
-                List<Voice> voices = new ArrayList<Voice>();
                 List<Integer> timesUntilNextElement = new ArrayList<Integer>();
                 List<SoundElement> soundElements = new ArrayList<SoundElement>();
                 LinkedList<Pair<Long,Note>> notes = handToNotes.get(handedness);
                 while ( !notes.isEmpty() ) {
-                    List<SoundElement> simultaneousNotes = new ArrayList<SoundElement>();
+                    List<Note> simultaneousNotes = new ArrayList<Note>();
                     Pair<Long,Note> pair = notes.remove();
                     long tick = pair.getLeft();
                     if ( i != 0 ) {
@@ -407,6 +401,11 @@ public class MidiParser {
         }
     }
     
+    /**
+     * Found here: http://stackoverflow.com/questions/3850688/reading-midi-files-in-java
+     * Written by Sami Koivu
+     * @throws Exception
+     */
     public static void analyze() throws Exception {
         final String[] NOTE_NAMES = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
         final int NOTE_ON = 0x90;

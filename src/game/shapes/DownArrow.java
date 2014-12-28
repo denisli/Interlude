@@ -1,7 +1,6 @@
 package game.shapes;
 
 import game.Interlude;
-import game.Renderable;
 import geometry.Triangle;
 
 import org.newdawn.slick.Color;

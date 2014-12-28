@@ -10,7 +10,7 @@ public class Main {
         Instrument piano = Instrument.piano();
         Note note = new Note( 88+12, 1000, 127 );
         
-        List<SoundElement> musicElements = Arrays.asList(note);
+        List<Note> musicElements = Arrays.asList(note);
         Simultaneous simultaneous = new Simultaneous ( musicElements );
         simultaneous.bePlayed(piano);
         Thread.sleep(500);

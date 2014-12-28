@@ -1,7 +1,6 @@
-package game.scrollers;
+package game.scenes.song_selection;
 
 import game.Interlude;
-import game.Renderable;
 import game.buttons.Button;
 import game.shapes.Shape;
 
@@ -13,7 +12,6 @@ import music.MusicFile;
 
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
-import org.newdawn.slick.MouseListener;
 
 public class SongSelectionScroller implements Scroller {
     private final String[] songTitles = new String[] { 
@@ -162,9 +160,9 @@ public class SongSelectionScroller implements Scroller {
         for ( int i = 0; i < fileNames.length; i++ ) {
             String songTitle = songTitles[i];
             String fileName = fileNames[i];
-            Button button = Button.songSelectionButton( new MusicFile( songTitle, new File("res/midi/" + fileName) ), 0.5f, fractionY );
-            button.init();
-            songSelectionButtons.add( button );
+            MusicFile musicFile = new MusicFile( songTitle, new File("res/midi/" + fileName) );
+            Button songSelectionButton = Button.textButton( songTitle, 0.5f, fractionY, new SongSelectEffect( musicFile ) );
+            songSelectionButtons.add( songSelectionButton );
             fractionY += 0.1;
         }
         firstIndex = 0;

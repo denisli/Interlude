@@ -1,18 +1,14 @@
-package game.note_orderer;
+package game.scenes.change_controls;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import music.Note;
-
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
 import util.Slotter;
-import game.labels.Label;
-import game.Controls;
+import game.settings.Controls;
 import game.Interlude;
 import game.Renderable;
 

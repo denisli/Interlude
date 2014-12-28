@@ -1,22 +1,11 @@
-package game.scenes;
+package game.scenes.options;
 
 import game.pop_ups.PopUp;
+import game.scenes.Scene;
 
 import org.newdawn.slick.Graphics;
 
 public class OptionsPage extends Scene {
-
-    @Override
-    public void addPopUp(PopUp popUp) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void destroyPopUp(PopUp popUp) {
-        // TODO Auto-generated method stub
-        
-    }
 
     @Override
     public Scene parentScene() {
@@ -44,6 +33,18 @@ public class OptionsPage extends Scene {
 
     @Override
     public void cleanUp() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    protected void layout() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    protected void handleServerMessages() {
         // TODO Auto-generated method stub
         
     }

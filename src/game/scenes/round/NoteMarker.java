@@ -1,11 +1,11 @@
-package game.note_marker;
+package game.scenes.round;
 
 import java.util.List;
 
-import game.Controls;
 import game.Interlude;
-import game.Orientation;
 import game.fonts.GameFonts;
+import game.settings.Controls;
+import game.settings.Orientation;
 import music.Handedness;
 import music.Note;
 

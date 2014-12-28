@@ -1,7 +1,5 @@
 package game;
 
-import game.fonts.GameFonts;
-
 import java.awt.Dimension;
 import java.awt.Toolkit;
 
@@ -11,6 +9,7 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.gui.GUIContext;
 
 public class InterludeGameContainer {
+    
     private final InterludeGame interludeGame;
     private AppGameContainer app;
     
@@ -19,11 +18,11 @@ public class InterludeGameContainer {
     }
     
     public void init() throws SlickException {
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int width = (int) Math.floor( screenSize.getWidth() );
-        int height = (int) Math.floor( screenSize.getHeight() );
+        int containerWidth = 900;//(int) Math.floor(Toolkit.getDefaultToolkit().getScreenSize().getWidth());
+        int containerHeight = 900;//(int) Math.floor(Toolkit.getDefaultToolkit().getScreenSize().getHeight());;
+        
         app = new AppGameContainer( interludeGame );
-        app.setDisplayMode( width, height, false );
+        app.setDisplayMode( containerWidth, containerHeight, false );
         app.setTargetFrameRate(60);
     }
     

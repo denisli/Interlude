@@ -2,54 +2,13 @@ package game.buttons;
 
 import game.Movable;
 import game.Renderable;
-import game.Server;
-import game.scenes.Scene;
 import game.scenes.SceneManager;
-import music.MusicFile;
+import game.server_client.Server;
 
 import org.newdawn.slick.Input;
 
 public interface Button extends Renderable, Movable {
-    public static Button playButton(float fractionX, float fractionY) {
-        Button button = new TextButton("Play", fractionX, fractionY, (Runnable) () -> {
-            SceneManager.setNewScene(Scene.songSelection());
-        });
-        button.init();
-        return button;
-    }
-    
-    public static Button playWithFriendsButton( float fractionX, float fractionY ) {
-        Button button = new TextButton("Play with friends!", fractionX, fractionY, (Runnable) () -> {
-            SceneManager.setNewScene(Scene.connectWithFriends());
-        });
-        button.init();
-        return button;
-    }
-    
-    public static Button instructionsButton(float fractionX, float fractionY) {
-        Button button = new TextButton("Instructions", fractionX, fractionY, (Runnable) () -> {
-            SceneManager.setNewScene(Scene.instructionsPage());
-        });
-        button.init();
-        return button;
-    }
-    
-    public static Button controlsButton(float fractionX, float fractionY) {
-        Button button = new TextButton("Controls", fractionX, fractionY, (Runnable) () -> {
-            SceneManager.setNewScene(Scene.changeControlsPage());
-        });
-        button.init();
-        return button;
-    }
-    
-    public static Button mainMenuButton(float fractionX, float fractionY) {
-        Button button = new TextButton("Main Menu", fractionX, fractionY, (Runnable) () -> {
-            SceneManager.setNewScene(Scene.mainMenu());
-        });
-        button.init();
-        return button;
-    }
-    
+
     public static Button backButton(float fractionX, float fractionY) {
         Button button = new TextButton("Back", fractionX, fractionY, (Runnable) () -> {
             SceneManager.setNewScene(SceneManager.currentScene().parentScene());
@@ -72,12 +31,6 @@ public interface Button extends Renderable, Movable {
     
     public static Button textButton(String text, float fractionX, float fractionY, Runnable effect) {
         Button button = new TextButton( text, fractionX, fractionY, effect );
-        button.init();
-        return button;
-    }
-    
-    public static Button songSelectionButton(MusicFile musicFile, float fractionX, float fractionY) {
-        Button button = new SongSelectionButton( musicFile, fractionX, fractionY );
         button.init();
         return button;
     }

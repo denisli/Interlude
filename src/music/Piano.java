@@ -62,7 +62,7 @@ public class Piano implements Instrument {
     
     @Override
     public void play(Simultaneous simultaneous) {
-        for ( SoundElement soundElement : simultaneous.soundElements() ) {
+        for ( SoundElement soundElement : simultaneous.notes() ) {
             soundElement.bePlayed( this );
         }
     }

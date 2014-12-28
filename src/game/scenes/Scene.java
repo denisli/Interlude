@@ -6,61 +6,106 @@ import java.util.List;
 import music.Instrument;
 import music.Music;
 import game.pop_ups.PopUp;
+import game.scenes.change_controls.ChangeControls;
+import game.scenes.connect_with_friends.ConnectWithFriends;
+import game.scenes.initialization_scene.InitializationScene;
+import game.scenes.instructions.Instructions;
+import game.scenes.instrument_selection.InstrumentSelectionPage;
+import game.scenes.main_menu.MainMenu;
+import game.scenes.results_page.ResultsPage;
+import game.scenes.round.Round;
+import game.scenes.song_selection.SongSelectionPage;
 
 import org.newdawn.slick.Graphics;
 
 public abstract class Scene {
     protected final List<PopUp> popUps = new ArrayList<PopUp>();
+    protected final List<PopUp> popUpsToRemove = new ArrayList<PopUp>();
     
     public static Scene initializationScene() {
         Scene scene = new InitializationScene();
-        //scene.init();
+        scene.init();
         return scene;
     }
     
     public static Scene mainMenu() {
-        return new MainMenu();
+        Scene scene = new MainMenu();
+        scene.init();
+        return scene;
     }
     
     public static Scene connectWithFriends() {
-        return new ConnectWithFriends();
+        Scene scene = new ConnectWithFriends();
+        scene.init();
+        return scene;
     }
     
     public static Scene songSelection() {
-        return new SongSelectionPage();
+        Scene scene = new SongSelectionPage();
+        scene.init();
+        return scene;
     }
     
     public static Scene instructionsPage() {
-        return new Instructions();
+        Scene scene = new Instructions();
+        scene.init();
+        return scene;
     }
     
     public static Scene instrumentSelection( Music music ) {
-        return new InstrumentSelectionPage( music );
+        Scene scene = new InstrumentSelectionPage( music );
+        scene.init();
+        return scene;
     }
     
     public static Scene round(Music music, Instrument selectedInstrument) {
-        return new Round(music, selectedInstrument);
+        Scene scene = new Round(music, selectedInstrument);
+        scene.init();
+        return scene;
     }
     
     public static Scene results(String musicTitle, int score) {
-        return new ScorePage( musicTitle, score );
+        Scene scene = new ResultsPage( musicTitle, score );
+        scene.init();
+        return scene;
     }
     
     public static Scene changeControlsPage() {
-        return new ChangeControls();
+        Scene scene = new ChangeControls();
+        scene.init();
+        return scene;
     }
     
-    public abstract void addPopUp(PopUp popUp);
+    /**
+     * Adds an initialized pop up to the scene
+     * @param popUp
+     */
+    public void addPopUp(PopUp popUp) {
+        popUps.add(popUp);
+    }
     
-    public abstract void destroyPopUp(PopUp popUp);
+    public void destroyPopUp(PopUp popUp) {
+        popUpsToRemove.add(popUp);
+    }
     
     public abstract Scene parentScene();
     
-    public abstract void render(Graphics g);
+    public void render(Graphics g) {
+        popUps.stream().forEach( popUp -> popUp.render(g) );
+    }
     
-    public abstract void update(int t);
+    public void update(int t) {
+        popUps.stream().forEach( popUp -> popUp.update(t) );
+        popUpsToRemove.stream().forEach( popUp -> popUps.remove(popUp) );
+    }
     
-    public abstract void init();
+    public void init() {
+        layout();
+    }
     
-    public abstract void cleanUp();
+    protected abstract void layout();
+    
+    protected abstract void cleanUp();
+    
+    protected abstract void handleServerMessages();
 }

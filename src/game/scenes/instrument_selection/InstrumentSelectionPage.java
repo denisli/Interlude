@@ -1,11 +1,14 @@
-package game.scenes;
+package game.scenes.instrument_selection;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import game.Renderable;
 import game.buttons.Button;
 import game.pop_ups.PopUp;
+import game.scenes.Scene;
+import game.scenes.SceneManager;
 import music.Instrument;
 import music.InstrumentPiece;
 import music.Music;
@@ -14,24 +17,12 @@ import music.Voice;
 import org.newdawn.slick.Graphics;
 
 public class InstrumentSelectionPage extends Scene {
-    private final List<Button> buttons = new ArrayList<Button>();
+    private final List<Renderable> renderables = new ArrayList<Renderable>();
     private final Music music;
     private Optional<Instrument> selectedInstrument;
     
     public InstrumentSelectionPage( Music music ) {
         this.music = music;
-    }
-    
-    @Override
-    public void addPopUp(PopUp popUp) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void destroyPopUp(PopUp popUp) {
-        // TODO Auto-generated method stub
-        
     }
 
     @Override
@@ -43,37 +34,40 @@ public class InstrumentSelectionPage extends Scene {
     @Override
     public void render(Graphics g) {
         // TODO Auto-generated method stub
-        for ( Button button : buttons ) {
-            button.render(g);
-        }
+        renderables.stream().forEach( renderable -> renderable.render(g) );
     }
 
     @Override
     public void update(int t) {
         // TODO Auto-generated method stub
-        for ( Button button : buttons ) {
-            button.update(t);
-        }
+        renderables.stream().forEach( renderable -> renderable.update(t) );
     }
 
     @Override
-    public void init() {
+    public void cleanUp() {
+        // TODO Auto-generated method stub
+        
+    }
+
+    @Override
+    protected void layout() {
+        // TODO Auto-generated method stub
         List<InstrumentPiece> instrumentPieces = music.instrumentPieces();
         int numVoices = instrumentPieces.size();
         for ( int i = 0; i < numVoices; i++ ) {
             InstrumentPiece instrumentPiece = instrumentPieces.get(i);
-            buttons.add( Button.textButton( instrumentPiece.instrument().getInstrumentName(), 0.5f, ((float) (i+1)) / (numVoices + 1), (Runnable) () -> {
+            renderables.add( Button.textButton( instrumentPiece.instrument().getInstrumentName(), 0.5f, ((float) (i+1)) / (numVoices + 1), (Runnable) () -> {
                 selectedInstrument = Optional.of(instrumentPiece.instrument());
             }));
         }
         
-        buttons.add( Button.textButton("OK!", 0.5f, 0.9f, (Runnable) () -> {
+        renderables.add( Button.textButton("OK!", 0.5f, 0.9f, (Runnable) () -> {
             SceneManager.setNewScene( Scene.round(music, selectedInstrument.get()) );
         }));
     }
 
     @Override
-    public void cleanUp() {
+    protected void handleServerMessages() {
         // TODO Auto-generated method stub
         
     }

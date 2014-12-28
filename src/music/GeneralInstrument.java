@@ -1,12 +1,8 @@
 package music;
 
-import java.util.Comparator;
 import java.util.PriorityQueue;
-import java.util.Queue;
 
 import javax.sound.midi.MidiChannel;
-import javax.sound.midi.MidiSystem;
-import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Synthesizer;
 
 import util.Triple;
@@ -70,7 +66,7 @@ public class GeneralInstrument implements Instrument {
     
     @Override
     public void play(Simultaneous simultaneous) {
-        for ( SoundElement musicElement : simultaneous.soundElements() ) {
+        for ( SoundElement musicElement : simultaneous.notes() ) {
             musicElement.bePlayed( this );
         }
     }

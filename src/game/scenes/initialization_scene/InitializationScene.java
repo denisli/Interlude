@@ -1,33 +1,18 @@
-package game.scenes;
+package game.scenes.initialization_scene;
 
 import game.Interlude;
-import game.fonts.GameFonts;
-import game.pop_ups.PopUp;
-import music.LoadSynthesizer;
+import game.scenes.Scene;
+import game.scenes.SceneManager;
 import music.LoadSynthesizer;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
 public class InitializationScene extends Scene {
     private int loadingTime = 3000; // seconds 
-    private boolean loadingScreenUp = false;
     private Image eighthNote;
     private Image interlude;
-    
-    @Override
-    public void addPopUp(PopUp popUp) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void destroyPopUp(PopUp popUp) {
-        // TODO Auto-generated method stub
-        
-    }
 
     @Override
     public Scene parentScene() {
@@ -65,15 +50,25 @@ public class InitializationScene extends Scene {
 
     @Override
     public void init() {
+        super.init();
         new Thread(new Runnable() {
             public void run() {
                 LoadSynthesizer.loadSynthesizer();
             }
         }).start();
+    }
+
+    @Override
+    public void cleanUp() {
+        // TODO Auto-generated method stub
         
+    }
+
+    @Override
+    protected void layout() {
+        // TODO Auto-generated method stub
         int containerWidth = Interlude.GAME_CONTAINER.getWidth();
-        int containerHeight = Interlude.GAME_CONTAINER.getHeight();
-        
+
         try {
             eighthNote = new Image("res/images/eighth_note.png");
             Image initialInterlude = new Image("res/images/interlude.png");
@@ -86,7 +81,7 @@ public class InitializationScene extends Scene {
     }
 
     @Override
-    public void cleanUp() {
+    protected void handleServerMessages() {
         // TODO Auto-generated method stub
         
     }

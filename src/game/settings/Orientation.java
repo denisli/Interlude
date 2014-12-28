@@ -1,4 +1,4 @@
-package game;
+package game.settings;
 
 import util.Pair;
 

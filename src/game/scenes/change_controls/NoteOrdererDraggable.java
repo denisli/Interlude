@@ -1,4 +1,4 @@
-package game.note_orderer;
+package game.scenes.change_controls;
 
 import music.Note;
 

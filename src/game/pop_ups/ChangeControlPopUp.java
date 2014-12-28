@@ -1,14 +1,12 @@
 package game.pop_ups;
 
-import java.awt.Font;
 
-import game.Controls;
 import game.Interlude;
-import game.fonts.SimpleFont;
+import game.fonts.GameFonts;
 import game.labels.Label;
 import game.scenes.SceneManager;
+import game.settings.Controls;
 import music.Handedness;
-import music.InstrumentType;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -20,8 +18,8 @@ public class ChangeControlPopUp extends PopUp implements KeyListener {
     private final Handedness handedness;
     private boolean keyPressed = false;
     private int pressedKey;
-    private final Label instructionLabel = Label.label("Press the button you want to change control to", 0.5f, 0.5f, Color.black,
-            SimpleFont.retrieve( "Arial", Font.PLAIN, 18) );
+    private final Label<String> instructionLabel = Label.textLabel("Press the button you want to change control to", 0.5f, 0.5f, Color.black,
+            GameFonts.ARIAL_PLAIN_18 );
     
     public ChangeControlPopUp( int note, Handedness handedness ) {
         this.note = note;

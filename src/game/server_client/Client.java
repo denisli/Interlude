@@ -1,4 +1,4 @@
-package game;
+package game.server_client;
 
 
 import java.io.BufferedReader;
@@ -64,7 +64,7 @@ public class Client {
      *      -instrument messages telling the client which instruments are picked
      * 
      * Note messages have the following form:
-     *      play NOTE+
+     *      play instrumentName NOTE+
      *      NOTE := value duration volume
      *      value is the pitch of the note using MIDI numbers
      *      duration is how long the note is in milliseconds

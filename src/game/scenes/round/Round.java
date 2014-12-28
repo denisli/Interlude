@@ -1,32 +1,31 @@
-package game.scenes;
+package game.scenes.round;
 
-import game.Controls;
 import game.Interlude;
-import game.Orientation;
 import game.buttons.Button;
 import game.fonts.GameFonts;
 import game.labels.Label;
-import game.moving_sound.MovingSound;
-import game.note_marker.NoteMarker;
-import game.pop_ups.PopUp;
+import game.scenes.Scene;
+import game.scenes.SceneManager;
+import game.server_client.Client;
+import game.settings.Controls;
+import game.settings.Orientation;
 
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
-import java.util.Set;
+import java.util.function.Function;
 
+import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
 import util.Pair;
 import music.Handedness;
 import music.Instrument;
-import music.InstrumentPiece;
 import music.InstrumentType;
 import music.Music;
 import music.Simultaneous;
@@ -36,33 +35,39 @@ import music.Voice;
 
 public class Round extends Scene {
     private final Music music;
+    private final Instrument selectedInstrument;
+    
+    /** COLLECTIONS */
     private final List<Button> buttons = new ArrayList<Button>();
-    /** Each note value and voicetype corresponds to a notemarker */
+    /* Each note value and voicetype corresponds to a notemarker */
     private final Map<Pair<Integer,Handedness>,NoteMarker> noteMarkers = new HashMap<Pair<Integer,Handedness>,NoteMarker>();
     private final Map<Handedness,Queue<MovingSound>> notesOnScreenOfHand = new HashMap<Handedness,Queue<MovingSound>>();
-    private final List<Voice> voices;
-    /** restingTimes: Key is the voice index. The value is the resting time */
-    private final Map<Integer,Integer> restingTimes = new HashMap<Integer,Integer>();
-    private final Label scoreLabel = Label.scoreLabel( 0.5f, 0.05f, GameFonts.ARIAL_PLAIN_32 );
-    private int timeElapsed = 0;
-    private boolean musicStarted = false;
-    private final Label timeElapsedLabel = Label.timeElapsedLabel();
-    private final int endTime;
-    private final Label endTimeLabel;
-    
-    private final Instrument selectedInstrument;
     private final List<Handedness> handednesses = new ArrayList<Handedness>();
+    private final List<Voice> voices;
+    /* restingTimes: Key is the voice index. The value is the resting time */
+    private final Map<Integer,Integer> restingTimes = new HashMap<Integer,Integer>();
+    private final Map<String,Instrument> instrumentNameToInstrument = new HashMap<String,Instrument>();
+
+    /** IMMUTABLES */
+    private final int endTime;
+    
+    /** LABELS */
+    private Label<Integer> scoreLabel;
+    private Label<Integer> timeElapsedLabel;
+    private Label<Integer> endTimeLabel;
+    
+    /** GAME STATE PROPERTIES */
+    private boolean musicStarted = false;
+    private int timeElapsed = 0;
     private int totalScore = 0;
     
     public Round(Music music, Instrument selectedInstrument) {
         this.music = music;
-        this.endTime = music.duration();
-        this.endTimeLabel = Label.endTimeLabel( endTime );
-        int initialDelay = 3000; // 3 seconds
-        List<Integer> timesUntilVoicesStart = music.timesUntilVoicesStart();
-        this.voices = music.voices();
-
         this.selectedInstrument = selectedInstrument;
+        
+        this.endTime = music.duration();
+        
+        
         if ( selectedInstrument.type() == InstrumentType.SINGLE ) {
             handednesses.add(Handedness.SINGLE);
         } else {
@@ -70,45 +75,40 @@ public class Round extends Scene {
             handednesses.add(Handedness.RIGHT);
         }
         
-        for ( int voiceIndex = 0; voiceIndex < voices.size(); voiceIndex++ ) {
-        	Voice voice = voices.get(voiceIndex);
-        	if ( !voice.instrument().equals(selectedInstrument) ) {
-        		restingTimes.put(voiceIndex, initialDelay + (int) ( 0.85f / (MovingSound.speed()) ) + timesUntilVoicesStart.get(voiceIndex));
-        	} else {
-        		restingTimes.put(voiceIndex, initialDelay + timesUntilVoicesStart.get(voiceIndex));
-        	}
-        }
-        
         for ( Handedness handedness : handednesses ) {
             notesOnScreenOfHand.put(handedness,new LinkedList<MovingSound>());
+        }
+        
+        List<Integer> timesUntilVoicesStart = music.timesUntilVoicesStart();
+        this.voices = music.voices();
+        
+        int initialDelay = 3000; // 3 seconds
+        int timeToReachNoteMarker = (int) ( 0.85f / (MovingSound.speed()) );
+        for ( int voiceIndex = 0; voiceIndex < voices.size(); voiceIndex++ ) {
+            Voice voice = voices.get(voiceIndex);
+            if ( !voice.instrument().equals(selectedInstrument) ) {
+                restingTimes.put(voiceIndex, initialDelay + timeToReachNoteMarker + timesUntilVoicesStart.get(voiceIndex));
+            } else {
+                restingTimes.put(voiceIndex, initialDelay + /*debugging*/ timeToReachNoteMarker + timesUntilVoicesStart.get(voiceIndex));
+            }
         }
     }
     
     @Override
     public void render(Graphics g) {
-        for ( Pair<Integer,Handedness> pair : noteMarkers.keySet() ) {
-            NoteMarker noteMarker = noteMarkers.get(pair);
-            noteMarker.render(g);
-        }
+        noteMarkers.keySet().stream().forEach( integerAndHand -> noteMarkers.get(integerAndHand).render(g) );
         
-        for ( Handedness handedness : handednesses ) {
-            for ( MovingSound movingSound : notesOnScreenOfHand.get(handedness) ) {
-                movingSound.render(g);
-            }
-        }
+        handednesses.stream().forEach( handedness -> {
+            notesOnScreenOfHand.get(handedness).stream().forEach( movingSound -> movingSound.render(g) );
+        });
             
-        for (Button button : buttons) {
-            button.render(g);
-        }
+        buttons.stream().forEach( button -> button.render(g));
         
         scoreLabel.render(g);
         timeElapsedLabel.render(g);
         endTimeLabel.render(g);
     }
 
-    long oldTime = 0;
-    long newTime = 0;
-    
     @Override
     public void update(int t) {
         Input input = Interlude.GAME_CONTAINER.getInput();
@@ -123,10 +123,7 @@ public class Round extends Scene {
         // Update timeElapsedLabel if music started
         if ( musicStarted ) {
             timeElapsed += t;
-            int timeElapsedInSeconds = timeElapsed / 1000;
-            int minutes = timeElapsedInSeconds / 60;
-            int remainingSeconds = timeElapsedInSeconds % 60;
-            timeElapsedLabel.setText(minutes + ":" + String.format("%02d",remainingSeconds));
+            timeElapsedLabel.updateValue(timeElapsed);
         }
         
         if ( timeElapsed > endTime + 4000 ) {
@@ -134,15 +131,10 @@ public class Round extends Scene {
         }
         
         // Update each button
-        for ( Button button : buttons ) {
-            button.update(t);
-        }
+        buttons.stream().forEach( button -> button.update(t) );
         
         // Update note markers
-        for ( Pair<Integer,Handedness> pair : noteMarkers.keySet() ) {
-            NoteMarker noteMarker = noteMarkers.get(pair);
-            noteMarker.update(t);
-        }
+        noteMarkers.keySet().stream().forEach( integerAndHand -> noteMarkers.get(integerAndHand).update(t) );
         
         // Update resting times and put a sound element on screen if it is time.
         for ( int voiceIndex = 0; voiceIndex < voices.size(); voiceIndex++ ) {
@@ -188,22 +180,22 @@ public class Round extends Scene {
             if ( instrument.equals(selectedInstrument) ) {
                 Handedness handedness = voice.handedness();
                 for ( int key : Controls.noteKeys( handedness ) ) {
-                    if ( input.isKeyPressed(key) ) {
+                    //if ( input.isKeyPressed(key) ) {
                         Queue<MovingSound> notesOnScreen = notesOnScreenOfHand.get(handedness);
                         if ( !notesOnScreen.isEmpty() ) {
                             int letter = Controls.correspondingNote(key, handedness );
                             MovingSound movingSound = notesOnScreen.remove();
                             SoundElement soundElementToPlay = movingSound.soundElement();
                             SoundElement correspondingSoundElementToPlay = soundElementToPlay.correspondingSoundElement(letter);
-                            correspondingSoundElementToPlay.bePlayed(instrument);
+                            soundElementToPlay.bePlayed(instrument);
                             if ( letter != movingSound.soundElement().integer() ) {
                                 totalScore -= 30;
                             } else {
                                 totalScore += (int) (100 * ( 1 - ( ( Math.abs( 0.85f - movingSound.fraction() ) ) / 0.85f ) ) );
                             }
-                            scoreLabel.setText( Integer.toString( totalScore ) );
+                            scoreLabel.updateValue( totalScore );
                         }
-                    }
+                    //}
                 }
             }
         }
@@ -236,9 +228,22 @@ public class Round extends Scene {
             }
         }
     }
-    
+
     @Override
-    public void init() {
+    public Scene parentScene() {
+        return Scene.songSelection();
+    }
+
+    @Override
+    public void cleanUp() {
+        for ( Voice voice : voices ) {
+            voice.instrument().clear();
+        }
+    }
+
+    @Override
+    protected void layout() {
+        // put in note markers onto the scene
         int[] notes = new int[] { Note.A, Note.B, Note.C, Note.D, Note.E, Note.F, Note.G, Simultaneous.S };
         for (int note : notes) {
             for ( Handedness handedness : handednesses ) {
@@ -248,36 +253,39 @@ public class Round extends Scene {
             }
         }
         
+        // put in buttons
         buttons.add( Button.backButton(0.95f, 0.05f));
-    }
-    
-    public Music music() {
-        return music;
-    }
-
-    @Override
-    public Scene parentScene() {
-        // TODO Auto-generated method stub
-        return Scene.songSelection();
-    }
-
-    @Override
-    public void addPopUp(PopUp popUp) {
-        // TODO Auto-generated method stub
         
+        // put in labels
+        this.scoreLabel = Label.textLabel( 0, 0.5f, 0.05f, Color.darkGray, GameFonts.ARIAL_PLAIN_32, (Function<Integer,String>) score -> score.toString() );
+        this.timeElapsedLabel = Label.textLabel( 0, 0.65f, 0.05f, Color.darkGray, GameFonts.ARIAL_PLAIN_32, new TimeToString() );
+        this.endTimeLabel = Label.textLabel( endTime, 0.75f, 0.05f, Color.darkGray, GameFonts.ARIAL_PLAIN_32, new TimeToString() );
     }
 
     @Override
-    public void destroyPopUp(PopUp popUp) {
-        // TODO Auto-generated method stub
-        
-    }
-
-    @Override
-    public void cleanUp() {
-        // TODO Auto-generated method stub
-        for ( Voice voice : voices ) {
-            voice.instrument().clear();
+    protected void handleServerMessages() {
+        while ( !Client.noMoreMessagesToProcess() ) {
+            String message = Client.removeMessageToProcess();
+            Queue<String> tokens = new LinkedList<String>(Arrays.asList(message.split(" ")));
+            String firstToken = tokens.remove();
+            if ( firstToken.equals("play") ) {
+                String instrumentName = tokens.remove();
+                Instrument instrument = instrumentNameToInstrument.get(instrumentName);
+                List<Note> notes = new ArrayList<Note>();
+                while ( !tokens.isEmpty() ) {
+                    int pitch = Integer.parseInt(tokens.remove());
+                    int duration = Integer.parseInt(tokens.remove());
+                    int volume = Integer.parseInt(tokens.remove());
+                    Note note = new Note( pitch, duration, volume );
+                    notes.add(note);
+                }
+                if ( notes.size() == 1 ) {
+                    notes.get(0).bePlayed( instrument );
+                } else {
+                    Simultaneous simultaneous = new Simultaneous( notes );
+                    simultaneous.bePlayed( instrument );
+                }
+            }
         }
     }
 }

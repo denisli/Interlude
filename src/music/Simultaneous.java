@@ -6,9 +6,9 @@ import java.util.List;
 public class Simultaneous implements SoundElement {
     public static final int S = 128;
     
-    private final List<SoundElement> elements;
+    private final List<Note> elements;
     
-    public Simultaneous(List<SoundElement> elements) {
+    public Simultaneous(List<Note> elements) {
         this.elements = elements;
     }
     
@@ -16,13 +16,13 @@ public class Simultaneous implements SoundElement {
     @Override
     public int duration() {
         int maxNoteDuration = 0;
-        for (SoundElement element : elements) {
+        for (Note element : elements) {
             maxNoteDuration = Math.max(maxNoteDuration, element.duration());
         }
         return maxNoteDuration;
     }
     
-    public List<SoundElement> soundElements() {
+    public List<Note> notes() {
         return elements;
     }
     
@@ -41,8 +41,8 @@ public class Simultaneous implements SoundElement {
         if (letter == Simultaneous.S) {
             return this;
         }
-        List<SoundElement> correspondingElements = new ArrayList<SoundElement>();
-        for ( SoundElement element : elements ) {
+        List<Note> correspondingElements = new ArrayList<Note>();
+        for ( Note element : elements ) {
             correspondingElements.add( element.correspondingSoundElement(letter) );
         }
         return new Simultaneous( correspondingElements );
