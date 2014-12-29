@@ -9,21 +9,31 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.Rectangle;
 
-public class TextButton implements Button {
+public class TwoFaceButton implements Button {
+    private final String firstText;
+    private final String secondText;
+    private final Runnable firstEffect;
+    private final Runnable secondEffect;
+    
     private String text;
-    private Color color = Color.black;
-    private UnicodeFont font;
-    private Rectangle boundingBox;
-    private boolean mouseWasDown;
     private float fractionX;
     private float fractionY;
+    private Color color = Color.black;
+    private UnicodeFont font = GameFonts.ARIAL_PLAIN_36;
+    private Rectangle boundingBox;
+    private boolean mouseWasDown;
     private Runnable effect;
     
-    public TextButton( String text, float fractionX, float fractionY, Runnable effect) {
-        this.text = text;
+    public TwoFaceButton( String firstText, String secondText, float fractionX, float fractionY, Runnable firstEffect, Runnable secondEffect) {
+        this.firstText = firstText;
+        this.secondText = secondText;
         this.fractionX = fractionX;
         this.fractionY = fractionY;
-        this.effect = effect;
+        this.firstEffect = firstEffect;
+        this.secondEffect = secondEffect;
+        
+        this.text = firstText;
+        this.effect = firstEffect;
     }
     
     @Override
@@ -51,6 +61,15 @@ public class TextButton implements Button {
         }
         if ( isClicked(input) ) {
             callEffect();
+            if ( text.equals(firstText) ) {
+                text = secondText;
+                effect = secondEffect;
+                boundingBox = boundingBox();
+            } else {
+                text = firstText;
+                effect = firstEffect;
+                boundingBox = boundingBox();
+            }
         }
     }
     
@@ -71,7 +90,6 @@ public class TextButton implements Button {
 
     @Override
     public boolean isClicked(Input input) {
-        // TODO Auto-generated method stub
         boolean isClicked = mouseWasDown && !input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON);
         if ( isClicked ) {
             mouseWasDown = false;

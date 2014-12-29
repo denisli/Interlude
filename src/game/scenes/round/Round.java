@@ -60,6 +60,7 @@ public class Round extends Scene {
     
     /** GAME STATE PROPERTIES */
     private boolean musicStarted = false;
+    private boolean paused = false;
     private int timeElapsed = 0;
     private int totalScore = 0;
     
@@ -125,14 +126,10 @@ public class Round extends Scene {
             Orientation.rotateCounterClockwise();
         }
         
-        // Update timeElapsedLabel if music started
-        if ( musicStarted ) {
-            timeElapsed += t;
-            timeElapsedLabel.updateValue(timeElapsed);
-        }
-        
-        if ( timeElapsed > endTime + 4000 ) {
-            SceneManager.setNewScene( Scene.results(music.title(), totalScore) );
+        if ( input.isKeyPressed(Input.KEY_UP) ) {
+            noteMarkers.keySet().stream().forEach( integerAndHand -> noteMarkers.get(integerAndHand).setDisplayType( DisplayType.KEY ) );
+        } else if ( input.isKeyPressed(Input.KEY_DOWN) ) {
+            noteMarkers.keySet().stream().forEach( integerAndHand -> noteMarkers.get(integerAndHand).setDisplayType( DisplayType.LETTER ) );
         }
         
         // Update each button
@@ -141,96 +138,110 @@ public class Round extends Scene {
         // Update note markers
         noteMarkers.keySet().stream().forEach( integerAndHand -> noteMarkers.get(integerAndHand).update(t) );
         
-        // Update resting times and put a sound element on screen if it is time.
-        for ( int voiceIndex = 0; voiceIndex < voices.size(); voiceIndex++ ) {
-            Voice voice = voices.get(voiceIndex);
-            
-            Instrument instrument = voice.instrument();
-            instrument.update(t);
-            
-            int restingTime = restingTimes.get(voiceIndex);
-            
-            restingTime -= t;
-            restingTimes.put(voiceIndex, restingTime);
-            
-            if (restingTime <= 0) { // pick out another note!
-                musicStarted = true;
-                if ( !voice.ended() ) {
-                    SoundElement soundElementToInsert = voice.next();
-                    
-                    int soundElementLetter = soundElementToInsert.integer();
-                    float offScreen = 0.0f;
-                    
-                    if ( instrument.equals(selectedInstrument) ) {
-                        Handedness handedness = voice.handedness();
-                        System.out.println(instrument.getInstrumentName());
-                        Queue<MovingSound> notesOnScreen = notesOnScreenOfHand.get(handedness);
-                        Pair<Integer,Handedness> pair = new Pair<Integer,Handedness>(soundElementLetter, handedness);
-                        MovingSound movingSound = new MovingSound( offScreen, noteMarkers.get(pair).fractionY(), soundElementToInsert, handedness );
-                        movingSound.init();
-                        notesOnScreen.add( movingSound );
-                    } else {
-                        System.out.println(instrument.getInstrumentName());
-                        soundElementToInsert.bePlayed(instrument);
-                    }
-                    if (!voice.ended()) {
-                        restingTime += voice.timeUntilNextElement();
-                        restingTimes.put(voiceIndex, restingTime);
-                    }
-                }
+        if ( !paused ) {
+            // Update timeElapsedLabel if music started
+            if ( musicStarted ) {
+                timeElapsed += t;
+                timeElapsedLabel.updateValue(timeElapsed);
             }
             
-            // If a user plays a note, perform all necessary actions due to his input.
-            // This includes playing a note and updating score.
-            if ( instrument.equals(selectedInstrument) ) {
-                Handedness handedness = voice.handedness();
-                for ( int key : Controls.noteKeys( handedness ) ) {
-                    //if ( input.isKeyPressed(key) ) {
-                        Queue<MovingSound> notesOnScreen = notesOnScreenOfHand.get(handedness);
-                        if ( !notesOnScreen.isEmpty() ) {
-                            int letter = Controls.correspondingNote(key, handedness );
-                            MovingSound movingSound = notesOnScreen.remove();
-                            SoundElement soundElementToPlay = movingSound.soundElement();
-                            SoundElement correspondingSoundElementToPlay = soundElementToPlay.correspondingSoundElement(letter);
-                            soundElementToPlay.bePlayed(instrument);
-                            if ( letter != movingSound.soundElement().integer() ) {
-                                totalScore -= 30;
-                            } else {
-                                totalScore += (int) (100 * ( 1 - ( ( Math.abs( 0.85f - movingSound.fraction() ) ) / 0.85f ) ) );
-                            }
-                            scoreLabel.updateValue( totalScore );
+            if ( timeElapsed > endTime + 4000 ) {
+                SceneManager.setNewScene( Scene.results(music.title(), totalScore) );
+            }
+            
+            // Update resting times and put a sound element on screen if it is time.
+            for ( int voiceIndex = 0; voiceIndex < voices.size(); voiceIndex++ ) {
+                Voice voice = voices.get(voiceIndex);
+                
+                Instrument instrument = voice.instrument();
+                instrument.update(t);
+                
+                int restingTime = restingTimes.get(voiceIndex);
+                
+                restingTime -= t;
+                restingTimes.put(voiceIndex, restingTime);
+                
+                if (restingTime <= 0) { // pick out another note!
+                    musicStarted = true;
+                    if ( !voice.ended() ) {
+                        SoundElement soundElementToInsert = voice.next();
+                        
+                        int soundElementLetter = soundElementToInsert.integer();
+                        float offScreen = 0.0f;
+                        
+                        if ( instrument.equals(selectedInstrument) ) {
+                            Handedness handedness = voice.handedness();
+                            System.out.println(instrument.getInstrumentName());
+                            Queue<MovingSound> notesOnScreen = notesOnScreenOfHand.get(handedness);
+                            Pair<Integer,Handedness> pair = new Pair<Integer,Handedness>(soundElementLetter, handedness);
+                            MovingSound movingSound = new MovingSound( offScreen, noteMarkers.get(pair).fractionY(), soundElementToInsert, handedness );
+                            movingSound.init();
+                            notesOnScreen.add( movingSound );
+                        } else {
+                            System.out.println(instrument.getInstrumentName());
+                            soundElementToInsert.bePlayed(instrument);
                         }
-                    //}
+                        if (!voice.ended()) {
+                            restingTime += voice.timeUntilNextElement();
+                            restingTimes.put(voiceIndex, restingTime);
+                        }
+                    }
                 }
-            }
-        }
-        
-     // Remove any notes that are no longer on screen.
-        for ( Handedness handedness : handednesses ) {
-            Queue<MovingSound> notesOnScreen = notesOnScreenOfHand.get(handedness);
-            if ( !notesOnScreen.isEmpty() ) { 
-                while ( notesOnScreen.peek().offScreen() ) {
-                    notesOnScreen.remove();
-                    if (notesOnScreen.isEmpty()) {
-                        break;
+                
+                // If a user plays a note, perform all necessary actions due to his input.
+                // This includes playing a note and updating score.
+                if ( instrument.equals(selectedInstrument) ) {
+                    Handedness handedness = voice.handedness();
+                    for ( int key : Controls.noteKeys( handedness ) ) {
+                        //if ( input.isKeyPressed(key) ) {
+                            Queue<MovingSound> notesOnScreen = notesOnScreenOfHand.get(handedness);
+                            if ( !notesOnScreen.isEmpty() ) {
+                                int letter = Controls.correspondingNote(key, handedness );
+                                MovingSound movingSound = notesOnScreen.remove();
+                                SoundElement soundElementToPlay = movingSound.soundElement();
+                                SoundElement correspondingSoundElementToPlay = soundElementToPlay.correspondingSoundElement(letter);
+                                soundElementToPlay.bePlayed(instrument);
+                                if ( letter != movingSound.soundElement().integer() ) {
+                                    totalScore -= 30;
+                                } else {
+                                    totalScore += (int) (100 * ( 1 - ( ( Math.abs( 0.85f - movingSound.fraction() ) ) / 0.85f ) ) );
+                                }
+                                scoreLabel.updateValue( totalScore );
+                            }
+                        //}
                     }
                 }
             }
-        
-        
-            // Move each moving sound, also make the first third a particular color
-            int counter = 0;
-            for ( MovingSound movingSound : notesOnScreen ) {
-                if ( counter == 0 ) {
-                    movingSound.setFront();
-                } else if ( counter == 1 ) {
-                    movingSound.setSecond();
-                } else if ( counter == 2 ) {
-                    movingSound.setThird();
+            
+         // Remove any notes that are no longer on screen.
+            for ( Handedness handedness : handednesses ) {
+                Queue<MovingSound> notesOnScreen = notesOnScreenOfHand.get(handedness);
+                if ( !notesOnScreen.isEmpty() ) { 
+                    while ( notesOnScreen.peek().offScreen() ) {
+                        notesOnScreen.remove();
+                        if (notesOnScreen.isEmpty()) {
+                            break;
+                        }
+                    }
                 }
-                movingSound.update(t);
-                counter++;
+            
+            
+                // Move each moving sound, also make the first third a particular color
+                int counter = 0;
+                for ( MovingSound movingSound : notesOnScreen ) {
+                    if ( counter == 0 ) {
+                        movingSound.setFront();
+                    } else if ( counter == 1 ) {
+                        movingSound.setSecond();
+                    } else if ( counter == 2 ) {
+                        movingSound.setThird();
+                    }
+                    movingSound.update(t);
+                    counter++;
+                }
             }
+        } else {
+            input.clearKeyPressedRecord();
         }
     }
 
@@ -260,6 +271,10 @@ public class Round extends Scene {
         
         // put in buttons
         buttons.add( Button.backButton(0.95f, 0.05f));
+        buttons.add( Button.twoFaceButton( "Pause", "Resume", 0.25f, 0.05f, 
+                (Runnable) () -> { paused = true; voices.stream().forEach( voice -> voice.instrument().pause() ); },
+                (Runnable) () -> { paused = false; voices.stream().forEach( voice -> voice.instrument().resume() ); } ) );
+        
         
         // put in labels
         this.scoreLabel = Label.textLabel( 0, 0.5f, 0.05f, Color.darkGray, GameFonts.ARIAL_PLAIN_32, (Function<Integer,String>) score -> score.toString() );

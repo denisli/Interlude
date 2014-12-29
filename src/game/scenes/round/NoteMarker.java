@@ -26,6 +26,7 @@ public class NoteMarker {
     private UnicodeFont font;
     private final int key;
     private Color color = Color.yellow;
+    private DisplayType displayType = DisplayType.KEY;
     
     public NoteMarker( int note, Handedness handedness ) {
         this.note = note;
@@ -58,7 +59,17 @@ public class NoteMarker {
         
         g.setColor( Color.black );
         g.setFont( font );
-        String noteText = Note.toLetter(note());//Input.getKeyName( Controls.correspondingKey( note(), handedness ) );
+        
+        String noteText = null;
+        if ( displayType == DisplayType.LETTER ) {
+            noteText = Note.toLetter(note());
+        } else if (displayType == DisplayType.KEY ){
+            noteText = Input.getKeyName( Controls.correspondingKey( note(), handedness ) );
+            if ( noteText.equals("SEMICOLON") ) {
+                noteText = ";";
+            }
+        }
+        
         int textWidth = font.getWidth(noteText);
         int textHeight = font.getHeight(noteText);
         g.drawString( noteText, centerX  - textWidth / 2, centerY - textHeight / 2);
@@ -112,5 +123,9 @@ public class NoteMarker {
     
     public float fractionY() {
         return fractionY;
+    }
+    
+    public void setDisplayType(DisplayType displayType) {
+        this.displayType = displayType;
     }
 }

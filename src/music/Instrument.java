@@ -32,6 +32,10 @@ public interface Instrument {
     public void play(Note note);
     
     public void play(Simultaneous simultaneous);
+    
+    public void pause();
+    
+    public void resume();
         
     public String getInstrumentName();
     

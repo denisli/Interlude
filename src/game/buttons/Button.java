@@ -35,13 +35,15 @@ public interface Button extends Renderable, Movable {
         return button;
     }
     
+    public static Button twoFaceButton( String firstText, String secondText, float fractionX, float fractionY, Runnable firstEffect, Runnable secondEffect ) {
+        Button button = new TwoFaceButton( firstText, secondText, fractionX, fractionY, firstEffect, secondEffect );
+        button.init();
+        return button;
+    }
+    
     public void setEffect(Runnable effect);
     
     public void callEffect();
     
     public boolean isClicked(Input input);
-    
-    public int width();
-    
-    public int height();
 }

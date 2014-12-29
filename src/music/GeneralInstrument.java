@@ -1,23 +1,30 @@
 package music;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.PriorityQueue;
 
 import javax.sound.midi.MidiChannel;
 import javax.sound.midi.Synthesizer;
 
+import util.Pair;
 import util.Triple;
 
 public class GeneralInstrument implements Instrument {
     
     private String instrumentName;
-    private OffTimesComparator comparator = new OffTimesComparator();
-    private PriorityQueue<Triple<Long,Integer,Integer>> offTimes = new PriorityQueue<Triple<Long,Integer,Integer>>(comparator);
+    private final OffTimesComparator comparator = new OffTimesComparator();
+    /** triple = ( time to turn off, channel idx, pitch ) */
+    private final PriorityQueue<Triple<Long,Integer,Integer>> offTimes = new PriorityQueue<Triple<Long,Integer,Integer>>(comparator);
     private MidiChannel currentPlayer;
-    private MidiChannel[] channels;
-    private int[] occupiedChannels;
+    private final MidiChannel[] channels;
+    private final int[] occupiedChannels;
     private int idx = 0;
     private long currentTime = 0;
     private final int programNumber;
+    /** pair = ( channelIdx, pitch ) */
+    private final List<Pair<Integer,Integer>> notesToResumeTo = new ArrayList<Pair<Integer,Integer>>();
+    private boolean paused;
     
     public GeneralInstrument( int programNumber, int... occupiedChannels ) {
         Synthesizer synth = LoadSynthesizer.getSynthesizer();
@@ -78,7 +85,6 @@ public class GeneralInstrument implements Instrument {
 
     @Override
     public String getInstrumentName() {
-        // TODO Auto-generated method stub
         return instrumentName;
     }
     
@@ -94,18 +100,41 @@ public class GeneralInstrument implements Instrument {
 
     @Override
     public int getProgram() {
-        // TODO Auto-generated method stub
         return programNumber;
     }
 
     @Override
     public void clear() {
-        // TODO Auto-generated method stub
         while ( !offTimes.isEmpty() ) {
             Triple<Long,Integer,Integer> triple = offTimes.remove();
             int channelIdx = triple.getMiddle();
             int pitch = triple.getRight();
             channels[channelIdx].noteOff(pitch);
+        }
+    }
+
+    @Override
+    public void pause() {
+        if ( ! paused ) {
+            for ( Triple<Long,Integer,Integer> triple : offTimes ) {
+                int channelIdx = triple.getMiddle();
+                int pitch = triple.getRight();
+                channels[channelIdx].noteOff(pitch);
+                notesToResumeTo.add( new Pair<Integer,Integer>(channelIdx, pitch) );
+            }
+            paused = true;
+        }
+    }
+
+    @Override
+    public void resume() {
+        if ( paused ) {
+            for ( Pair<Integer,Integer> pair : notesToResumeTo ) {
+                int channelIdx = pair.getLeft();
+                int pitch = pair.getRight();
+                channels[channelIdx].noteOff(pitch);
+            }
+            paused = false;
         }
     }
 }
