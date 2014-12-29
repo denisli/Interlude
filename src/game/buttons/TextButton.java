@@ -60,16 +60,12 @@ public class TextButton implements Button {
     
     @Override
     public void init() {
-        this.font = getFont();
+        this.font = GameFonts.ARIAL_PLAIN_36;
         this.boundingBox = boundingBox();
         mouseWasDown = false;
     }
     
-    private UnicodeFont getFont() {
-        return GameFonts.ARIAL_PLAIN_36;
-    }
-    
-    private Rectangle boundingBox() {;
+    private Rectangle boundingBox() {
         int width = font.getWidth(text);
         int height = font.getHeight(text);
         int containerWidth = Interlude.GAME_CONTAINER.getWidth();
@@ -80,13 +76,13 @@ public class TextButton implements Button {
     @Override
     public int width() {
         // TODO Auto-generated method stub
-        return getFont().getWidth(text);
+        return font.getWidth(text);
     }
 
     @Override
     public int height() {
         // TODO Auto-generated method stub
-        return getFont().getHeight(text);
+        return font.getHeight(text);
     }
 
     @Override

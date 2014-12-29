@@ -6,20 +6,20 @@ import java.util.Optional;
 
 import game.Renderable;
 import game.buttons.Button;
-import game.pop_ups.PopUp;
 import game.scenes.Scene;
 import game.scenes.SceneManager;
+import game.selectables.Selectable;
+import game.selectables.Statement;
 import music.Instrument;
 import music.InstrumentPiece;
 import music.Music;
-import music.Voice;
 
 import org.newdawn.slick.Graphics;
 
 public class InstrumentSelectionPage extends Scene {
     private final List<Renderable> renderables = new ArrayList<Renderable>();
     private final Music music;
-    private Optional<Instrument> selectedInstrument;
+    private Optional<Instrument> selectedInstrument = Optional.empty();
     
     public InstrumentSelectionPage( Music music ) {
         this.music = music;
@@ -51,19 +51,31 @@ public class InstrumentSelectionPage extends Scene {
 
     @Override
     protected void layout() {
-        // TODO Auto-generated method stub
+        // add in names of the instruments to play
         List<InstrumentPiece> instrumentPieces = music.instrumentPieces();
         int numVoices = instrumentPieces.size();
         for ( int i = 0; i < numVoices; i++ ) {
             InstrumentPiece instrumentPiece = instrumentPieces.get(i);
-            renderables.add( Button.textButton( instrumentPiece.instrument().getInstrumentName(), 0.5f, ((float) (i+1)) / (numVoices + 1), (Runnable) () -> {
-                selectedInstrument = Optional.of(instrumentPiece.instrument());
-            }));
+            renderables.add( Selectable.textSelectable( instrumentPiece.instrument().getInstrumentName(), 0.5f, ((float) (i+1)) / (numVoices + 1), new Statement() { 
+                public boolean isTrue() {
+                    if ( selectedInstrument.isPresent() ) {
+                        return selectedInstrument.get().equals( instrumentPiece.instrument() );
+                    } else {
+                        return false;
+                    }
+                }
+            }, (Runnable) () -> { selectedInstrument = Optional.of( instrumentPiece.instrument() ); } ));
         }
         
+        // add in buttons
         renderables.add( Button.textButton("OK!", 0.5f, 0.9f, (Runnable) () -> {
-            SceneManager.setNewScene( Scene.round(music, selectedInstrument.get()) );
+            if ( selectedInstrument.isPresent() ) {
+                SceneManager.setNewScene( Scene.round(music, selectedInstrument.get()) );
+            } else {
+                
+            }
         }));
+        renderables.add( Button.backButton( 0.9f, 0.1f ) );
     }
 
     @Override

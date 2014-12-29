@@ -8,6 +8,8 @@ import game.scenes.Scene;
 import game.scenes.SceneManager;
 import game.server_client.Client;
 import game.settings.Controls;
+import game.settings.GameplayType;
+import game.settings.GameplayTypeSetting;
 import game.settings.Orientation;
 
 import java.util.ArrayList;
@@ -67,12 +69,15 @@ public class Round extends Scene {
         
         this.endTime = music.duration();
         
-        
-        if ( selectedInstrument.type() == InstrumentType.SINGLE ) {
+        if ( GameplayTypeSetting.gameplayType() == GameplayType.ONE_HANDED ) {
             handednesses.add(Handedness.SINGLE);
         } else {
-            handednesses.add(Handedness.LEFT);
-            handednesses.add(Handedness.RIGHT);
+            if ( selectedInstrument.type() == InstrumentType.SINGLE ) {
+                handednesses.add(Handedness.SINGLE);
+            } else {
+                handednesses.add(Handedness.LEFT);
+                handednesses.add(Handedness.RIGHT);
+            }
         }
         
         for ( Handedness handedness : handednesses ) {

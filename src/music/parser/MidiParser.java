@@ -1,5 +1,8 @@
 package music.parser;
 
+import game.settings.GameplayType;
+import game.settings.GameplayTypeSetting;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -390,13 +393,17 @@ public class MidiParser {
     }
     
     private static Handedness handedness( int programNumber, int value ) {
-        if ( Instrument.typeOfInstrument( programNumber ) == InstrumentType.SINGLE ) {
+        if ( GameplayTypeSetting.gameplayType() == GameplayType.ONE_HANDED ) {
             return Handedness.SINGLE;
         } else {
-            if ( value > MIDDLE_C ) {
-                return Handedness.LEFT;
+            if ( Instrument.typeOfInstrument( programNumber ) == InstrumentType.SINGLE ) {
+                return Handedness.SINGLE;
             } else {
-                return Handedness.RIGHT;
+                if ( value > MIDDLE_C ) {
+                    return Handedness.LEFT;
+                } else {
+                    return Handedness.RIGHT;
+                }
             }
         }
     }

@@ -14,7 +14,8 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
 public class SongSelectionScroller implements Scroller {
-    private final String[] songTitles = new String[] { 
+    private final String[] songTitles = new String[] {
+            "Okami - Shinshuu Plains",
             "Little Busters! - Little Busters!", 
             "Hunter X Hunter - Ohayou",
             "Suzumiya Haruhi no Yuuutsu - God Knows",
@@ -57,7 +58,8 @@ public class SongSelectionScroller implements Scroller {
             "Girls Generation - Gee",
             "Slam Dunk - Kimi ga Suki Da to Sakebitai",
     };
-    private final String[] fileNames = new String[] { 
+    private final String[] fileNames = new String[] {
+            "Okami - Shinshuu Plains.mid",
             "Little Busters!.mid", 
             "Hunter X Hunter - Ohayou .mid", 
             "God Knows....mid",

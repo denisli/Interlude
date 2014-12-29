@@ -12,6 +12,7 @@ import game.scenes.initialization_scene.InitializationScene;
 import game.scenes.instructions.Instructions;
 import game.scenes.instrument_selection.InstrumentSelectionPage;
 import game.scenes.main_menu.MainMenu;
+import game.scenes.options.OptionsPage;
 import game.scenes.results_page.ResultsPage;
 import game.scenes.round.Round;
 import game.scenes.song_selection.SongSelectionPage;
@@ -48,6 +49,12 @@ public abstract class Scene {
     
     public static Scene instructionsPage() {
         Scene scene = new Instructions();
+        scene.init();
+        return scene;
+    }
+    
+    public static Scene optionsPage() {
+        Scene scene = new OptionsPage();
         scene.init();
         return scene;
     }
