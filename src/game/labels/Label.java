@@ -25,4 +25,12 @@ public interface Label<T> extends Renderable {
     public T getValue();
     
     public void updateValue(T newValue);
+
+    public float fractionX();
+    
+    public float fractionY();
+    
+    public float fractionWidth();
+    
+    public float fractionHeight();
 }

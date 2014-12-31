@@ -1,9 +1,10 @@
-package game.pop_ups;
+package game.scenes.change_controls;
 
 
 import game.Interlude;
 import game.fonts.GameFonts;
 import game.labels.Label;
+import game.pop_ups.PopUp;
 import game.scenes.SceneManager;
 import game.settings.Controls;
 import music.Handedness;
@@ -31,10 +32,16 @@ public class ChangeControlPopUp extends PopUp implements KeyListener {
         // TODO Auto-generated method stub
         int containerWidth = Interlude.GAME_CONTAINER.getWidth();
         int containerHeight = Interlude.GAME_CONTAINER.getHeight();
-        g.setColor( Color.white );
-        g.fillRect( containerWidth / 3, containerHeight / 3, containerWidth / 3, containerHeight / 3 );
-        
-        g.setColor( Color.black );
+        int instructionLabelWidth = (int) (instructionLabel.fractionWidth() * containerWidth);
+        int instructionLabelHeight = (int) (instructionLabel.fractionHeight() * containerHeight);
+        int instructionLabelCenterX = (int) (instructionLabel.fractionX() * containerWidth);
+        int instructionLabelCenterY = (int) (instructionLabel.fractionY() * containerHeight);
+        int padding = 20;
+        g.setColor( Color.orange );
+        int matUpperLeftX = instructionLabelCenterX - instructionLabelWidth / 2 - padding;
+        int matUpperLeftY = instructionLabelCenterY - instructionLabelHeight / 2 - padding;
+        g.fillRoundRect( matUpperLeftX, matUpperLeftY, instructionLabelWidth + 2 * padding, instructionLabelHeight + 2 * padding, padding);
+        g.setColor( Color.red );
         instructionLabel.render(g);
     }
 

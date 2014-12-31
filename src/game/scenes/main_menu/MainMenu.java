@@ -41,14 +41,14 @@ public class MainMenu extends Scene {
     protected void layout() {
         // indicate buttons on page and, lastly, add them to the list of renderables the page has
         float buttonsCenterX = 0.5f;
-        float buttonsInitialFractionY = 0.5f;
+        float buttonsInitialFractionY = 0.4f;
         float increment = 0.1f;
         Button playButton = Button.textButton( "Play", buttonsCenterX, buttonsInitialFractionY, new ChangeSceneEffect(Scene.songSelection()) );
-        Button playWithFriendsButton = Button.textButton( "Play with friends!", buttonsCenterX, buttonsInitialFractionY + increment, new ChangeSceneEffect(Scene.connectWithFriends()) );
-        Button instructionsButton = Button.textButton( "Instructions", buttonsCenterX, buttonsInitialFractionY + 2 * increment, new ChangeSceneEffect(Scene.instructionsPage()) );
-        Button controlsButton = Button.textButton( "Controls", buttonsCenterX, buttonsInitialFractionY + 3 * increment, new ChangeSceneEffect(Scene.changeControlsPage()) );
-        Button optionsButton = Button.textButton( "Options", buttonsCenterX, buttonsInitialFractionY + 4 * increment, new ChangeSceneEffect(Scene.optionsPage()) );
-        renderables.addAll( Arrays.asList(playButton, playWithFriendsButton, instructionsButton, controlsButton, optionsButton) );
+        //Button playWithFriendsButton = Button.textButton( "Play with friends!", buttonsCenterX, buttonsInitialFractionY + increment, new ChangeSceneEffect(Scene.connectWithFriends()) );
+        Button instructionsButton = Button.textButton( "Instructions", buttonsCenterX, buttonsInitialFractionY + increment, new ChangeSceneEffect(Scene.instructionsPage()) );
+        Button controlsButton = Button.textButton( "Controls", buttonsCenterX, buttonsInitialFractionY + 2 * increment, new ChangeSceneEffect(Scene.changeControlsPage()) );
+        Button optionsButton = Button.textButton( "Options", buttonsCenterX, buttonsInitialFractionY + 3 * increment, new ChangeSceneEffect(Scene.optionsPage()) );
+        renderables.addAll( Arrays.asList(playButton, /*playWithFriendsButton,*/ instructionsButton, controlsButton, optionsButton) );
         
         // indicate labels on page and, lastly, add them to the list of renderables on page
         float interludeLabelX = 0.5f;

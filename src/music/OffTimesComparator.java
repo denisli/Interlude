@@ -2,14 +2,13 @@ package music;
 
 import java.util.Comparator;
 
-import util.Triple;
+import util.Quadruple;
 
-
-public class OffTimesComparator implements Comparator<Triple<Long,Integer,Integer>>{
+public class OffTimesComparator implements Comparator<Quadruple<Long,Integer,Integer,Integer>>{
 
     @Override
-    public int compare(Triple<Long, Integer, Integer> triple,
-            Triple<Long, Integer, Integer> otherTriple) {
-        return (int) (triple.getLeft() - otherTriple.getLeft());
+    public int compare(Quadruple<Long, Integer, Integer, Integer> quad,
+            Quadruple<Long, Integer, Integer, Integer> otherQuad) {
+        return (int) (quad.getLeft() - otherQuad.getLeft());
     }
 }

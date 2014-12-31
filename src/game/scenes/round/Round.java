@@ -4,6 +4,7 @@ import game.Interlude;
 import game.buttons.Button;
 import game.fonts.GameFonts;
 import game.labels.Label;
+import game.pop_ups.PopUp;
 import game.scenes.Scene;
 import game.scenes.SceneManager;
 import game.server_client.Client;
@@ -11,14 +12,17 @@ import game.settings.Controls;
 import game.settings.GameplayType;
 import game.settings.GameplayTypeSetting;
 import game.settings.Orientation;
+import game.settings.Volume;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 import java.util.function.Function;
 
 import org.newdawn.slick.Color;
@@ -113,6 +117,8 @@ public class Round extends Scene {
         scoreLabel.render(g);
         timeElapsedLabel.render(g);
         endTimeLabel.render(g);
+        
+        super.render(g);
     }
 
     @Override
@@ -243,6 +249,8 @@ public class Round extends Scene {
         } else {
             input.clearKeyPressedRecord();
         }
+        
+        super.update(t);
     }
 
     @Override
@@ -255,6 +263,7 @@ public class Round extends Scene {
         for ( Voice voice : voices ) {
             voice.instrument().clear();
         }
+        Volume.reset();
     }
 
     @Override
@@ -271,10 +280,14 @@ public class Round extends Scene {
         
         // put in buttons
         buttons.add( Button.backButton(0.95f, 0.05f));
-        buttons.add( Button.twoFaceButton( "Pause", "Resume", 0.25f, 0.05f, 
+        buttons.add( Button.twoFaceButton( "Pause", "Resume", 0.3f, 0.05f, 
                 (Runnable) () -> { paused = true; voices.stream().forEach( voice -> voice.instrument().pause() ); },
                 (Runnable) () -> { paused = false; voices.stream().forEach( voice -> voice.instrument().resume() ); } ) );
-        
+        // put in options setter
+        Set<Instrument> instruments = new HashSet<Instrument>();
+        voices.stream().forEach( voice -> instruments.add(voice.instrument() ) );
+        buttons.add( Button.textButton( "Options", 0.1f, 0.05f,
+                (Runnable) () -> { this.addPopUp( OptionsSetter.optionsSetter(new ArrayList<Instrument>(instruments)) ); } ) );
         
         // put in labels
         this.scoreLabel = Label.textLabel( 0, 0.5f, 0.05f, Color.darkGray, GameFonts.ARIAL_PLAIN_32, (Function<Integer,String>) score -> score.toString() );

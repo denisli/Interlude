@@ -29,7 +29,6 @@ public class TextLabel<T> implements Label<T> {
 
     @Override
     public void render(Graphics g) {
-        // TODO Auto-generated method stub
         int containerWidth = Interlude.GAME_CONTAINER.getWidth();
         int containerHeight = Interlude.GAME_CONTAINER.getHeight();
         int textWidth = font.getWidth(text);
@@ -62,5 +61,27 @@ public class TextLabel<T> implements Label<T> {
     public T getValue() {
         // TODO Auto-generated method stub
         return object;
+    }
+    
+    @Override
+    public float fractionX() {
+        return fractionX;
+    }
+    
+    @Override
+    public float fractionY() {
+        return fractionY;
+    }
+
+    @Override
+    public float fractionWidth() {
+        int containerWidth = Interlude.GAME_CONTAINER.getWidth();
+        return font.getWidth(text) / (float) (containerWidth); 
+    }
+
+    @Override
+    public float fractionHeight() {
+        int containerHeight = Interlude.GAME_CONTAINER.getHeight();
+        return font.getHeight(text) / (float) (containerHeight); 
     }
 }

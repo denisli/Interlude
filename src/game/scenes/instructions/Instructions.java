@@ -17,8 +17,6 @@ public class Instructions extends Scene {
     
     @Override
     public void render(Graphics g) {
-        g.setColor(Color.yellow);
-        g.drawString("Your goal is to hit the notes as close as possible to the circle at the end. Have fun!", 400, 400);
         renderables.stream().forEach( renderable -> renderable.render(g) );
     }
 
@@ -47,6 +45,11 @@ public class Instructions extends Scene {
         
         // add in labels
         renderables.add(Label.textLabel( "Interlude", 0.5f, 0.15f, Color.gray, GameFonts.ARIAL_PLAIN_54 ));
+        String instructionText = "You are to hit the moving notes as close to the note markers as possible.\n\n" +
+                                 "You can change the orientation of the game with left and right arrows.\n" + 
+                                 "You may also switch between displaying the note or key by using the up and down arrows.\n\n" +
+                                 "Keep in mind that an \"S note\" represents two or more notes played at the same time.";
+        renderables.add(Label.textLabel( instructionText, 0.5f, 0.4f, Color.black, GameFonts.ARIAL_PLAIN_18 ));
     }
 
     @Override

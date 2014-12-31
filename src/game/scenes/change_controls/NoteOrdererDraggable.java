@@ -19,6 +19,7 @@ public class NoteOrdererDraggable implements Renderable {
     private final UnicodeFont font = GameFonts.ARIAL_PLAIN_36;
     private Rectangle boundingBox;
     
+    private Color color = Color.black;
     private boolean mouseWasPressed = false;
     private boolean mouseWasDown = false;
     
@@ -56,18 +57,18 @@ public class NoteOrdererDraggable implements Renderable {
         int textWidth = font.getWidth( noteLetter );
         int textHeight = font.getHeight( noteLetter );
         g.setFont( font );
-        g.setColor( Color.black );
+        g.setColor( color );
         g.drawString( noteLetter, centerX - textWidth / 2, centerY - textHeight / 2);
     }
 
     @Override
     public void update(int t) {
         Input input = Interlude.GAME_CONTAINER.getInput();
+
+        int mouseX = input.getMouseX();
+        int mouseY = input.getMouseY();
         
         if ( input.isMouseButtonDown( Input.MOUSE_LEFT_BUTTON ) ) {
-            int mouseX = input.getMouseX();
-            int mouseY = input.getMouseY();
-            
             if ( !mouseWasDown ) {
                 if ( boundingBox.contains( mouseX, mouseY )) {
                     mouseWasPressed = true;
@@ -86,6 +87,11 @@ public class NoteOrdererDraggable implements Renderable {
             }
             mouseWasDown = false;
             mouseWasPressed = false;
+            color = Color.black;
+            
+            if ( boundingBox.contains(mouseX, mouseY) ) {
+                color = Color.red;
+            }
         }
     }
 
@@ -118,11 +124,11 @@ public class NoteOrdererDraggable implements Renderable {
         return Math.abs(this.fractionX - fractionX) < 0.02f && Math.abs(this.fractionY - fractionY) < 0.02f; 
     }
     
-    private Rectangle boundingBox() {;
-    int width = font.getWidth( noteLetter );
-    int height = font.getHeight( noteLetter );
-    int containerWidth = Interlude.GAME_CONTAINER.getWidth();
-    int containerHeight = Interlude.GAME_CONTAINER.getHeight();
-    return new Rectangle( ( (int) (fractionX * containerWidth) - width/2), (int) (fractionY * containerHeight) - height/2, width, height );
-}
+    private Rectangle boundingBox() {
+        int width = font.getWidth( noteLetter );
+        int height = font.getHeight( noteLetter );
+        int containerWidth = Interlude.GAME_CONTAINER.getWidth();
+        int containerHeight = Interlude.GAME_CONTAINER.getHeight();
+        return new Rectangle( ( (int) (fractionX * containerWidth) - width/2), (int) (fractionY * containerHeight) - height/2, width, height );
+    }
 }

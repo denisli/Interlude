@@ -68,7 +68,7 @@ public class InstrumentSelectionPage extends Scene {
         }
         
         // add in buttons
-        renderables.add( Button.textButton("OK!", 0.5f, 0.9f, (Runnable) () -> {
+        renderables.add( Button.textButton("OK!", 0.8f, 0.9f, (Runnable) () -> {
             if ( selectedInstrument.isPresent() ) {
                 SceneManager.setNewScene( Scene.round(music, selectedInstrument.get()) );
             } else {
