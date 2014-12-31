@@ -1,6 +1,5 @@
 package game;
 
-import java.awt.Dimension;
 import java.awt.Toolkit;
 
 import org.newdawn.slick.AppGameContainer;
@@ -18,8 +17,8 @@ public class InterludeGameContainer {
     }
     
     public void init() throws SlickException {
-        int containerWidth = 900;//(int) Math.floor(Toolkit.getDefaultToolkit().getScreenSize().getWidth());
-        int containerHeight = 900;//(int) Math.floor(Toolkit.getDefaultToolkit().getScreenSize().getHeight());;
+        int containerWidth = (int) Math.floor(Toolkit.getDefaultToolkit().getScreenSize().getWidth());
+        int containerHeight = (int) Math.floor(Toolkit.getDefaultToolkit().getScreenSize().getHeight());
         
         app = new AppGameContainer( interludeGame );
         app.setDisplayMode( containerWidth, containerHeight, false );

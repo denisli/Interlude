@@ -9,7 +9,6 @@ import java.util.PriorityQueue;
 import javax.sound.midi.MidiChannel;
 import javax.sound.midi.Synthesizer;
 
-import util.Pair;
 import util.Quadruple;
 import util.Triple;
 

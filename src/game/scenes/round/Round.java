@@ -4,7 +4,6 @@ import game.Interlude;
 import game.buttons.Button;
 import game.fonts.GameFonts;
 import game.labels.Label;
-import game.pop_ups.PopUp;
 import game.scenes.Scene;
 import game.scenes.SceneManager;
 import game.server_client.Client;
@@ -199,14 +198,14 @@ public class Round extends Scene {
                 if ( instrument.equals(selectedInstrument) ) {
                     Handedness handedness = voice.handedness();
                     for ( int key : Controls.noteKeys( handedness ) ) {
-                        //if ( input.isKeyPressed(key) ) {
+                        if ( input.isKeyPressed(key) ) {
                             Queue<MovingSound> notesOnScreen = notesOnScreenOfHand.get(handedness);
                             if ( !notesOnScreen.isEmpty() ) {
                                 int letter = Controls.correspondingNote(key, handedness );
                                 MovingSound movingSound = notesOnScreen.remove();
                                 SoundElement soundElementToPlay = movingSound.soundElement();
                                 SoundElement correspondingSoundElementToPlay = soundElementToPlay.correspondingSoundElement(letter);
-                                soundElementToPlay.bePlayed(instrument);
+                                correspondingSoundElementToPlay.bePlayed(instrument);
                                 if ( letter != movingSound.soundElement().integer() ) {
                                     totalScore -= 30;
                                 } else {
@@ -214,7 +213,7 @@ public class Round extends Scene {
                                 }
                                 scoreLabel.updateValue( totalScore );
                             }
-                        //}
+                        }
                     }
                 }
             }

@@ -1,6 +1,5 @@
 package game.selectables;
 
-import org.newdawn.slick.Color;
 import org.newdawn.slick.Input;
 
 import game.Interlude;
