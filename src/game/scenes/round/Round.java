@@ -98,7 +98,7 @@ public class Round extends Scene {
             if ( !voice.instrument().equals(selectedInstrument) ) {
                 restingTimes.put(voiceIndex, initialDelay + timeToReachNoteMarker + timesUntilVoicesStart.get(voiceIndex));
             } else {
-                restingTimes.put(voiceIndex, initialDelay + /*debugging*/ timeToReachNoteMarker + timesUntilVoicesStart.get(voiceIndex));
+                restingTimes.put(voiceIndex, initialDelay + timesUntilVoicesStart.get(voiceIndex));
             }
         }
     }
