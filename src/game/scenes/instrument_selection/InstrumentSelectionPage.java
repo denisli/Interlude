@@ -53,10 +53,10 @@ public class InstrumentSelectionPage extends Scene {
     protected void layout() {
         // add in names of the instruments to play
         List<InstrumentPiece> instrumentPieces = music.instrumentPieces();
-        int numVoices = instrumentPieces.size();
-        for ( int i = 0; i < numVoices; i++ ) {
+        int numInstruments = instrumentPieces.size();
+        for ( int i = 0; i < numInstruments; i++ ) {
             InstrumentPiece instrumentPiece = instrumentPieces.get(i);
-            renderables.add( Selectable.textSelectable( instrumentPiece.instrument().getInstrumentName(), 0.5f, ((float) (i+1)) / (numVoices + 1), new Statement() { 
+            renderables.add( Selectable.textSelectable( instrumentPiece.instrument().getInstrumentName(), 0.5f, ((float) (i+1)) / (numInstruments + 1), new Statement() { 
                 public boolean isTrue() {
                     if ( selectedInstrument.isPresent() ) {
                         return selectedInstrument.get().equals( instrumentPiece.instrument() );

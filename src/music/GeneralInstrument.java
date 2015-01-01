@@ -91,16 +91,6 @@ public class GeneralInstrument implements Instrument {
     }
     
     @Override
-    public boolean equals(Object other) {
-        if ( ! (other instanceof Instrument) ) {
-            return false;
-        } else {
-            Instrument otherInstrument = (Instrument) other;
-            return this.instrumentName.equals(otherInstrument.getInstrumentName());
-        }
-    }
-
-    @Override
     public int getProgram() {
         return programNumber;
     }
@@ -141,5 +131,20 @@ public class GeneralInstrument implements Instrument {
             notesToResumeTo.clear();
             paused = false;
         }
+    }
+    
+    @Override
+    public boolean equals(Object other) {
+        if ( ! (other instanceof Instrument) ) {
+            return false;
+        } else {
+            Instrument otherInstrument = (Instrument) other;
+            return this.instrumentName.equals(otherInstrument.getInstrumentName());
+        }
+    }
+    
+    @Override
+    public int hashCode() {
+        return this.programNumber;
     }
 }

@@ -297,13 +297,9 @@ public class MidiParser {
                 Instrument instrument = programNumberToInstrument.get(programNumber);
                 Voice voice = new MidiVoice( soundElements, timesUntilNextElement, handedness, instrument );
                 handToVoice.put(handedness, voice);
-            //}
             
             
             // step 4. compute time until voices start
-            
-            //Map<Integer,Integer> programNumberToTimeUntilVoiceStarts = new HashMap<Integer,Integer>();
-            //for ( int programNumber : firstTicks.keySet() ) {
                long tick = handToFirstTick.get(handedness);
                int timeUntilVoiceStarts = 0;
                long timeAtTick = tickToTime.get(tick);
@@ -336,9 +332,10 @@ public class MidiParser {
             }
             
             Instrument instrument = programNumberToInstrument.get(programNumber);
-            
-            InstrumentPiece instrumentPiece = new InstrumentPiece( voices, timesUntilVoicesStart, instrument );
-            instrumentPieces.add(instrumentPiece);
+            if ( voices.size() != 0 ) {
+                InstrumentPiece instrumentPiece = new InstrumentPiece( voices, timesUntilVoicesStart, instrument );
+                instrumentPieces.add(instrumentPiece);
+            }
         }
         
         return new Music( musicTitle, instrumentPieces );
@@ -417,7 +414,7 @@ public class MidiParser {
         final String[] NOTE_NAMES = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
         final int NOTE_ON = 0x90;
         final int NOTE_OFF = 0x80;
-        Sequence sequence = MidiSystem.getSequence(new File("res/midi/Butterfly.mid"));
+        Sequence sequence = MidiSystem.getSequence(new File("res/midi/lostmymusic.mid"));
         System.out.println("Division Type: " + sequence.getDivisionType());
         
         int trackNumber = 0;

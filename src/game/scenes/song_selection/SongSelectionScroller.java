@@ -15,6 +15,7 @@ import org.newdawn.slick.Input;
 
 public class SongSelectionScroller implements Scroller {
     private final String[] songTitles = new String[] {
+            "Katy Perry - Firework",
             "Full Metal Panic - Sore ga Ai Desho",
             "Okami - Shinshuu Plains",
             "Little Busters! - Little Busters!",
@@ -61,6 +62,7 @@ public class SongSelectionScroller implements Scroller {
             "Slam Dunk - Kimi ga Suki Da to Sakebitai",
     };
     private final String[] fileNames = new String[] {
+            "katy_perry-firework.mid",
             "full-metal-panic-fumoffu-sore-ga-ai-deshou.mid",
             "Okami - Shinshuu Plains.mid",
             "Little Busters!.mid",
