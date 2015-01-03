@@ -11,12 +11,6 @@ import game.scenes.change_controls.ChangeControlPopUp;
  */
 public abstract class PopUp implements Renderable {
 
-    public static PopUp changeControl( int note, Handedness handedness ) {
-        PopUp popUp = new ChangeControlPopUp( note, handedness );
-        popUp.init();
-        return popUp;
-    }
-    
     public void remove(Scene scene) {
         scene.destroyPopUp( this );
     }

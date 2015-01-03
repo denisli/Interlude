@@ -98,7 +98,7 @@ public class Round extends Scene {
             if ( !voice.instrument().equals(selectedInstrument) ) {
                 restingTimes.put(voiceIndex, initialDelay + timeToReachNoteMarker + timesUntilVoicesStart.get(voiceIndex));
             } else {
-                restingTimes.put(voiceIndex, initialDelay + timesUntilVoicesStart.get(voiceIndex));
+                restingTimes.put(voiceIndex, initialDelay + /*fun!*/ timeToReachNoteMarker + timesUntilVoicesStart.get(voiceIndex));
             }
         }
     }
@@ -198,14 +198,14 @@ public class Round extends Scene {
                 if ( instrument.equals(selectedInstrument) ) {
                     Handedness handedness = voice.handedness();
                     for ( int key : Controls.noteKeys( handedness ) ) {
-                        if ( input.isKeyPressed(key) ) {
+                        //if ( input.isKeyPressed(key) ) {
                             Queue<MovingSound> notesOnScreen = notesOnScreenOfHand.get(handedness);
                             if ( !notesOnScreen.isEmpty() ) {
                                 int letter = Controls.correspondingNote(key, handedness );
                                 MovingSound movingSound = notesOnScreen.remove();
                                 SoundElement soundElementToPlay = movingSound.soundElement();
                                 SoundElement correspondingSoundElementToPlay = soundElementToPlay.correspondingSoundElement(letter);
-                                correspondingSoundElementToPlay.bePlayed(instrument);
+                                soundElementToPlay.bePlayed(instrument);
                                 if ( letter != movingSound.soundElement().integer() ) {
                                     totalScore -= 30;
                                 } else {
@@ -213,7 +213,7 @@ public class Round extends Scene {
                                 }
                                 scoreLabel.updateValue( totalScore );
                             }
-                        }
+                        //}
                     }
                 }
             }

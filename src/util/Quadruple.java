@@ -28,4 +28,19 @@ public class Quadruple<T1,T2,T3,T4> {
     public T4 getRight() {
         return right;
     }
+    
+    @Override
+    public boolean equals(Object other) {
+        if ( ! ( other instanceof Quadruple ) ) {
+            return false;
+        } else {
+            Quadruple otherQuad = (Quadruple) other;
+            return otherQuad.left.equals( this.left );
+        }
+    }
+    
+    @Override
+    public int hashCode() {
+        return left.hashCode() + middleLeft.hashCode() + middleRight.hashCode() + right.hashCode();
+    }
 }

@@ -22,4 +22,19 @@ public class Triple<T1,T2,T3> {
     public T3 getRight() {
         return this.right;
     }
+    
+    @Override
+    public boolean equals(Object other) {
+        if ( ! ( other instanceof Triple ) ) {
+            return false;
+        } else {
+            Triple otherTriple = (Triple) other;
+            return otherTriple.left.equals( this.left );
+        }
+    }
+    
+    @Override
+    public int hashCode() {
+        return left.hashCode() + middle.hashCode() + right.hashCode();
+    }
 }
