@@ -297,8 +297,9 @@ public class Round extends Scene {
                     soundElement.bePlayed(selectedInstrument);
                 } else if ( xDiff > 0.01f ) {
                     while ( xDiff > 0.01f ) {
+                        notesOnScreen.remove();
                         if ( notesOnScreen.isEmpty() ) { break; }
-                        movingSound = notesOnScreen.remove();
+                        movingSound = notesOnScreen.peek();
                         movingSoundFractionX = movingSound.fraction();
                         xDiff = movingSoundFractionX - NoteMarker.FRACTION_X;
                     }
