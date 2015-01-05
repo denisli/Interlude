@@ -2,7 +2,6 @@ package game.scenes.change_controls;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 import music.Handedness;
 import music.Note;
@@ -54,73 +53,38 @@ public class ChangeControls extends Scene {
     protected void layout() {
         final String[] noteLetters = new String[] { "A", "B", "C", "D", "E", "F", "G", "S" };
         final String colon = ": ";
-        // put in all buttons
+        // put in all buttons and labels for controls
         final Color noteKeyNameColor = Color.lightGray;
         final float labelXShift = 0.05f;
         final float yIncrement = 0.05f;
-        // single voice controls
-        final float singleVoiceX = 0.25f - labelXShift / 2;
+        final float[] xPositions = { 0.25f, 2f/3, 5f/6 };
+        final float[] initialYs = { 0.3f, 0.35f, 0.35f };
+        final Handedness[] handednesses = { Handedness.SINGLE, Handedness.LEFT, Handedness.RIGHT };
         
-        final float singleVoiceInitialY = 0.3f;
-        for ( int i=0; i<noteLetters.length; i++ ) {
-            float yPosition = singleVoiceInitialY + i * yIncrement;
-            String noteLetter = noteLetters[i];
-            int noteInteger = Note.toInteger(noteLetter);
-            int noteKeyCode = Controls.correspondingKey(noteInteger,Handedness.SINGLE);
-            String noteKeyName = Input.getKeyName(noteKeyCode);
-            if (noteKeyName.equals("SEMICOLON")) { noteKeyName = ";"; }
-            Label<String> keyNameOfNoteLabel = Label.textLabel(noteKeyName, singleVoiceX + labelXShift, yPosition, noteKeyNameColor, GameFonts.ARIAL_PLAIN_36);
-            renderables.add(keyNameOfNoteLabel);
-            renderables.add(
-                Button.textButton( noteLetter+colon, singleVoiceX, yPosition, 
-                    (Runnable) () -> {
-                        PopUp popUp = ChangeControlPopUp.makePopUp( Note.toInteger(noteLetter), Handedness.SINGLE, keyNameOfNoteLabel );
-                        popUp.addOn( ChangeControls.this );
-                    }
-                )
-            );
+        for ( int idx = 0; idx < 3; idx++ ) {
+            for ( int i=0; i<noteLetters.length; i++ ) {
+                float initialY = initialYs[idx];
+                float xPosition = xPositions[idx];
+                Handedness handedness = handednesses[idx];
+                float yPosition = initialY + i * yIncrement;
+                String noteLetter = noteLetters[i];
+                int noteInteger = Note.toInteger(noteLetter);
+                int noteKeyCode = Controls.correspondingKey(noteInteger,handedness);
+                String noteKeyName = Input.getKeyName(noteKeyCode);
+                if (noteKeyName.equals("SEMICOLON")) { noteKeyName = ";"; }
+                Label<String> keyNameOfNoteLabel = Label.textLabel(noteKeyName, xPosition + labelXShift/2, yPosition, noteKeyNameColor, GameFonts.ARIAL_PLAIN_36);
+                renderables.add(keyNameOfNoteLabel);
+                renderables.add(
+                    Button.textButton( noteLetter+colon, xPosition - labelXShift/2, yPosition, 
+                        (Runnable) () -> {
+                            PopUp popUp = ChangeControlPopUp.makePopUp( Note.toInteger(noteLetter), handedness, keyNameOfNoteLabel );
+                            popUp.addOn( ChangeControls.this );
+                        }
+                    )
+                );
+            }
         }
-        // double voice left controls
-        final float doubleVoiceLeftX = 2f/3 - labelXShift / 2;
-        final float doubleVoiceInitialY = 0.35f;
-        for ( int i=0; i<noteLetters.length; i++ ) {
-            float yPosition = doubleVoiceInitialY + i * yIncrement;
-            String noteLetter = noteLetters[i];
-            int noteInteger = Note.toInteger(noteLetter);
-            int noteKeyCode = Controls.correspondingKey(noteInteger,Handedness.LEFT);
-            String noteKeyName = Input.getKeyName(noteKeyCode);
-            if (noteKeyName.equals("SEMICOLON")) { noteKeyName = ";"; }
-            Label<String> keyNameOfNoteLabel = Label.textLabel(noteKeyName, doubleVoiceLeftX + labelXShift, yPosition, noteKeyNameColor, GameFonts.ARIAL_PLAIN_36);
-            renderables.add(keyNameOfNoteLabel);
-            renderables.add(
-                Button.textButton( noteLetter+colon, doubleVoiceLeftX, yPosition, 
-                    (Runnable) () -> {
-                        PopUp popUp = ChangeControlPopUp.makePopUp( Note.toInteger(noteLetter), Handedness.LEFT, keyNameOfNoteLabel );
-                        popUp.addOn( ChangeControls.this );
-                    }
-                )
-            );
-        }
-        // double voice right controls
-        final float doubleVoiceRightX = 5f/6 - labelXShift / 2;
-        for ( int i=0; i<noteLetters.length; i++ ) {
-            float yPosition = doubleVoiceInitialY + i * yIncrement;
-            String noteLetter = noteLetters[i];
-            int noteInteger = Note.toInteger(noteLetter);
-            int noteKeyCode = Controls.correspondingKey(noteInteger,Handedness.RIGHT);
-            String noteKeyName = Input.getKeyName(noteKeyCode);
-            if (noteKeyName.equals("SEMICOLON")) { noteKeyName = ";"; }
-            Label<String> keyNameOfNoteLabel = Label.textLabel(noteKeyName, doubleVoiceRightX + labelXShift, yPosition, noteKeyNameColor, GameFonts.ARIAL_PLAIN_36);
-            renderables.add(keyNameOfNoteLabel);
-            renderables.add(
-                Button.textButton( noteLetter+colon, doubleVoiceRightX, yPosition, 
-                    (Runnable) () -> {
-                        PopUp popUp = ChangeControlPopUp.makePopUp( Note.toInteger(noteLetter), Handedness.RIGHT, keyNameOfNoteLabel );
-                        popUp.addOn( ChangeControls.this );
-                    }
-                )
-            );
-        }
+        
         // general purpose buttons
         renderables.add(Button.backButton(0.9f,  0.1f));
         // secondary section labels

@@ -13,6 +13,9 @@ import game.settings.GameplayTypeSetting;
 import game.settings.Orientation;
 import game.settings.Volume;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -52,6 +55,7 @@ public class Round extends Scene {
     /* restingTimes: Key is the voice index. The value is the resting time */
     private final Map<Integer,Integer> restingTimes = new HashMap<Integer,Integer>();
     private final Map<String,Instrument> instrumentNameToInstrument = new HashMap<String,Instrument>();
+    private final Map<Handedness,Label<Queue<MovingSound>>> guidanceLabels = new HashMap<Handedness,Label<Queue<MovingSound>>>();
 
     /** IMMUTABLES */
     private final int endTime;
@@ -66,6 +70,8 @@ public class Round extends Scene {
     private boolean paused = false;
     private int timeElapsed = 0;
     private int totalScore = 0;
+    private boolean showGuidance = false;
+    private boolean isAutoplay = false;
     
     public Round(Music music, Instrument selectedInstrument) {
         this.music = music;
@@ -92,30 +98,34 @@ public class Round extends Scene {
         this.voices = music.voices();
         
         int initialDelay = 3000; // 3 seconds
-        int timeToReachNoteMarker = (int) ( 0.85f / (MovingSound.speed()) );
+        int timeToReachNoteMarker = (int) ( NoteMarker.FRACTION_X / (MovingSound.speed()) );
         for ( int voiceIndex = 0; voiceIndex < voices.size(); voiceIndex++ ) {
             Voice voice = voices.get(voiceIndex);
             if ( !voice.instrument().equals(selectedInstrument) ) {
                 restingTimes.put(voiceIndex, initialDelay + timeToReachNoteMarker + timesUntilVoicesStart.get(voiceIndex));
             } else {
-                restingTimes.put(voiceIndex, initialDelay + /*fun!*/ timeToReachNoteMarker + timesUntilVoicesStart.get(voiceIndex));
+                restingTimes.put(voiceIndex, initialDelay + timesUntilVoicesStart.get(voiceIndex));
             }
         }
     }
     
     @Override
     public void render(Graphics g) {
-        noteMarkers.keySet().stream().forEach( integerAndHand -> noteMarkers.get(integerAndHand).render(g) );
+        noteMarkers.values().stream().forEach( noteMarker -> noteMarker.render(g) );
         
-        handednesses.stream().forEach( handedness -> {
-            notesOnScreenOfHand.get(handedness).stream().forEach( movingSound -> movingSound.render(g) );
-        });
+        notesOnScreenOfHand.values().stream().forEach( 
+                notesOnScreen -> notesOnScreen.stream().forEach( 
+                        movingSound -> movingSound.render(g) ) );
             
         buttons.stream().forEach( button -> button.render(g));
         
         scoreLabel.render(g);
         timeElapsedLabel.render(g);
         endTimeLabel.render(g);
+        
+        if ( showGuidance ) {
+            guidanceLabels.values().stream().forEach( guidanceLabel -> guidanceLabel.render(g) );
+        }
         
         super.render(g);
     }
@@ -124,24 +134,13 @@ public class Round extends Scene {
     public void update(int t) {
         Input input = Interlude.GAME_CONTAINER.getInput();
         
-        // Update the orientation if the user changes it
-        if ( input.isKeyPressed(Input.KEY_LEFT) ) {
-            Orientation.rotateClockwise();
-        } else if ( input.isKeyPressed(Input.KEY_RIGHT) ) {
-            Orientation.rotateCounterClockwise();
-        }
-        
-        if ( input.isKeyPressed(Input.KEY_UP) ) {
-            noteMarkers.keySet().stream().forEach( integerAndHand -> noteMarkers.get(integerAndHand).setDisplayType( DisplayType.KEY ) );
-        } else if ( input.isKeyPressed(Input.KEY_DOWN) ) {
-            noteMarkers.keySet().stream().forEach( integerAndHand -> noteMarkers.get(integerAndHand).setDisplayType( DisplayType.LETTER ) );
-        }
+        updateSettings(input);
         
         // Update each button
         buttons.stream().forEach( button -> button.update(t) );
         
         // Update note markers
-        noteMarkers.keySet().stream().forEach( integerAndHand -> noteMarkers.get(integerAndHand).update(t) );
+        noteMarkers.values().stream().forEach( noteMarker -> noteMarker.update(t) );
         
         if ( !paused ) {
             // Update timeElapsedLabel if music started
@@ -154,8 +153,13 @@ public class Round extends Scene {
                 SceneManager.setNewScene( Scene.results(music.title(), totalScore) );
             }
             
+            // autoplay if game set to autoplay
+            if ( isAutoplay ) {
+                autoplay();
+            }
+            
             // Update resting times and put a sound element on screen if it is time.
-            for ( int voiceIndex = 0; voiceIndex < voices.size(); voiceIndex++ ) {
+            for ( int voiceIndex = voices.size(); --voiceIndex >= 0; ) {
                 Voice voice = voices.get(voiceIndex);
                 
                 Instrument instrument = voice.instrument();
@@ -182,6 +186,8 @@ public class Round extends Scene {
                             MovingSound movingSound = new MovingSound( offScreen, noteMarkers.get(pair).fractionY(), soundElementToInsert, handedness );
                             movingSound.init();
                             notesOnScreen.add( movingSound );
+                            // update guidance labels when adding a note
+                            guidanceLabels.get(handedness).updateValue(notesOnScreen);
                         } else {
                             System.out.println(instrument.getInstrumentName());
                             soundElementToInsert.bePlayed(instrument);
@@ -198,22 +204,23 @@ public class Round extends Scene {
                 if ( instrument.equals(selectedInstrument) ) {
                     Handedness handedness = voice.handedness();
                     for ( int key : Controls.noteKeys( handedness ) ) {
-                        //if ( input.isKeyPressed(key) ) {
+                        if ( input.isKeyPressed(key) ) {
                             Queue<MovingSound> notesOnScreen = notesOnScreenOfHand.get(handedness);
                             if ( !notesOnScreen.isEmpty() ) {
                                 int letter = Controls.correspondingNote(key, handedness );
                                 MovingSound movingSound = notesOnScreen.remove();
                                 SoundElement soundElementToPlay = movingSound.soundElement();
                                 SoundElement correspondingSoundElementToPlay = soundElementToPlay.correspondingSoundElement(letter);
-                                soundElementToPlay.bePlayed(instrument);
+                                correspondingSoundElementToPlay.bePlayed(instrument);
+                                // update guidance labels when a note is played
+                                guidanceLabels.get(handedness).updateValue(notesOnScreen);
                                 if ( letter != movingSound.soundElement().integer() ) {
                                     totalScore -= 30;
                                 } else {
                                     totalScore += (int) (100 * ( 1 - ( ( Math.abs( 0.85f - movingSound.fraction() ) ) / 0.85f ) ) );
                                 }
-                                scoreLabel.updateValue( totalScore );
                             }
-                        //}
+                        }
                     }
                 }
             }
@@ -231,15 +238,14 @@ public class Round extends Scene {
                 }
             
             
-                // Move each moving sound, also make the first third a particular color
+                // Move each moving sound, also make the first three a particular color
                 int counter = 0;
                 for ( MovingSound movingSound : notesOnScreen ) {
-                    if ( counter == 0 ) {
-                        movingSound.setFront();
-                    } else if ( counter == 1 ) {
-                        movingSound.setSecond();
-                    } else if ( counter == 2 ) {
-                        movingSound.setThird();
+                    switch (counter) {
+                    case 0: movingSound.setFront(); break;
+                    case 1: movingSound.setSecond(); break;
+                    case 2: movingSound.setThird(); break;
+                    default: break;
                     }
                     movingSound.update(t);
                     counter++;
@@ -248,10 +254,59 @@ public class Round extends Scene {
         } else {
             input.clearKeyPressedRecord();
         }
+        scoreLabel.updateValue( totalScore ); // have to update the score label here because of restarting
         
         super.update(t);
     }
-
+    
+    private void updateSettings( Input input ) {
+     // toggle autoplay with left shift keys
+        if ( input.isKeyPressed(Input.KEY_LSHIFT) ) {
+            isAutoplay = !isAutoplay;
+        }
+        
+        // toggle guidance with right shift keys
+        if ( input.isKeyPressed(Input.KEY_RSHIFT) ) {
+            showGuidance = ! showGuidance;
+        }
+        
+        // Update the orientation if the user changes it
+        if ( input.isKeyPressed(Input.KEY_LEFT) ) {
+            Orientation.rotateClockwise();
+        } else if ( input.isKeyPressed(Input.KEY_RIGHT) ) {
+            Orientation.rotateCounterClockwise();
+        }
+        
+        if ( input.isKeyPressed(Input.KEY_UP) ) {
+            noteMarkers.keySet().stream().forEach( integerAndHand -> noteMarkers.get(integerAndHand).setDisplayType( DisplayType.KEY ) );
+        } else if ( input.isKeyPressed(Input.KEY_DOWN) ) {
+            noteMarkers.keySet().stream().forEach( integerAndHand -> noteMarkers.get(integerAndHand).setDisplayType( DisplayType.LETTER ) );
+        }
+    }
+    
+    private void autoplay() {
+        for ( Handedness handedness : handednesses ) {
+            Queue<MovingSound> notesOnScreen = notesOnScreenOfHand.get(handedness);
+            if ( !notesOnScreen.isEmpty() ) {
+                MovingSound movingSound = notesOnScreen.peek();
+                float movingSoundFractionX = movingSound.fraction();
+                float xDiff = movingSoundFractionX - NoteMarker.FRACTION_X;
+                if ( Math.abs(xDiff) < 0.01f ) {
+                    notesOnScreen.remove();
+                    SoundElement soundElement = movingSound.soundElement();
+                    soundElement.bePlayed(selectedInstrument);
+                } else if ( xDiff > 0.01f ) {
+                    while ( xDiff > 0.01f ) {
+                        if ( notesOnScreen.isEmpty() ) { break; }
+                        movingSound = notesOnScreen.remove();
+                        movingSoundFractionX = movingSound.fraction();
+                        xDiff = movingSoundFractionX - NoteMarker.FRACTION_X;
+                    }
+                }
+            }
+        }
+    }
+    
     @Override
     public Scene parentScene() {
         return Scene.songSelection();
@@ -263,6 +318,10 @@ public class Round extends Scene {
             voice.instrument().clear();
         }
         Volume.reset();
+        for ( Handedness handedness : notesOnScreenOfHand.keySet() ) {
+            Queue<MovingSound> notesOnScreen = notesOnScreenOfHand.get(handedness);
+            notesOnScreen.clear();
+        }
     }
 
     @Override
@@ -282,6 +341,29 @@ public class Round extends Scene {
         buttons.add( Button.twoFaceButton( "Pause", "Resume", 0.3f, 0.05f, 
                 (Runnable) () -> { paused = true; voices.stream().forEach( voice -> voice.instrument().pause() ); },
                 (Runnable) () -> { paused = false; voices.stream().forEach( voice -> voice.instrument().resume() ); } ) );
+        buttons.add( Button.textButton( "Restart", 0.85f, 0.05f,
+                (Runnable) () -> {
+                    music.restart();
+                    for ( Handedness handedness : notesOnScreenOfHand.keySet() ) {
+                        Queue<MovingSound> notesOnScreen = notesOnScreenOfHand.get(handedness);
+                        notesOnScreen.clear();
+                        Label<Queue<MovingSound>> guidanceLabel = guidanceLabels.get(handedness);
+                        guidanceLabel.updateValue(notesOnScreen);
+                    }
+                    int initialDelay = 100;
+                    List<Integer> timesUntilVoicesStart = music.timesUntilVoicesStart();
+                    int timeToReachNoteMarker = (int) ( NoteMarker.FRACTION_X / (MovingSound.speed()) );
+                    for ( int voiceIdx : restingTimes.keySet() ) {
+                        Voice voice = voices.get(voiceIdx);
+                        if ( !voice.instrument().equals(selectedInstrument) ) {
+                            restingTimes.put(voiceIdx, initialDelay + timeToReachNoteMarker + timesUntilVoicesStart.get(voiceIdx));
+                        } else {
+                            restingTimes.put(voiceIdx, initialDelay + timesUntilVoicesStart.get(voiceIdx));
+                        }
+                    }
+                    timeElapsed = 0;
+                    totalScore = 0;
+                }) );
         // put in options setter
         Set<Instrument> instruments = new HashSet<Instrument>();
         voices.stream().forEach( voice -> instruments.add(voice.instrument() ) );
@@ -292,6 +374,24 @@ public class Round extends Scene {
         this.scoreLabel = Label.textLabel( 0, 0.5f, 0.05f, Color.darkGray, GameFonts.ARIAL_PLAIN_32, (Function<Integer,String>) score -> score.toString() );
         this.timeElapsedLabel = Label.textLabel( 0, 0.65f, 0.05f, Color.darkGray, GameFonts.ARIAL_PLAIN_32, new TimeToString() );
         this.endTimeLabel = Label.textLabel( endTime, 0.75f, 0.05f, Color.darkGray, GameFonts.ARIAL_PLAIN_32, new TimeToString() );
+        
+        int numHands = handednesses.size();
+        for ( int i=0; i<numHands; i++ ) {
+            Handedness handedness = handednesses.get(i);
+            guidanceLabels.put(handedness, Label.textLabel( new LinkedList<MovingSound>(), ((float) i+1) / (numHands + 1), 0.5f, Color.black, GameFonts.ARIAL_PLAIN_32, (Function<Queue<MovingSound>,String>) notesOnScreen -> {
+                String guidanceString = "";
+                int count = 1;
+                for ( MovingSound movingSound : notesOnScreen ) {
+                    int integer = movingSound.soundElement().integer();
+                    int keyCode = Controls.correspondingKey(integer, handedness);
+                    String keyName = Input.getKeyName(keyCode); if (keyName.equals("SEMICOLON")) keyName = ";";
+                    String separator = (count % 10 != 0) ? "  " : "\n";
+                    guidanceString += keyName + separator;
+                    count++;
+               }
+                return guidanceString;
+            }));
+        }
     }
 
     @Override

@@ -34,4 +34,8 @@ public class InstrumentPiece {
     public Instrument instrument() {
         return instrument;
     }
+    
+    public void restart() {
+        voices.stream().forEach( voice -> voice.restart() );
+    }
 }

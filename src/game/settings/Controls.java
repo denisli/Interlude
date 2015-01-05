@@ -55,16 +55,16 @@ public class Controls {
         return NOTES_IN_ORDER;
     }
     
-    public static int[] noteKeys( Handedness voiceType ) {
-        if ( voiceType == Handedness.SINGLE ) {
+    public static int[] noteKeys( Handedness handedness ) {
+        if ( handedness == Handedness.SINGLE ) {
             return new int[] { ANoteKey, BNoteKey, CNoteKey, DNoteKey, 
                     ENoteKey, FNoteKey, GNoteKey, simultaneousKey
             };
-        } else if ( voiceType == Handedness.LEFT ) {
+        } else if ( handedness == Handedness.LEFT ) {
             return new int[] { leftANoteKey, leftBNoteKey, leftCNoteKey, leftDNoteKey,
                     leftENoteKey, leftFNoteKey, leftGNoteKey, leftSimultaneousKey
             };
-        } else if ( voiceType == Handedness.RIGHT ) {
+        } else if ( handedness == Handedness.RIGHT ) {
             return new int[] { rightANoteKey, rightBNoteKey, rightCNoteKey, rightDNoteKey,
                     rightENoteKey, rightFNoteKey, rightGNoteKey, rightSimultaneousKey 
             };
@@ -140,8 +140,8 @@ public class Controls {
     }
     
     // 
-    public static int correspondingNote(int key, Handedness voiceType) {
-        if ( voiceType == Handedness.SINGLE ) {
+    public static int correspondingNote(int key, Handedness handedness) {
+        if ( handedness == Handedness.SINGLE ) {
             if (key == ANoteKey) {
                 return Note.A;
             } else if (key == BNoteKey) {
@@ -184,8 +184,8 @@ public class Controls {
         }
     }
 
-    public static int correspondingKey(int letter, Handedness voiceType ) {
-        if ( voiceType == Handedness.SINGLE ) {
+    public static int correspondingKey(int letter, Handedness handedness ) {
+        if ( handedness == Handedness.SINGLE ) {
             if (letter == Note.A) {
                 return ANoteKey;
             } else if (letter == Note.B) {
@@ -205,7 +205,7 @@ public class Controls {
             } else {
                 throw new IllegalArgumentException("A valid note was not given!");
             }
-        } else if ( voiceType == Handedness.LEFT ){
+        } else if ( handedness == Handedness.LEFT ){
             if (letter == Note.A) {
                 return leftANoteKey;
             } else if (letter == Note.B) {
@@ -225,7 +225,7 @@ public class Controls {
             } else {
                 throw new IllegalArgumentException("A valid note was not given!");
             }
-        } else if ( voiceType == Handedness.RIGHT ){
+        } else if ( handedness == Handedness.RIGHT ){
             if (letter == Note.A) {
                 return rightANoteKey;
             } else if (letter == Note.B) {

@@ -13,4 +13,6 @@ public interface Voice {
     public boolean ended();
     
     public int duration();
+    
+    public void restart();
 }

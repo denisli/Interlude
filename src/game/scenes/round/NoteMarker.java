@@ -17,10 +17,10 @@ import org.newdawn.slick.UnicodeFont;
 import util.Pair;
 
 public class NoteMarker {
+    public static final float FRACTION_X = 0.85f;
     private static final int NUM_LETTERS = 8; // number of letters to represent sound elements
     private final int note;
     private final Handedness handedness;
-    private float fractionX;
     private float fractionY;
     private int radius;
     private UnicodeFont font;
@@ -41,7 +41,7 @@ public class NoteMarker {
     public void render(Graphics g) {
         int containerWidth = Interlude.GAME_CONTAINER.getWidth();
         int containerHeight = Interlude.GAME_CONTAINER.getHeight();
-        Pair<Float,Float> actualPosition = Orientation.getPosition( fractionX, fractionY );
+        Pair<Float,Float> actualPosition = Orientation.getPosition( FRACTION_X, fractionY );
         float actualFractionX = actualPosition.getLeft();
         float actualFractionY = actualPosition.getRight();
         int centerX = (int) (actualFractionX * containerWidth);
@@ -91,7 +91,6 @@ public class NoteMarker {
         if ( handedness == Handedness.SINGLE ) {
             float initial = 0.2f;
             float increment = (1.0f - 2 * initial) / (NUM_LETTERS - 1);
-            fractionX = 0.85f;
             
             for ( int i = 0; i < notesInOrder.size(); i++ ) {
                 if ( note == notesInOrder.get(i) ) {
@@ -102,7 +101,6 @@ public class NoteMarker {
         } else {
             float initial = 0.1f;
             float increment = 0.05f;
-            fractionX = 0.85f;
             for ( int i = 0; i < notesInOrder.size(); i++ ) {
                 if ( note == notesInOrder.get(i) ) {
                     fractionY = initial + i * increment;
@@ -115,10 +113,6 @@ public class NoteMarker {
         }
         
         font = GameFonts.ARIAL_PLAIN_36;
-    }
-    
-    public float fractionX() {
-        return fractionX;
     }
     
     public float fractionY() {

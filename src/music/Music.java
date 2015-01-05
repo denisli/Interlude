@@ -52,4 +52,8 @@ public class Music {
         }
         return longestDuration;
     }
+    
+    public void restart() {
+        instrumentPieces.stream().forEach( instrumentPiece -> instrumentPiece.restart() );
+    }
 }

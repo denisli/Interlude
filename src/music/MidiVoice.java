@@ -40,6 +40,11 @@ public class MidiVoice implements Voice {
         return index == sequence.size() - 1;
     }
     
+    @Override
+    public void restart() {
+        index = -1;
+    }
+    
     public int duration() {
         int duration = 0;
         for ( int timeUntilNextElement : timesUntilNextElement ) {
