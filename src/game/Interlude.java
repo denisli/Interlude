@@ -15,5 +15,6 @@ public class Interlude {
                         LWJGLUtil.getPlatformName()).getAbsolutePath());
         GAME_CONTAINER.init();
         GAME_CONTAINER.start();
+        //testing
     }
 }
