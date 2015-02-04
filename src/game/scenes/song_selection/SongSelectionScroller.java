@@ -15,6 +15,7 @@ import org.newdawn.slick.Input;
 
 public class SongSelectionScroller implements Scroller {
     private final String[] songTitles = new String[] {
+            "Arrietty - Theme",
             "Shigatsu wa Kimi no Uso - Hikaru Nara",
             "Byousoku 5 centimeter - One More Time, One More Chance",
             "Kuroko no Basket - Can Do",
@@ -66,6 +67,7 @@ public class SongSelectionScroller implements Scroller {
             "Slam Dunk - Kimi ga Suki Da to Sakebitai",
     };
     private final String[] fileNames = new String[] {
+            "arrietty.mid",
             "Hikaru Nara.mid",
             "Byousoku 5 centimeter - One More Time, One More Chance.mid",
             "Kuroko no Basket - Can Do.mid",

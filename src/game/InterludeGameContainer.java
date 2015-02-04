@@ -17,8 +17,8 @@ public class InterludeGameContainer {
     }
     
     public void init() throws SlickException {
-        int containerWidth = (int) Math.floor(Toolkit.getDefaultToolkit().getScreenSize().getWidth());
-        int containerHeight = (int) Math.floor(Toolkit.getDefaultToolkit().getScreenSize().getHeight());
+        int containerWidth = 1000;//(int) Math.floor(Toolkit.getDefaultToolkit().getScreenSize().getWidth());
+        int containerHeight = 800;//(int) Math.floor(Toolkit.getDefaultToolkit().getScreenSize().getHeight());
         
         app = new AppGameContainer( interludeGame );
         app.setDisplayMode( containerWidth, containerHeight, false );
