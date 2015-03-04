@@ -21,7 +21,7 @@ public class SongSelectEffect implements Runnable {
     public void run() {
         // TODO Auto-generated method stub
         try {
-            Music music = MidiParser.parse( musicFile.musicTitle(), musicFile.file() );
+            Music music = MidiParser.parse( musicFile.musicTitle(), musicFile.fileName() );
             if ( music.isMultiInstrument() ) {
                 SceneManager.setNewScene( Scene.instrumentSelection( music ) );
             } else {

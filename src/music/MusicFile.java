@@ -9,25 +9,25 @@ import music.parser.MidiParser;
 
 public class MusicFile {
     private final String musicTitle;
-    private final File musicFile;
+    private final String musicFileName;
     
-    public MusicFile( String title, File file ) {
+    public MusicFile( String title, String fileName ) {
         this.musicTitle = title;
-        this.musicFile = file;
+        this.musicFileName = fileName;
     }
 
     public String musicTitle() {
         return musicTitle;
     }
     
-    public File file() {
-        return musicFile;
+    public String fileName() {
+        return musicFileName;
     }
     
     public Music getMusic() throws FileNotFoundException {
         //return Parser.fileToMusic( musicFile );
         try {
-            return MidiParser.parse( musicTitle, musicFile );
+            return MidiParser.parse( musicTitle, musicFileName );
         } catch (MidiUnavailableException mue) {
             // TODO: do something else with this exception;
             throw new RuntimeException("Midi not available");

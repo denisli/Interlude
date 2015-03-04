@@ -5,6 +5,8 @@ import game.settings.GameplayTypeSetting;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -42,7 +44,7 @@ public class MidiParser {
     private static final int SET_TEMPO = 0x51;
     private static final int TIME_SIGNATURE = 0x58;
     
-    public static Music parse( String musicTitle, File file ) throws MidiUnavailableException {
+    public static Music parse( String musicTitle, String fileName ) throws MidiUnavailableException {
         // There are 3 steps to this:
         //      1. put in the note messages into a sorted list (by tick time)
         //      2. put in notes (but not simultaneous) into a sorted list (by tick time)
@@ -51,7 +53,7 @@ public class MidiParser {
         //      4. compute time until voices start
         
         // step 0. sort every midievent by tick time.
-        Pair<PriorityQueue<MidiEvent>,Integer> midiEventsAndResolution = sortedMidiEvents( file );
+        Pair<PriorityQueue<MidiEvent>,Integer> midiEventsAndResolution = sortedMidiEvents( fileName );
         PriorityQueue<MidiEvent> midiEvents = midiEventsAndResolution.getLeft();
         int ticksPerBeat = midiEventsAndResolution.getRight();
         
@@ -154,7 +156,6 @@ public class MidiParser {
         Collections.sort(timeAtTicks, new Comparator<Pair<Long,Long>>() {
             @Override
             public int compare(Pair<Long, Long> pair, Pair<Long, Long> otherPair) {
-                // TODO Auto-generated method stub
                 return (int) (pair.getLeft() - otherPair.getLeft());
             }
         });
@@ -341,7 +342,7 @@ public class MidiParser {
         return new Music( musicTitle, instrumentPieces );
     }
     
-    private static Pair<PriorityQueue<MidiEvent>,Integer> sortedMidiEvents( File file ) {
+    private static Pair<PriorityQueue<MidiEvent>,Integer> sortedMidiEvents( String fileName ) {
         PriorityQueue<MidiEvent> midiEvents = new PriorityQueue<MidiEvent>(new Comparator<MidiEvent>() {
             @Override
             public int compare(MidiEvent event, MidiEvent otherEvent) {
@@ -373,7 +374,8 @@ public class MidiParser {
         });
         int ticksPerBeat = 0;
         try {
-            Sequence sequence = MidiSystem.getSequence( file );
+        	InputStream in = ClassLoader.getSystemResourceAsStream( fileName );
+            Sequence sequence = MidiSystem.getSequence( in );
             ticksPerBeat = sequence.getResolution();
             
             for (Track track : sequence.getTracks()) {
@@ -414,9 +416,13 @@ public class MidiParser {
         final String[] NOTE_NAMES = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
         final int NOTE_ON = 0x90;
         final int NOTE_OFF = 0x80;
-        Sequence sequence = MidiSystem.getSequence(new File("res/midi/lostmymusic.mid"));
+        File file = new File("res/midi/lostmymusic.mid");
+        InputStream in = ClassLoader.getSystemResourceAsStream("midi/lostmymusic.mid");
+        System.out.println(file.getAbsolutePath());
+        int x = 2;
+        if ( x == 1 ) return;
+        Sequence sequence = MidiSystem.getSequence(in);
         System.out.println("Division Type: " + sequence.getDivisionType());
-        
         int trackNumber = 0;
         for (Track track :  sequence.getTracks()) {
             trackNumber++;

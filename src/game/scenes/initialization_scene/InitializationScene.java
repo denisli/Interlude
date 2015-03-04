@@ -16,7 +16,6 @@ public class InitializationScene extends Scene {
 
     @Override
     public Scene parentScene() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -39,7 +38,6 @@ public class InitializationScene extends Scene {
 
     @Override
     public void update(int t) {
-        // TODO Auto-generated method stub
         loadingTime -= t;
         if ( loadingTime <= 0 ) {
             SceneManager.setNewScene( Scene.mainMenu() );
@@ -60,18 +58,16 @@ public class InitializationScene extends Scene {
 
     @Override
     public void cleanUp() {
-        // TODO Auto-generated method stub
         
     }
 
     @Override
     protected void layout() {
-        // TODO Auto-generated method stub
         int containerWidth = Interlude.GAME_CONTAINER.getWidth();
 
         try {
-            eighthNote = new Image("res/images/eighth_note.png");
-            Image initialInterlude = new Image("res/images/interlude.png");
+            eighthNote = new Image("images/eighth_note.png");
+            Image initialInterlude = new Image("images/interlude.png");
             int initialInterludeWidth = initialInterlude.getWidth();
             interlude = initialInterlude.getScaledCopy( Math.min(1, (float) (containerWidth) / initialInterludeWidth) );
             interlude.setAlpha(0);
@@ -82,7 +78,6 @@ public class InitializationScene extends Scene {
 
     @Override
     protected void handleServerMessages() {
-        // TODO Auto-generated method stub
         
     }
 

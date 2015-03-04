@@ -178,7 +178,7 @@ public class SongSelectionScroller implements Scroller {
         for ( int i = 0; i < fileNames.length; i++ ) {
             String songTitle = songTitles[i];
             String fileName = fileNames[i];
-            MusicFile musicFile = new MusicFile( songTitle, new File("res/midi/" + fileName) );
+            MusicFile musicFile = new MusicFile( songTitle, "midi/" + fileName );
             Button songSelectionButton = Button.textButton( songTitle, 0.5f, fractionY, new SongSelectEffect( musicFile ) );
             songSelectionButtons.add( songSelectionButton );
             fractionY += 0.1;
