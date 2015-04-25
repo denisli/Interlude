@@ -6,7 +6,6 @@ import java.util.List;
 
 import music.Handedness;
 import music.Note;
-import music.Simultaneous;
 
 import org.newdawn.slick.Input;
 
@@ -18,8 +17,7 @@ public class Controls {
             Note.D,
             Note.E,
             Note.F,
-            Note.G,
-            Simultaneous.S
+            Note.G
             ));
     
     // single voice controls
@@ -30,7 +28,6 @@ public class Controls {
     private static int ENoteKey = Input.KEY_J;
     private static int FNoteKey = Input.KEY_K;
     private static int GNoteKey = Input.KEY_L;
-    private static int simultaneousKey = Input.KEY_SEMICOLON;
 
     // two voice controls
     private static int leftANoteKey = Input.KEY_A;
@@ -40,7 +37,6 @@ public class Controls {
     private static int leftENoteKey = Input.KEY_G;
     private static int leftFNoteKey = Input.KEY_W;
     private static int leftGNoteKey = Input.KEY_E;
-    private static int leftSimultaneousKey = Input.KEY_R;
 
     private static int rightANoteKey = Input.KEY_H;
     private static int rightBNoteKey = Input.KEY_J;
@@ -49,7 +45,6 @@ public class Controls {
     private static int rightENoteKey = Input.KEY_SEMICOLON;
     private static int rightFNoteKey = Input.KEY_U;
     private static int rightGNoteKey = Input.KEY_I;
-    private static int rightSimultaneousKey = Input.KEY_O;
     
     public static List<Integer> notesInOrder() {
         return NOTES_IN_ORDER;
@@ -58,15 +53,15 @@ public class Controls {
     public static int[] noteKeys( Handedness handedness ) {
         if ( handedness == Handedness.SINGLE ) {
             return new int[] { ANoteKey, BNoteKey, CNoteKey, DNoteKey, 
-                    ENoteKey, FNoteKey, GNoteKey, simultaneousKey
+                    ENoteKey, FNoteKey, GNoteKey
             };
         } else if ( handedness == Handedness.LEFT ) {
             return new int[] { leftANoteKey, leftBNoteKey, leftCNoteKey, leftDNoteKey,
-                    leftENoteKey, leftFNoteKey, leftGNoteKey, leftSimultaneousKey
+                    leftENoteKey, leftFNoteKey, leftGNoteKey
             };
         } else if ( handedness == Handedness.RIGHT ) {
             return new int[] { rightANoteKey, rightBNoteKey, rightCNoteKey, rightDNoteKey,
-                    rightENoteKey, rightFNoteKey, rightGNoteKey, rightSimultaneousKey 
+                    rightENoteKey, rightFNoteKey, rightGNoteKey 
             };
         } else {
             throw new IllegalArgumentException("Valid voice type not given");
@@ -89,8 +84,6 @@ public class Controls {
                 setFNoteKey( key );
             } else if ( note == Note.G ) {
                 setGNoteKey( key );
-            } else if ( note == Simultaneous.S ) {
-                setSimultaneousKey( key );
             } else {
                 throw new IllegalArgumentException( "Valid letter for note not given" );
             }
@@ -109,8 +102,6 @@ public class Controls {
                 setLeftFNoteKey( key );
             } else if ( note == Note.G ) {
                 setLeftGNoteKey( key );
-            } else if ( note == Simultaneous.S ) {
-                setLeftSimultaneousKey( key );
             } else {
                 throw new IllegalArgumentException( "Valid letter for note not given" );
             }
@@ -129,8 +120,6 @@ public class Controls {
                 setRightFNoteKey( key );
             } else if ( note == Note.G ) {
                 setRightGNoteKey( key );
-            } else if ( note == Simultaneous.S ) {
-                setRightSimultaneousKey( key );
             } else {
                 throw new IllegalArgumentException( "Valid letter for note not given" );
             }
@@ -156,8 +145,6 @@ public class Controls {
                 return Note.F;
             } else if (key == GNoteKey) {
                 return Note.G;
-            } else if (key == simultaneousKey) {
-                return Simultaneous.S;
             } else {
                 throw new IllegalArgumentException("Key given is not a note key");
             }
@@ -176,8 +163,6 @@ public class Controls {
                 return Note.F;
             } else if (key == leftGNoteKey || key == rightGNoteKey) {
                 return Note.G;
-            } else if (key == leftSimultaneousKey || key == rightSimultaneousKey) {
-                return Simultaneous.S;
             } else {
                 throw new IllegalArgumentException("Key given is not a note key");
             }
@@ -200,8 +185,6 @@ public class Controls {
                 return FNoteKey;
             } else if (letter == Note.G) {
                 return GNoteKey;
-            }  else if (letter == Simultaneous.S) {
-                return simultaneousKey;
             } else {
                 throw new IllegalArgumentException("A valid note was not given!");
             }
@@ -220,8 +203,6 @@ public class Controls {
                 return leftFNoteKey;
             } else if (letter == Note.G) {
                 return leftGNoteKey;
-            }  else if (letter == Simultaneous.S) {
-                return leftSimultaneousKey;
             } else {
                 throw new IllegalArgumentException("A valid note was not given!");
             }
@@ -240,8 +221,6 @@ public class Controls {
                 return rightFNoteKey;
             } else if (letter == Note.G) {
                 return rightGNoteKey;
-            }  else if (letter == Simultaneous.S) {
-                return rightSimultaneousKey;
             } else {
                 throw new IllegalArgumentException("A valid note was not given!");
             }
@@ -320,14 +299,6 @@ public class Controls {
         GNoteKey = gNoteKey;
     }
 
-    public static int getSimultaneousKey() {
-        return simultaneousKey;
-    }
-
-    public static void setSimultaneousKey(int simultaneousKey) {
-        Controls.simultaneousKey = simultaneousKey;
-    }
-    
     // two voice key getters and setters
     public static int getLeftANoteKey() {
         return leftANoteKey;
@@ -385,14 +356,6 @@ public class Controls {
         Controls.leftGNoteKey = leftGNoteKey;
     }
 
-    public static int getLeftSimultaneousKey() {
-        return leftSimultaneousKey;
-    }
-
-    public static void setLeftSimultaneousKey(int leftSimultaneousKey) {
-        Controls.leftSimultaneousKey = leftSimultaneousKey;
-    }
-
     public static int getRightANoteKey() {
         return rightANoteKey;
     }
@@ -447,14 +410,6 @@ public class Controls {
 
     public static void setRightGNoteKey(int rightGNoteKey) {
         Controls.rightGNoteKey = rightGNoteKey;
-    }
-
-    public static int getRightSimultaneousKey() {
-        return rightSimultaneousKey;
-    }
-
-    public static void setRightSimultaneousKey(int rightSimultaneousKey) {
-        Controls.rightSimultaneousKey = rightSimultaneousKey;
     }
 
     public static void resetKeys() {

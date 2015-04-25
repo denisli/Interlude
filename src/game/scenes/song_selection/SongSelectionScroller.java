@@ -15,6 +15,8 @@ import org.newdawn.slick.Input;
 
 public class SongSelectionScroller implements Scroller {
     private final String[] songTitles = new String[] {
+    		"Suzumiya Haruhi no Yuuutsu - Lost My Music (Piano)",
+    		"Emma - A Victorian Romance - Silhouette of a Breeze",
     		"Tasogare Otome x Amnesia - Choir Jail",
             "Arrietty - Theme",
             "Shigatsu wa Kimi no Uso - Hikaru Nara",
@@ -68,6 +70,8 @@ public class SongSelectionScroller implements Scroller {
             "Slam Dunk - Kimi ga Suki Da to Sakebitai",
     };
     private final String[] fileNames = new String[] {
+    		"The Melancholy of Haruhi Suzumiya - Lost my music (piano).mid",
+    		"Emma - A Victorian Romance - Silhouette of a Breeze - anime-tomodachi.blogspot.com.mid",
     		"tasogare otome x amnesia - Choir Jail.mid",
             "arrietty.mid",
             "Hikaru Nara.mid",

@@ -18,7 +18,7 @@ import util.Pair;
 
 public class NoteMarker {
     public static final float FRACTION_X = 0.85f;
-    private static final int NUM_LETTERS = 8; // number of letters to represent sound elements
+    private static final int NUM_LETTERS = 7; // number of letters to represent sound elements
     private final int note;
     private final Handedness handedness;
     private float fractionY;

@@ -51,7 +51,7 @@ public class ChangeControls extends Scene {
 
     @Override
     protected void layout() {
-        final String[] noteLetters = new String[] { "A", "B", "C", "D", "E", "F", "G", "S" };
+        final String[] noteLetters = new String[] { "A", "B", "C", "D", "E", "F", "G" };
         final String colon = ": ";
         // put in all buttons and labels for controls
         final Color noteKeyNameColor = Color.lightGray;

@@ -73,12 +73,6 @@ public class GeneralInstrument implements Instrument {
         idx = ( idx + 1 ) % occupiedChannels.length;
     }
     
-    @Override
-    public void play(Simultaneous simultaneous) {
-        for ( SoundElement musicElement : simultaneous.notes() ) {
-            musicElement.bePlayed( this );
-        }
-    }
     
     @Override
     public InstrumentType type() {

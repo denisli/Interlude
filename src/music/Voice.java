@@ -2,7 +2,7 @@ package music;
 
 
 public interface Voice {
-    public SoundElement next();
+    public Note next();
     
     public int timeUntilNextElement();
     

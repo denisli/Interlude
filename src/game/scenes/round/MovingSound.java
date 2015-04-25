@@ -4,7 +4,8 @@ import game.Interlude;
 import game.Renderable;
 import game.settings.Orientation;
 import music.Handedness;
-import music.SoundElement;
+import music.Instrument;
+import music.Note;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -12,24 +13,20 @@ import org.newdawn.slick.Graphics;
 import util.Pair;
 
 public class MovingSound implements Renderable {
-    private final static float SPEED = 1.0f/3500.0f; // how much of the screen in moves in 1 millisecond
+    public final static float SPEED = 1.0f/3500.0f; // how much of the screen in moves in 1 millisecond
     private float fractionX;
     private float fractionY;
     private int radius;
     private Color color = Color.black;
     private Handedness handedness;
     
-    private final SoundElement soundElement;
+    private final Note note;
     
-    public MovingSound( float fractionX, float fractionY, SoundElement soundElement, Handedness handedness ) {
+    public MovingSound( float fractionX, float fractionY, Note name, Handedness handedness ) {
         this.fractionX = fractionX;
         this.fractionY = fractionY;
-        this.soundElement = soundElement;
+        this.note = name;
         this.handedness = handedness;
-    }
-    
-    public SoundElement soundElement() {
-        return soundElement;
     }
     
     public void render(Graphics g) {
@@ -44,16 +41,24 @@ public class MovingSound implements Renderable {
         g.fillOval( centerX - radius, centerY - radius, 2 * radius, 2 * radius ); 
     }
     
+    public void bePlayed(Instrument instrument) {
+    	note.bePlayed(instrument);
+    }
+    
+    public int duration() {
+    	return note.duration();
+    }
+    
+    public Note note() {
+    	return note;
+    }
+    
     public float fraction() {
         return fractionX;
     }
     
     public void update(int t) {
         fractionX += SPEED * t;
-    }
-    
-    public static float speed() {
-    	return SPEED;
     }
     
     public void init() {

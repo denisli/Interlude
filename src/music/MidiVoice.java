@@ -3,22 +3,22 @@ package music;
 import java.util.List;
 
 public class MidiVoice implements Voice {
-    private final List<SoundElement> sequence;
+    private final List<Note> sequence;
     private final List<Integer> timesUntilNextElement;
     private final Handedness handedness;
     private final Instrument instrument;
     
     private int index = -1; // index of the music element currently playing
-    private SoundElement currentElement;
+    private Note currentElement;
     
-    public MidiVoice(List<SoundElement> sequence, List<Integer> timesUntilNextElement, Handedness handedness, Instrument instrument) {
+    public MidiVoice(List<Note> sequence, List<Integer> timesUntilNextElement, Handedness handedness, Instrument instrument) {
         this.sequence = sequence;
         this.timesUntilNextElement = timesUntilNextElement;
         this.handedness = handedness;
         this.instrument = instrument;
     }
     
-    public SoundElement next() {
+    public Note next() {
         index += 1;
         currentElement = sequence.get(index);
         return currentElement;

@@ -6,7 +6,6 @@ import game.settings.GameplayTypeSetting;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -35,8 +34,6 @@ import music.InstrumentType;
 import music.MidiVoice;
 import music.Music;
 import music.Note;
-import music.Simultaneous;
-import music.SoundElement;
 import music.Voice;
 
 public class MidiParser {
@@ -243,7 +240,7 @@ public class MidiParser {
             programNumberToInstrument.put( programNumber, new GeneralInstrument( programNumber, channelsToUse ) );
         }
         
-        // step 3. put in sound elements into the a sorted list (by tick time)
+        // step 3. put in sound elements into the sorted list (by tick time)
         //         and also put in time between elements into a list (sorted by the order in which they occur)
         
         Map<Integer,Map<Handedness,Integer>> programNumberTo_HandToTimeUntilVoiceStarts = new HashMap<Integer,Map<Handedness,Integer>>();
@@ -259,44 +256,57 @@ public class MidiParser {
                 int i = 0;
                 long oldTick = 0; // arbitrary starting value with no meaning
                 List<Integer> timesUntilNextElement = new ArrayList<Integer>();
-                List<SoundElement> soundElements = new ArrayList<SoundElement>();
+                //List<SoundElement> sequence = new ArrayList<SoundElement>();
                 LinkedList<Pair<Long,Note>> notes = handToNotes.get(handedness);
-                while ( !notes.isEmpty() ) {
-                    List<Note> simultaneousNotes = new ArrayList<Note>();
-                    Pair<Long,Note> pair = notes.remove();
-                    long tick = pair.getLeft();
-                    if ( i != 0 ) {
-                        timesUntilNextElement.add( (int) (tickToTime.get(tick) - tickToTime.get(oldTick)) );
-                    } else {
-                        handToFirstTick.put(handedness,tick);
-                    }
-                    Note note = pair.getRight();
-                    simultaneousNotes.add(note);
-                    while ( !notes.isEmpty() ) {
-                        Pair<Long,Note> nextPair = notes.peek();
-                        if ( nextPair.getLeft() == tick ) {
-                            notes.remove();
-                            Note simultaneousNote = nextPair.getRight();
-                            simultaneousNotes.add( simultaneousNote );
-                        } else {
-                            break;
-                        }
-                    }
-                    if ( simultaneousNotes.size() == 1 ) {
-                        soundElements.add(simultaneousNotes.get(0));
-                    } else if ( simultaneousNotes.size() > 1 ) {
-                        soundElements.add( new Simultaneous(simultaneousNotes) );
-                    } else {
-                        throw new RuntimeException("Something is wrong here...");
-                    }
-                    
-                    oldTick = tick;
-                    
-                    i++;
+                List<Note> sequence = new ArrayList<Note>();
+                for ( Pair<Long,Note> tickAndNote : notes ) {
+                	long tick = tickAndNote.getLeft();
+                	Note note = tickAndNote.getRight();
+                	sequence.add(note);
+                	if ( i != 0 ) {
+                		timesUntilNextElement.add( (int) (tickToTime.get(tick) - tickToTime.get(oldTick)) );
+                	} else {
+                		handToFirstTick.put(handedness, tick);
+                	}
+                	oldTick = tick;
+                	i++;
                 }
-                
+//                while ( !notes.isEmpty() ) {
+//                    List<Note> simultaneousNotes = new ArrayList<Note>();
+//                    Pair<Long,Note> pair = notes.remove();
+//                    long tick = pair.getLeft();
+//                    if ( i != 0 ) {
+//                        timesUntilNextElement.add( (int) (tickToTime.get(tick) - tickToTime.get(oldTick)) );
+//                    } else {
+//                        handToFirstTick.put(handedness,tick);
+//                    }
+//                    Note note = pair.getRight();
+//                    simultaneousNotes.add(note);
+//                    while ( !notes.isEmpty() ) {
+//                        Pair<Long,Note> nextPair = notes.peek();
+//                        if ( nextPair.getLeft() == tick ) {
+//                            notes.remove();
+//                            Note simultaneousNote = nextPair.getRight();
+//                            simultaneousNotes.add( simultaneousNote );
+//                        } else {
+//                            break;
+//                        }
+//                    }
+//                    if ( simultaneousNotes.size() == 1 ) {
+//                        sequence.add(simultaneousNotes.get(0));
+//                    } else if ( simultaneousNotes.size() > 1 ) {
+//                        sequence.add( new Simultaneous(simultaneousNotes) );
+//                    } else {
+//                        throw new RuntimeException("Something is wrong here...");
+//                    }
+//                    
+//                    oldTick = tick;
+//                    
+//                    i++;
+//                }
+//                
                 Instrument instrument = programNumberToInstrument.get(programNumber);
-                Voice voice = new MidiVoice( soundElements, timesUntilNextElement, handedness, instrument );
+                Voice voice = new MidiVoice( sequence, timesUntilNextElement, handedness, instrument );
                 handToVoice.put(handedness, voice);
             
             

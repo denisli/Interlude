@@ -10,7 +10,7 @@ import java.util.List;
  * @author Denis
  *
  */
-public class Note implements SoundElement {
+public class Note {
     public static final int C = 0;
     //public static final int CS = 1;
     public static final int D = 2;
@@ -25,7 +25,7 @@ public class Note implements SoundElement {
     public static final int B = 11;
     
     public static final List<Integer> NOTES_IN_ALPHABETICAL_ORDER = Collections.unmodifiableList(
-            new ArrayList<Integer>( Arrays.asList(A, B, C, D, E, F, G, Simultaneous.S))
+            new ArrayList<Integer>( Arrays.asList(A, B, C, D, E, F, G))
             );
     
     
@@ -132,8 +132,6 @@ public class Note implements SoundElement {
             return "F";
         } else if ( integer == Note.G ) {
             return "G";
-        } else if ( integer == Simultaneous.S ) {
-            return "S";
         } else {
             throw new IllegalArgumentException("A valid note was not given");
         }
@@ -154,8 +152,6 @@ public class Note implements SoundElement {
             return Note.F;
         } else if ( string.equals("G") ) {
             return Note.G;
-        } else if ( string.equals("S") ) {
-            return Simultaneous.S;
         } else {
             throw new IllegalArgumentException("String does not represent a valid note letter");
         }
@@ -181,7 +177,6 @@ public class Note implements SoundElement {
      * Returns time in milliseconds of the note
      * @return
      */
-    @Override
     public int duration() {
         return duration;
     }
@@ -190,18 +185,8 @@ public class Note implements SoundElement {
      * Returns the time (in milliseconds) until the next element
      * @return time until next note
      */
-    
-    @Override
     public void bePlayed(Instrument instrument) {
         instrument.play( this );
-    }
-    
-    @Override
-    public Note correspondingSoundElement( int integer ) {
-        if (integer == Simultaneous.S) {
-            return new Note( this.integer, Math.abs(octave-1), accidental, duration, volume);
-        }
-        return new Note( integer, octave, accidental, duration, volume );
     }
     
     @Override
