@@ -146,14 +146,19 @@ public class MidiParserImproved {
     				}
     			}
     		}
-    		// At this point in the code, there is no programChange
-//    		if ( programNumberToChannels.containsKey(DEFAULT_PROGRAM_NUMBER) ) {
-//				programNumberToChannels.get(0).add(channel);
-//			} else {
-//				Set<Integer> channels = new HashSet<Integer>();
-//				channels.add(channel);
-//				programNumberToChannels.put(DEFAULT_PROGRAM_NUMBER,channels);
-//			}
+    		// At this point in the code, there is no programChange.
+    		// If the channel is percussion, then it is reasonable for there to be
+    		// not program change. Otherwise, we just ignore the program number.
+    		if ( channel == PERCUSSION_CHANNEL ) {
+    			int programNumber = 0;
+    			// Find an unused programNumber
+    			while ( programNumberToChannels.containsKey(programNumber) ) {
+    				programNumber++;
+    			}
+				Set<Integer> channels = new HashSet<Integer>();
+				channels.add(channel);
+				programNumberToChannels.put(programNumber,channels);
+    		}
     	}
     	Set<Integer> programNumbers = programNumberToChannels.keySet();
     	int numProgramNumbers = programNumbers.size();
