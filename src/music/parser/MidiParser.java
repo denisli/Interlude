@@ -58,6 +58,7 @@ public class MidiParser {
         
         double beatsPerQuarterNote = 1;
         List<Pair<Long,Long>> timeAtTicks = new ArrayList<Pair<Long,Long>>();
+        timeAtTicks.add(new Pair<Long,Long>(0L,0L)); // newly added just now.
         Map<Long,Long> tickToTime = new HashMap<Long,Long>();
         Map<Integer,LinkedList<NoteMessage>> programNumberToNoteMessages = new HashMap<Integer,LinkedList<NoteMessage>>();
         Map<Integer,Integer> channelToProgramNumber = new HashMap<Integer,Integer>();
@@ -124,16 +125,16 @@ public class MidiParser {
                 int type = mm.getType();
                 if ( type == SET_TEMPO ) {
                     // assume that tempo change is going to occur before notes
-                    if ( timeAtTicks.isEmpty() ) {
-                        timeAtTicks.add( new Pair<Long,Long>( tick, 0L ) );
-                    } else {
+                    //if ( timeAtTicks.isEmpty() ) {
+                    //    timeAtTicks.add( new Pair<Long,Long>( tick, 0L ) );
+                    //} else {
                         Pair<Long,Long> lastPair = timeAtTicks.get( timeAtTicks.size() - 1 );
                         long lastTick = lastPair.getLeft();
                         long lastTime = lastPair.getRight();
                         long currentTime = (long) (lastTime + ( tick - lastTick ) * millisecondsPerTick );
                         timeAtTicks.add( new Pair<Long,Long>( tick, currentTime ) );
                         tickToTime.put( tick, currentTime );
-                    }    
+                    //}    
                     byte[] bytes = mm.getMessage();
                     int MPQNByte1 = bytes[3] & 0xFF;
                     int MPQNByte2 = bytes[4] & 0xFF;
@@ -426,9 +427,8 @@ public class MidiParser {
         final String[] NOTE_NAMES = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
         final int NOTE_ON = 0x90;
         final int NOTE_OFF = 0x80;
-        File file = new File("res/midi/lostmymusic.mid");
-        InputStream in = ClassLoader.getSystemResourceAsStream("midi/lostmymusic.mid");
-        System.out.println(file.getAbsolutePath());
+        //InputStream in = ClassLoader.getSystemResourceAsStream("midi/26799_What-Ive-Done.mid");
+        InputStream in = ClassLoader.getSystemResourceAsStream("midi/Tina_Turner_-_Simply_the_Best.mid");
         int x = 2;
         if ( x == 1 ) return;
         Sequence sequence = MidiSystem.getSequence(in);
@@ -440,7 +440,7 @@ public class MidiParser {
             System.out.println();
             for (int i=0; i < track.size(); i++) { 
                 MidiEvent event = track.get(i);
-                if ( event.getTick() > 40000 ) { continue; }
+                if ( event.getTick() > 10000 ) { continue; }
                 System.out.print("@" + event.getTick() + " ");
                 MidiMessage message = event.getMessage();
                 if (message instanceof ShortMessage) {

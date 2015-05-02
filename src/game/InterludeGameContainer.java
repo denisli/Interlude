@@ -1,7 +1,5 @@
 package game;
 
-import java.awt.Toolkit;
-
 import org.newdawn.slick.AppGameContainer;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
@@ -22,6 +20,7 @@ public class InterludeGameContainer {
         
         app = new AppGameContainer( interludeGame );
         app.setDisplayMode( containerWidth, containerHeight, false );
+        app.setShowFPS(false);
         app.setTargetFrameRate(60);
     }
     

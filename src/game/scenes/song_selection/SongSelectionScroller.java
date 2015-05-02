@@ -15,6 +15,13 @@ import org.newdawn.slick.Input;
 
 public class SongSelectionScroller implements Scroller {
     private final String[] songTitles = new String[] {
+    		"Linkin Park - What I've Done",
+    		"Linkin Park - Numb",
+    		"Green Day - Boulevard of Broken Dreams",
+    		"Parasyte - It's the Right Time",
+    		"Inuyasha - Every Heart",
+    		"Durarara!!! - Trust me",
+    		"Final Fantasy IX - Melodies of Life",
     		"Suzumiya Haruhi no Yuuutsu - Lost My Music (Piano)",
     		"Emma - A Victorian Romance - Silhouette of a Breeze",
     		"Tasogare Otome x Amnesia - Choir Jail",
@@ -70,6 +77,13 @@ public class SongSelectionScroller implements Scroller {
             "Slam Dunk - Kimi ga Suki Da to Sakebitai",
     };
     private final String[] fileNames = new String[] {
+    		"26799_What-Ive-Done.mid",
+    		"27553_Numb.mid",
+    		"26885_Boulevard-of-Broken-Dreams.mid",
+    		"Kiseijuu Sei no Kakuritsu (Parasyte) ED - It's The Right Time [Final] v3.mid",
+    		"every_heart.mid",
+    		"Trust me.mid",
+    		"melodies-of-life-final-fantasy.mid",
     		"The Melancholy of Haruhi Suzumiya - Lost my music (piano).mid",
     		"Emma - A Victorian Romance - Silhouette of a Breeze - anime-tomodachi.blogspot.com.mid",
     		"tasogare otome x amnesia - Choir Jail.mid",

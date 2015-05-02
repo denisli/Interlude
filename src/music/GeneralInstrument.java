@@ -32,7 +32,7 @@ public class GeneralInstrument implements Instrument {
         Synthesizer synth = LoadSynthesizer.getSynthesizer();
         javax.sound.midi.Instrument[] instruments = synth.getDefaultSoundbank().getInstruments();
         this.programNumber = programNumber;
-        this.instrumentName = instruments[programNumber].getName();
+        this.instrumentName = (occupiedChannels[0] == 9) ? "Percussion" : instruments[programNumber].getName();
         MidiChannel[] channels = synth.getChannels();
         
         for ( int i : occupiedChannels ) {
@@ -67,7 +67,7 @@ public class GeneralInstrument implements Instrument {
         int pitch = note.pitch();
         int volume = (int) (Math.min(127, note.volume() * Volume.volumeRatio(programNumber)));
         int duration = note.duration();
-        System.out.println("Note tick: " + note.tick() + ", Program Number: " + currentPlayer.getProgram() + ", Index: " + idx + ", Pitch: " + pitch + ", Volume: " + volume + ", Duration: " + duration);
+        System.out.println("Channel: " + channelIdx + ", Program Number: " + currentPlayer.getProgram() + ", Index: " + idx + ", Pitch: " + pitch + ", Volume: " + volume + ", Duration: " + duration);
         offTimes.add( new Quadruple<Long,Integer,Integer,Integer>( currentTime + duration, channelIdx, pitch, volume ) );
         currentPlayer.noteOn( pitch, volume );
         idx = ( idx + 1 ) % occupiedChannels.length;

@@ -1,9 +1,7 @@
 package game;
 
-import java.io.File;
 import java.io.IOException;
 
-import org.lwjgl.LWJGLUtil;
 import org.newdawn.slick.SlickException;
 
 public class Interlude {
