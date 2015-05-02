@@ -67,7 +67,7 @@ public class GeneralInstrument implements Instrument {
         int pitch = note.pitch();
         int volume = (int) (Math.min(127, note.volume() * Volume.volumeRatio(programNumber)));
         int duration = note.duration();
-        System.out.println("Channel: " + channelIdx + ", Program Number: " + currentPlayer.getProgram() + ", Index: " + idx + ", Pitch: " + pitch + ", Volume: " + volume + ", Duration: " + duration);
+        System.out.println("Tick: " + note.tick() + ", Channel: " + channelIdx + ", Program Number: " + currentPlayer.getProgram() + ", Index: " + idx + ", Pitch: " + pitch + ", Volume: " + volume + ", Duration: " + duration);
         offTimes.add( new Quadruple<Long,Integer,Integer,Integer>( currentTime + duration, channelIdx, pitch, volume ) );
         currentPlayer.noteOn( pitch, volume );
         idx = ( idx + 1 ) % occupiedChannels.length;
