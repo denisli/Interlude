@@ -1,7 +1,5 @@
 package music;
 
-import game.settings.Volume;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -13,7 +11,7 @@ import util.Quadruple;
 import util.Triple;
 
 public class GeneralInstrument implements Instrument {
-    
+    private double volumeRatio = 1.0;
     private String instrumentName;
     private final OffTimesComparator comparator = new OffTimesComparator();
     /** triple = ( time to turn off, channel idx, pitch ) */
@@ -65,7 +63,7 @@ public class GeneralInstrument implements Instrument {
         int channelIdx = occupiedChannels[idx];
         currentPlayer = channels[ channelIdx ];
         int pitch = note.pitch();
-        int volume = (int) (Math.min(127, note.volume() * Volume.volumeRatio(programNumber)));
+        int volume = (int) (Math.min(127, note.volume() * volumeRatio));
         int duration = note.duration();
         System.out.println("Tick: " + note.tick() + ", Channel: " + channelIdx + ", Program Number: " + currentPlayer.getProgram() + ", Index: " + idx + ", Pitch: " + pitch + ", Volume: " + volume + ", Duration: " + duration);
         offTimes.add( new Quadruple<Long,Integer,Integer,Integer>( currentTime + duration, channelIdx, pitch, volume ) );
@@ -120,7 +118,7 @@ public class GeneralInstrument implements Instrument {
                 int channelIdx = triple.getLeft();
                 int pitch = triple.getMiddle();
                 int volume = triple.getRight();
-                channels[channelIdx].noteOn(pitch, (int) (volume * Volume.volumeRatio(programNumber)));
+                channels[channelIdx].noteOn(pitch, (int) (volume * volumeRatio));
             }
             notesToResumeTo.clear();
             paused = false;
@@ -141,4 +139,9 @@ public class GeneralInstrument implements Instrument {
     public int hashCode() {
         return this.programNumber;
     }
+
+	@Override
+	public void setVolumeRatio(double volumeRatio) {
+		this.volumeRatio = volumeRatio;
+	}
 }

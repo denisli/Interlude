@@ -265,7 +265,7 @@ public class MidiParser {
                 	Note note = tickAndNote.getRight();
                 	sequence.add(note);
                 	if ( i != 0 ) {
-                		timesUntilNextElement.add( (int) (tickToTime.get(tick) - tickToTime.get(oldTick)) );
+                		timesUntilNextElement.add( (int) (tickToTime.get(tick) - tickToTime.get(oldTick)));
                 	} else {
                 		handToFirstTick.put(handedness, tick);
                 	}
@@ -428,7 +428,7 @@ public class MidiParser {
         final int NOTE_ON = 0x90;
         final int NOTE_OFF = 0x80;
         //InputStream in = ClassLoader.getSystemResourceAsStream("midi/26799_What-Ive-Done.mid");
-        InputStream in = ClassLoader.getSystemResourceAsStream("midi/Bakemonogatari - Kimi no Shiranai Monogatari.mid");
+        InputStream in = ClassLoader.getSystemResourceAsStream("midi/littleroot-town-2-.mid");
         int x = 2;
         if ( x == 1 ) return;
         Sequence sequence = MidiSystem.getSequence(in);
@@ -440,7 +440,7 @@ public class MidiParser {
             System.out.println();
             for (int i=0; i < track.size(); i++) { 
                 MidiEvent event = track.get(i);
-                if ( event.getTick() > 10000 ) { continue; }
+                if ( event.getTick() > 200000 || event.getTick() < 50000 ) { continue; }
                 System.out.print("@" + event.getTick() + " ");
                 MidiMessage message = event.getMessage();
                 if (message instanceof ShortMessage) {

@@ -11,8 +11,9 @@ import util.Slotter;
 import game.settings.Controls;
 import game.Interlude;
 import game.Renderable;
+import game.Updateable;
 
-public class NoteOrderer implements Renderable {
+public class NoteOrderer implements Renderable, Updateable {
     private static final int NUM_NOTES = 8;
     private static final float FRACTION_Y = 0.8f;
     private final List<NoteOrdererDraggable> draggables = new ArrayList<NoteOrdererDraggable>();

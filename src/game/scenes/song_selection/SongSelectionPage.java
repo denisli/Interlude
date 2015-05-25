@@ -5,6 +5,7 @@ import java.util.List;
 
 import game.Interlude;
 import game.Renderable;
+import game.Updateable;
 import game.buttons.Button;
 import game.scenes.Scene;
 
@@ -22,7 +23,7 @@ public class SongSelectionPage extends Scene {
 
     @Override
     public void update(int t) {
-        renderables.stream().forEach( renderable -> renderable.update(t) );
+        renderables.stream().forEach( renderable -> ((Updateable) renderable).update(t) );
     }
 
     @Override

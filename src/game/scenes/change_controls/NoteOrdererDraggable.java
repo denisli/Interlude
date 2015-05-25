@@ -10,9 +10,10 @@ import org.newdawn.slick.geom.Rectangle;
 
 import game.Interlude;
 import game.Renderable;
+import game.Updateable;
 import game.fonts.GameFonts;
 
-public class NoteOrdererDraggable implements Renderable {
+public class NoteOrdererDraggable implements Renderable, Updateable {
     private float fractionX;
     private float fractionY;
     private final String noteLetter;

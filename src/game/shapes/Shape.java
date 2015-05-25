@@ -3,8 +3,9 @@ package game.shapes;
 import org.newdawn.slick.Color;
 
 import game.Renderable;
+import game.Updateable;
 
-public abstract class Shape implements Renderable {
+public abstract class Shape implements Renderable, Updateable {
     public static Shape downArrow( float fractionX, float fractionY, Color color) {
         Shape shape = new DownArrow( fractionX, fractionY, color );
         shape.init();

@@ -12,6 +12,7 @@ import game.selectables.Statement;
 import game.settings.GameplayType;
 import game.settings.GameplayTypeSetting;
 import game.Renderable;
+import game.Updateable;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
@@ -32,7 +33,7 @@ public class OptionsPage extends Scene {
 
     @Override
     public void update(int t) {
-        renderables.stream().forEach( renderable -> renderable.update(t) );
+        renderables.stream().forEach( renderable -> ((Updateable) renderable).update(t) );
     }
 
     @Override

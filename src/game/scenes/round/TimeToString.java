@@ -4,8 +4,8 @@ import java.util.function.Function;
 
 public class TimeToString implements Function<Integer,String> {
     @Override
-    public String apply(Integer time) {
-        int timeInSeconds = time / 1000;
+    public String apply(Integer duration) {
+        int timeInSeconds = duration / 1000;
         int minutes = timeInSeconds / 60;
         int remainingSeconds = timeInSeconds % 60;
         

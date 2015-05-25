@@ -5,9 +5,10 @@ import java.util.List;
 
 import music.Instrument;
 import music.Music;
+import game.Renderable;
+import game.Updateable;
 import game.pop_ups.PopUp;
 import game.scenes.change_controls.ChangeControls;
-import game.scenes.connect_with_friends.ConnectWithFriends;
 import game.scenes.initialization_scene.InitializationScene;
 import game.scenes.instructions.Instructions;
 import game.scenes.instrument_selection.InstrumentSelectionPage;
@@ -19,7 +20,7 @@ import game.scenes.song_selection.SongSelectionPage;
 
 import org.newdawn.slick.Graphics;
 
-public abstract class Scene {
+public abstract class Scene implements Renderable, Updateable {
     protected final List<PopUp> popUps = new ArrayList<PopUp>();
     protected final List<PopUp> popUpsToRemove = new ArrayList<PopUp>();
     
@@ -31,12 +32,6 @@ public abstract class Scene {
     
     public static Scene mainMenu() {
         Scene scene = new MainMenu();
-        scene.init();
-        return scene;
-    }
-    
-    public static Scene connectWithFriends() {
-        Scene scene = new ConnectWithFriends();
         scene.init();
         return scene;
     }

@@ -4,8 +4,9 @@ import org.newdawn.slick.Input;
 
 import game.Interlude;
 import game.Renderable;
+import game.Updateable;
 
-public abstract class Selectable implements Renderable {
+public abstract class Selectable implements Renderable, Updateable {
     private boolean selected = false;
     
     private Statement condition;

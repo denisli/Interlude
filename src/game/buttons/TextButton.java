@@ -9,15 +9,13 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.Rectangle;
 
-public class TextButton implements Button {
+public class TextButton extends Button {
     private String text;
     private Color color = Color.black;
     private UnicodeFont font;
     private Rectangle boundingBox;
-    private boolean mouseWasDown;
     private float fractionX;
     private float fractionY;
-    private Runnable effect;
     
     public TextButton( String text, float fractionX, float fractionY, Runnable effect) {
         this.text = text;
@@ -34,31 +32,10 @@ public class TextButton implements Button {
     }
     
     @Override
-    public void update(int t) {
-        Input input = Interlude.GAME_CONTAINER.getInput();
-        float mouseX = input.getMouseX();
-        float mouseY = input.getMouseY();
-        if (boundingBox.contains( mouseX, mouseY )) {
-            if (input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON)) {
-                mouseWasDown = true;
-                color = Color.red;
-            } else {
-                color = Color.green;
-            }
-        } else {
-            mouseWasDown = false;
-            color = Color.black;
-        }
-        if ( isClicked(input) ) {
-            callEffect();
-        }
-    }
-    
-    @Override
     public void init() {
         this.font = GameFonts.ARIAL_PLAIN_36;
         this.boundingBox = boundingBox();
-        mouseWasDown = false;
+        this.boundingShape = boundingBox;
     }
     
     private Rectangle boundingBox() {
@@ -70,50 +47,22 @@ public class TextButton implements Button {
     }
 
     @Override
-    public boolean isClicked(Input input) {
-        // TODO Auto-generated method stub
-        boolean isClicked = mouseWasDown && !input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON);
-        if ( isClicked ) {
-            mouseWasDown = false;
-        }
-        return isClicked;
-    }
-    
-    @Override
     public void setEffect(Runnable effect) {
         this.effect = effect;
     }
-    
-    @Override
-    public void callEffect() {
-        effect.run();
-    }
 
-    @Override
-    public void moveLeft(float fractionX) {
-        // TODO Auto-generated method stub
-        this.fractionX -= fractionX;
-        this.boundingBox = boundingBox();
-    }
+	@Override
+	public void hover(Input input) {
+		this.color = Color.green;
+	}
 
-    @Override
-    public void moveRight(float fractionX) {
-        // TODO Auto-generated method stub
-        this.fractionX += fractionX;
-        this.boundingBox = boundingBox();
-    }
+	@Override
+	public void clicking(Input input) {
+		this.color = Color.red;
+	}
 
-    @Override
-    public void moveDown(float fractionY) {
-        // TODO Auto-generated method stub
-        this.fractionY += fractionY;
-        this.boundingBox = boundingBox();
-    }
-
-    @Override
-    public void moveUp(float fractionY) {
-        // TODO Auto-generated method stub
-        this.fractionY -= fractionY;
-        this.boundingBox = boundingBox();
-    }
+	@Override
+	void normalState(Input input) {
+		this.color = Color.black;
+	}
 }

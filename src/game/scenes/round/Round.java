@@ -10,15 +10,14 @@ import game.settings.Controls;
 import game.settings.GameplayType;
 import game.settings.GameplayTypeSetting;
 import game.settings.Orientation;
-import game.settings.Volume;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -37,29 +36,28 @@ import music.Voice;
 public class Round extends Scene {
     private final Music music;
     private final Instrument selectedInstrument;
+    private final TimeDilator timeDilator = new TimeDilator();
     
     /** COLLECTIONS */
     private final List<Button> buttons = new ArrayList<Button>();
     /* Each note value and handedness corresponds to a notemarker */
     private final Map<Pair<Integer,Handedness>,NoteMarker> noteMarkers = new HashMap<Pair<Integer,Handedness>,NoteMarker>();
-    private final Map<Pair<Integer,Handedness>,Queue<StackedMovingSound>> notesOnScreen = new HashMap<Pair<Integer,Handedness>,Queue<StackedMovingSound>>();
+    private final Map<Pair<Integer,Handedness>,LinkedList<StackedMovingSound>> notesOnScreen = new HashMap<Pair<Integer,Handedness>,LinkedList<StackedMovingSound>>();
     private final List<Handedness> handednesses = new ArrayList<Handedness>();
     private final List<Voice> voices;
     /* restingTimes: Key is the voice index. The value is the resting time */
     private final Map<Integer,Integer> restingTimes = new HashMap<Integer,Integer>();
-
-    /** IMMUTABLES */
-    private final int endTime;
     
     /** LABELS */
     private Label<Integer> scoreLabel;
-    private Label<Integer> timeElapsedLabel;
-    private Label<Integer> endTimeLabel;
+    private Label<Integer> gameTimeElapsedLabel;
+    private Label<Integer> actualEndTimeLabel;
     
     /** GAME STATE PROPERTIES */
     private boolean musicStarted = false;
     private boolean paused = false;
-    private int timeElapsed = 0;
+    private int gameTimeElapsed = 0;
+    private final int actualEndTime;
     private int totalScore = 0;
     private boolean isAutoplay = false;
     
@@ -67,7 +65,7 @@ public class Round extends Scene {
         this.music = music;
         this.selectedInstrument = selectedInstrument;
         
-        this.endTime = music.duration();
+        this.actualEndTime = music.duration();
         
         if ( GameplayTypeSetting.gameplayType() == GameplayType.ONE_HANDED ) {
             handednesses.add(Handedness.SINGLE);
@@ -106,21 +104,26 @@ public class Round extends Scene {
     public void render(Graphics g) {
         noteMarkers.values().stream().forEach( noteMarker -> noteMarker.render(g) );
         
-        notesOnScreen.values().stream().forEach( 
-                notesOnScreen -> notesOnScreen.stream().forEach( 
-                        movingSound -> movingSound.render(g) ) );
+        for ( LinkedList<StackedMovingSound> aNotesOnScreen : notesOnScreen.values() ) {
+        	Iterator<StackedMovingSound> backwardsIterator = aNotesOnScreen.descendingIterator();
+        	while ( backwardsIterator.hasNext() ) {
+        		StackedMovingSound stackedMovingSound = backwardsIterator.next();
+        		stackedMovingSound.render(g);
+        	}
+        }
             
         buttons.stream().forEach( button -> button.render(g));
         
         scoreLabel.render(g);
-        timeElapsedLabel.render(g);
-        endTimeLabel.render(g);
+        gameTimeElapsedLabel.render(g);
+        actualEndTimeLabel.render(g);
 
         super.render(g);
     }
 
     @Override
     public void update(int t) {
+    	int dilatedT = (int) Math.round(t/timeDilator.timeDilationFactor);
         Input input = Interlude.GAME_CONTAINER.getInput();
         
         updateSettings(input);
@@ -134,11 +137,11 @@ public class Round extends Scene {
         if ( !paused ) {
             // Update timeElapsedLabel if music started
             if ( musicStarted ) {
-                timeElapsed += t;
-                timeElapsedLabel.updateValue(timeElapsed);
+                gameTimeElapsed += dilatedT;
+                gameTimeElapsedLabel.updateValue(gameTimeElapsed);
             }
             
-            if ( timeElapsed > endTime + 4000 ) {
+            if ( gameTimeElapsed > actualEndTime + 4000 ) {
                 SceneManager.setNewScene( Scene.results(music.title(), totalScore) );
             }
             
@@ -152,11 +155,11 @@ public class Round extends Scene {
                 Voice voice = voices.get(voiceIndex);
                 
                 Instrument instrument = voice.instrument();
-                instrument.update(t);
+                instrument.update(dilatedT);
                 
                 int restingTime = restingTimes.get(voiceIndex);
                 
-                restingTime -= t;
+                restingTime -= dilatedT;
                 restingTimes.put(voiceIndex, restingTime);
                 
                 if (restingTime <= 0) { // pick out another note!
@@ -197,7 +200,7 @@ public class Round extends Scene {
                     	} while ( voice.timeUntilNextElement() == 0 );
                     	
                     	for ( Pair<Integer,Handedness> position : positionToStackedMovingSound.keySet() ) {
-                    		Queue<StackedMovingSound> correspondingNotesOnScreen = notesOnScreen.get(position);
+                    		LinkedList<StackedMovingSound> correspondingNotesOnScreen = notesOnScreen.get(position);
                     		StackedMovingSound stackedMovingSound = positionToStackedMovingSound.get(position);
                     		correspondingNotesOnScreen.add(stackedMovingSound);
                     	}
@@ -212,7 +215,7 @@ public class Round extends Scene {
                         if ( input.isKeyPressed(key) ) {
                         	int letter = Controls.correspondingNote(key, handedness );
                         	Pair<Integer,Handedness> pair = new Pair<Integer,Handedness>(letter,handedness);
-                        	Queue<StackedMovingSound> correspondingNotesOnScreen = notesOnScreen.get(pair);
+                        	LinkedList<StackedMovingSound> correspondingNotesOnScreen = notesOnScreen.get(pair);
                             if ( !correspondingNotesOnScreen.isEmpty() ) {
                                 StackedMovingSound stackedMovingSound = correspondingNotesOnScreen.remove();
                                 stackedMovingSound.bePlayed(instrument);
@@ -229,7 +232,7 @@ public class Round extends Scene {
             
          // Remove any notes that are no longer on screen.
             for ( Pair<Integer,Handedness> pair : notesOnScreen.keySet() ) {
-                Queue<StackedMovingSound> correspondingNotesOnScreen = notesOnScreen.get(pair);
+                LinkedList<StackedMovingSound> correspondingNotesOnScreen = notesOnScreen.get(pair);
                 if ( !correspondingNotesOnScreen.isEmpty() ) { 
                     while ( correspondingNotesOnScreen.peek().offScreen() ) {
                         correspondingNotesOnScreen.remove();
@@ -249,7 +252,7 @@ public class Round extends Scene {
                     case 2: stackedMovingSound.setThird(); break;
                     default: break;
                     }
-                    stackedMovingSound.update(t);
+                    stackedMovingSound.update(dilatedT);
                     counter++;
                 }
             }
@@ -258,7 +261,7 @@ public class Round extends Scene {
         }
         scoreLabel.updateValue( totalScore ); // have to update the score label here because of restarting
         
-        super.update(t);
+        super.update(dilatedT);
     }
     
     private void updateSettings( Input input ) {
@@ -283,7 +286,7 @@ public class Round extends Scene {
     
     private void autoplay() {
         for ( Pair<Integer,Handedness> pair : notesOnScreen.keySet() ) {
-            Queue<StackedMovingSound> correspondingNotesOnScreen = notesOnScreen.get(pair);
+            LinkedList<StackedMovingSound> correspondingNotesOnScreen = notesOnScreen.get(pair);
             if ( !correspondingNotesOnScreen.isEmpty() ) {
                 StackedMovingSound stackedMovingSound = correspondingNotesOnScreen.peek();
                 float movingSoundFractionX = stackedMovingSound.fraction();
@@ -314,9 +317,8 @@ public class Round extends Scene {
         for ( Voice voice : voices ) {
             voice.instrument().clear();
         }
-        Volume.reset();
         for ( Pair<Integer,Handedness> pair : notesOnScreen.keySet() ) {
-            Queue<StackedMovingSound> correspondingNotesOnScreen = notesOnScreen.get(pair);
+            LinkedList<StackedMovingSound> correspondingNotesOnScreen = notesOnScreen.get(pair);
             correspondingNotesOnScreen.clear();
         }
     }
@@ -341,8 +343,10 @@ public class Round extends Scene {
         buttons.add( Button.textButton( "Restart", 0.85f, 0.05f,
                 (Runnable) () -> {
                     music.restart();
+                    gameTimeElapsed = 0;
+                    gameTimeElapsedLabel.updateValue(gameTimeElapsed);
                     for ( Pair<Integer,Handedness> pair : notesOnScreen.keySet() ) {
-                        Queue<StackedMovingSound> correspondingNotesOnScreen = notesOnScreen.get(pair);
+                        LinkedList<StackedMovingSound> correspondingNotesOnScreen = notesOnScreen.get(pair);
                         correspondingNotesOnScreen.clear();
                     }
                     int initialDelay = 100;
@@ -356,19 +360,18 @@ public class Round extends Scene {
                             restingTimes.put(voiceIdx, initialDelay + timesUntilVoicesStart.get(voiceIdx));
                         }
                     }
-                    timeElapsed = 0;
                     totalScore = 0;
                 }) );
         // put in options setter
         Set<Instrument> instruments = new HashSet<Instrument>();
         voices.stream().forEach( voice -> instruments.add(voice.instrument() ) );
         buttons.add( Button.textButton( "Options", 0.1f, 0.05f,
-                (Runnable) () -> { this.addPopUp( OptionsSetter.optionsSetter(new ArrayList<Instrument>(instruments)) ); } ) );
+                (Runnable) () -> { this.addPopUp( OptionsSetter.optionsSetter(new ArrayList<Instrument>(instruments),timeDilator) ); } ) );
         
         // put in labels
         this.scoreLabel = Label.textLabel( 0, 0.5f, 0.05f, Color.darkGray, GameFonts.ARIAL_PLAIN_32, (Function<Integer,String>) score -> score.toString() );
-        this.timeElapsedLabel = Label.textLabel( 0, 0.65f, 0.05f, Color.darkGray, GameFonts.ARIAL_PLAIN_32, new TimeToString() );
-        this.endTimeLabel = Label.textLabel( endTime, 0.75f, 0.05f, Color.darkGray, GameFonts.ARIAL_PLAIN_32, new TimeToString() );
+        this.gameTimeElapsedLabel = Label.textLabel( gameTimeElapsed, 0.65f, 0.05f, Color.darkGray, GameFonts.ARIAL_PLAIN_32, new TimeToString() );
+        this.actualEndTimeLabel = Label.textLabel( actualEndTime, 0.75f, 0.05f, Color.darkGray, GameFonts.ARIAL_PLAIN_32, new TimeToString() );
     }
 
     @Override

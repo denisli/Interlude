@@ -9,6 +9,8 @@ public interface Instrument {
         }
     }
     
+    public void setVolumeRatio(double volumeRatio);
+    
     public void update(int t);
     
     public void play(Note note);

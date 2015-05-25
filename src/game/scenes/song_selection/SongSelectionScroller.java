@@ -4,7 +4,6 @@ import game.Interlude;
 import game.buttons.Button;
 import game.shapes.Shape;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +14,17 @@ import org.newdawn.slick.Input;
 
 public class SongSelectionScroller implements Scroller {
     private final String[] songTitles = new String[] {
+    		"Tina Turner - Simply the Best",
+    		"Pokemon Trainer Battle (Orchestrated)",
+    		"Fort Minor - Where'd You Go",
+    		"Fort Minor - Remember the Name",
+    		"The Garden of Words - Rain",
+    		"Clannad Medley",
+    		"Litteroot Town 2",
+    		"Inuyasha - Dearest",
+    		"Pokemon Center Theme",
+    		"Full Metal Alchemist - I Will",
+    		"Naruto - Wind",
     		"Linkin Park - What I've Done",
     		"Linkin Park - Numb",
     		"Green Day - Boulevard of Broken Dreams",
@@ -77,6 +87,17 @@ public class SongSelectionScroller implements Scroller {
             "Slam Dunk - Kimi ga Suki Da to Sakebitai",
     };
     private final String[] fileNames = new String[] {
+    		"Tina_Turner_-_Simply_the_Best.mid",
+    		"trainer-battle-orchestrated-.mid",
+    		"WheredYouGo.mid",
+    		"RememberTheName.mid",
+    		"The Garden of Words ED - Rain.mid",
+    		"clannad-medley.mid",
+    		"littleroot-town-2-.mid",
+    		"22648_Dearest.mid",
+    		"pokemon-center.mid",
+    		"fmaiwill.mid",
+    		"23219_Wind.mid",
     		"26799_What-Ive-Done.mid",
     		"27553_Numb.mid",
     		"26885_Boulevard-of-Broken-Dreams.mid",
@@ -149,12 +170,11 @@ public class SongSelectionScroller implements Scroller {
     @Override
     public void render(Graphics g) {
         // TODO Auto-generated method stub
-        for ( int index = firstIndex; index <= lastIndex; index++ ) {
-            Button songSelectionButton = songSelectionButtons.get(index);
+        for ( Button songSelectionButton : songSelectionButtons ) {
             songSelectionButton.render(g);
         }
         
-        if ( lastIndex < songSelectionButtons.size() - 1 ) {
+        if ( lastIndex < songTitles.length - 1 ) {
             downArrow.render(g);
         }
         
@@ -165,7 +185,6 @@ public class SongSelectionScroller implements Scroller {
 
     @Override
     public void update(int t) {
-        // TODO Auto-generated method stub
         for ( Button songSelectionButton : songSelectionButtons ) {
             songSelectionButton.update(t);
         }
@@ -176,35 +195,35 @@ public class SongSelectionScroller implements Scroller {
             if ( firstIndex > 0 ) {
                 firstIndex--;
                 lastIndex--;
-                for ( Button songSelectionButton : songSelectionButtons ) {
-                    songSelectionButton.moveDown( 0.1f );
-                }
             }
+            updateSongSelectionButtons();
         } else if ( input.isKeyPressed(Input.KEY_DOWN) ) {
-            if ( lastIndex < songSelectionButtons.size() - 1 ) {
+            if ( lastIndex < songTitles.length - 1 ) {
                 firstIndex++;
                 lastIndex++;
-                for ( Button songSelectionButton : songSelectionButtons ) {
-                    songSelectionButton.moveUp( 0.1f );
-                }
             }
+            updateSongSelectionButtons();
         }
     }
 
     @Override
     public void init() {
-        // TODO Auto-generated method stub
-        float fractionY = 0.1f;
-        for ( int i = 0; i < fileNames.length; i++ ) {
-            String songTitle = songTitles[i];
-            String fileName = fileNames[i];
-            MusicFile musicFile = new MusicFile( songTitle, "midi/" + fileName );
-            Button songSelectionButton = Button.textButton( songTitle, 0.5f, fractionY, new SongSelectEffect( musicFile ) );
-            songSelectionButtons.add( songSelectionButton );
-            fractionY += 0.1;
-        }
         firstIndex = 0;
-        lastIndex = Math.min(8, songSelectionButtons.size() - 1);
+        lastIndex = Math.min(8, songTitles.length - 1);
+        updateSongSelectionButtons();
+    }
+    
+    private void updateSongSelectionButtons() {
+    	songSelectionButtons.clear();
+    	for ( int index = firstIndex; index <= lastIndex; index++ ) {
+    		int windowIndex = index - firstIndex + 1;
+    		float increment = 0.1f;
+    		String songTitle = songTitles[index];
+    		String fileName = fileNames[index];
+    		MusicFile musicFile = new MusicFile(songTitle, "midi/" + fileName);
+    		Button songSelectionButton = Button.textButton(songTitle, 0.5f, windowIndex * increment, new SongSelectEffect(musicFile));
+    		songSelectionButtons.add(songSelectionButton);
+    	}
     }
     
     @Override
@@ -214,18 +233,13 @@ public class SongSelectionScroller implements Scroller {
             change--;
             firstIndex--;
             lastIndex--;
-            for ( Button songSelectionButton : songSelectionButtons ) {
-                songSelectionButton.moveDown( 0.1f );
-            }
         }
-        while ( change < 0 && lastIndex < songSelectionButtons.size() - 1 ) {
+        while ( change < 0 && lastIndex < songTitles.length - 1 ) {
             change++;
             firstIndex++;
             lastIndex++;
-            for ( Button songSelectionButton : songSelectionButtons ) {
-                songSelectionButton.moveUp( 0.1f );
-            }
         }
+        updateSongSelectionButtons();
     }
     
     @Override

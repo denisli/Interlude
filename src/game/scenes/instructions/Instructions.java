@@ -3,6 +3,7 @@ package game.scenes.instructions;
 import java.util.ArrayList;
 import java.util.List;
 
+import game.Updateable;
 import game.Renderable;
 import game.buttons.Button;
 import game.fonts.GameFonts;
@@ -22,19 +23,16 @@ public class Instructions extends Scene {
 
     @Override
     public void update(int t) {
-        // TODO Auto-generated method stub
-        renderables.stream().forEach( renderable -> renderable.update(t) );
+        renderables.stream().forEach( renderable -> ((Updateable) renderable).update(t) );
     }
 
     @Override
     public Scene parentScene() {
-        // TODO Auto-generated method stub
         return Scene.mainMenu();
     }
 
     @Override
     public void cleanUp() {
-        // TODO Auto-generated method stub
         
     }
 
@@ -54,7 +52,6 @@ public class Instructions extends Scene {
 
     @Override
     protected void handleServerMessages() {
-        // TODO Auto-generated method stub
         
     }
 }

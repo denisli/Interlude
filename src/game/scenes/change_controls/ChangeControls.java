@@ -6,6 +6,7 @@ import java.util.List;
 import music.Handedness;
 import music.Note;
 import game.Renderable;
+import game.Updateable;
 import game.buttons.Button;
 import game.fonts.GameFonts;
 import game.labels.Label;
@@ -34,7 +35,7 @@ public class ChangeControls extends Scene {
     public void update(int t) {
         // TODO Auto-generated method stub
         super.update(t);
-        renderables.stream().forEach( renderable -> renderable.update(t) );
+        renderables.stream().forEach( renderable -> ((Updateable) renderable).update(t) );
         controlLabels.stream().forEach( label -> label.update(t) );
     }
 

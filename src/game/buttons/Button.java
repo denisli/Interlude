@@ -1,29 +1,27 @@
 package game.buttons;
 
-import game.Movable;
-import game.Renderable;
+import game.Clickable;
+import game.Clickingable;
+import game.Hoverable;
+import game.Interlude;
 import game.scenes.SceneManager;
-import game.server_client.Server;
 
 import org.newdawn.slick.Input;
+import org.newdawn.slick.geom.Shape;
 
-public interface Button extends Renderable, Movable {
-
+public abstract class Button implements Hoverable, Clickingable, Clickable {
+	Shape boundingShape;
+	Runnable effect;
+	
+	boolean mouseWasDown = false;
+	boolean mouseIsDown = false;
+	boolean mouseWasInBound = false;
+	boolean mouseIsInBound = false;
+	
+	
     public static Button backButton(float fractionX, float fractionY) {
         Button button = new TextButton("Back", fractionX, fractionY, (Runnable) () -> {
             SceneManager.setNewScene(SceneManager.currentScene().parentScene());
-        });
-        button.init();
-        return button;
-    }
-    
-    public static Button startServerButton(float fractionX, float fractionY) {
-        Button button = new TextButton("Start Connection", fractionX, fractionY, (Runnable) () -> {
-            try {
-                Server.startServer();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         });
         button.init();
         return button;
@@ -41,9 +39,50 @@ public interface Button extends Renderable, Movable {
         return button;
     }
     
-    public void setEffect(Runnable effect);
+    @Override
+    public void update(int t) {
+    	Input input = Interlude.GAME_CONTAINER.getInput();
+    	
+    	mouseWasDown = mouseIsDown; // change mouse was down based on previous upate
+    	mouseIsDown = input.isMouseButtonDown(Input.MOUSE_LEFT_BUTTON);
+    	
+    	int mouseX = input.getMouseX();
+    	int mouseY = input.getMouseY();
+    	mouseWasInBound = mouseIsInBound; // use result from previous iteration
+    	mouseIsInBound = boundingShape.contains(mouseX, mouseY);
+    	
+    	if ( isHovered(input) ) {
+    		hover(input);
+    	} else if ( isClicking(input) ) {
+    		clicking(input);
+    	} else if ( isClicked(input) ) {
+    		click(input);
+    	} else { // none of these occur
+    		normalState(input);
+    	}
+    }
     
-    public void callEffect();
+    @Override
+    public boolean isHovered(Input input) {
+    	return !mouseWasDown && !mouseIsDown && mouseIsInBound;
+    }
     
-    public boolean isClicked(Input input);
+    @Override
+    public boolean isClicking(Input input) {
+    	return mouseWasDown && mouseIsDown && mouseWasInBound && mouseIsInBound;
+    }
+    
+    @Override
+    public boolean isClicked(Input input) {
+    	return mouseWasDown && !mouseIsDown && mouseWasInBound && mouseIsInBound;
+    }
+    
+    @Override
+    public void click(Input input) {
+    	effect.run();
+    }
+    
+    abstract void setEffect(Runnable effect);
+    
+    abstract void normalState(Input input);
 }

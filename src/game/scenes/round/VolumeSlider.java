@@ -13,11 +13,11 @@ import org.newdawn.slick.geom.RoundedRectangle;
 
 import game.Interlude;
 import game.Renderable;
+import game.Updateable;
 import game.fonts.GameFonts;
 import game.labels.Label;
-import game.settings.Volume;
 
-public class VolumeSlider implements Renderable {
+public class VolumeSlider implements Renderable, Updateable {
     private final Instrument instrument;
     private final float fractionX;
     private final float fractionY;
@@ -69,7 +69,7 @@ public class VolumeSlider implements Renderable {
 
     @Override
     public void update(int t) {
-        renderables.stream().forEach( renderable -> renderable.update(t) );
+        renderables.stream().forEach( renderable -> ((Updateable) renderable).update(t) );
         
         Input input = Interlude.GAME_CONTAINER.getInput();
         int containerHeight = Interlude.GAME_CONTAINER.getHeight();
@@ -92,7 +92,7 @@ public class VolumeSlider implements Renderable {
                 
                 double sliderButtonFractionPosition = ((double) ( sliderBottom - sliderButtonCenterY )) / ( sliderBottom - sliderTop );
                 double ratio = BOTTOM_VALUE + ( TOP_VALUE - BOTTOM_VALUE ) * sliderButtonFractionPosition;
-                Volume.setVolumeRatio(instrument.getProgram(), ratio);
+                instrument.setVolumeRatio(ratio);
             }
             
             mouseWasDown = true;
@@ -114,7 +114,7 @@ public class VolumeSlider implements Renderable {
         int cornerRadius = 6;
         int sliderTop = (int) ( containerHeight * ( fractionY - FRACTION_HEIGHT / 2 ) ); 
         int sliderBottom = (int) ( containerHeight * ( fractionY + FRACTION_HEIGHT / 2 ) ); 
-        value = Volume.volumeRatio(instrument.getProgram());
+        value = 1.0;
         double valueFractionPosition = ( value - BOTTOM_VALUE ) / ( TOP_VALUE - BOTTOM_VALUE );
         int sliderButtonCenterY = (int) (sliderBottom + ( sliderTop - sliderBottom ) * valueFractionPosition);
         
@@ -131,6 +131,6 @@ public class VolumeSlider implements Renderable {
     public void reset() {
         int containerHeight = Interlude.GAME_CONTAINER.getHeight();
         sliderButton.setCenterY( fractionY * containerHeight );
-        Volume.setVolumeRatio( instrument.getProgram(), 1 );
+        instrument.setVolumeRatio(1.0);
     }
 }

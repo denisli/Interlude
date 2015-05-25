@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import game.Updateable;
 import game.Renderable;
 import game.buttons.Button;
 import game.buttons.effects.ChangeSceneEffect;
@@ -24,7 +25,7 @@ public class MainMenu extends Scene {
 
     @Override
     public void update(int t) {
-        renderables.stream().forEach( renderable -> renderable.update(t) );
+        renderables.stream().forEach( renderable -> ((Updateable) renderable).update(t) );
     }
 
     @Override

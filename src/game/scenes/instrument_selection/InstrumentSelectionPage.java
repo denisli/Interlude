@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import game.Updateable;
 import game.Renderable;
 import game.buttons.Button;
 import game.scenes.Scene;
@@ -40,7 +41,7 @@ public class InstrumentSelectionPage extends Scene {
     @Override
     public void update(int t) {
         // TODO Auto-generated method stub
-        renderables.stream().forEach( renderable -> renderable.update(t) );
+        renderables.stream().forEach( renderable -> ((Updateable) renderable).update(t) );
     }
 
     @Override

@@ -1,6 +1,5 @@
 package music;
 
-
 public interface Voice {
     public Note next();
     

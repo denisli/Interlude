@@ -66,7 +66,7 @@ public class Note {
         this.volume = volume;
         
         final int standard = 60000; // give better name for this
-        this.duration = (int) Math.floor( standard * durationType / tempo );
+        this.duration = (int) Math.floor( standard * durationType / tempo);
     }
     
     public Note( int integer, int octave, int accidental, int duration, int volume ) {

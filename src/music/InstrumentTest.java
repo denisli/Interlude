@@ -84,4 +84,10 @@ public class InstrumentTest implements Instrument {
 		// TODO Auto-generated method stub
 		
 	}
+
+	@Override
+	public void setVolumeRatio(double volumeRatio) {
+		// TODO Auto-generated method stub
+		
+	}
 }

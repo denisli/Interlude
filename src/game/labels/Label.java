@@ -6,8 +6,9 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.UnicodeFont;
 
 import game.Renderable;
+import game.Updateable;
 
-public interface Label<T> extends Renderable {
+public interface Label<T> extends Renderable, Updateable {
     
     public static Label<String> textLabel(String text, float fractionX, float fractionY, Color color, UnicodeFont font) {
         Function<String,String> stringer = (Function<String,String>) ( string -> string );
