@@ -13,7 +13,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
 public class SongSelectionScroller implements Scroller {
-    private final String[] songTitles = new String[] {
+    private static final String[] songTitles = new String[] {
     		"Owl City - Fireflies",
     		"Tina Turner - Simply the Best",
     		"Pokemon Trainer Battle (Orchestrated)",
@@ -87,7 +87,7 @@ public class SongSelectionScroller implements Scroller {
             "Girls Generation - Gee",
             "Slam Dunk - Kimi ga Suki Da to Sakebitai",
     };
-    private final String[] fileNames = new String[] {
+    private static final String[] fileNames = new String[] {
     		"Fireflies - Owl City.mid",
     		"Tina_Turner_-_Simply_the_Best.mid",
     		"trainer-battle-orchestrated-.mid",
@@ -163,8 +163,8 @@ public class SongSelectionScroller implements Scroller {
             };
     
     private List<Button> songSelectionButtons = new ArrayList<Button>();
-    private int firstIndex; // index of first song to include
-    private int lastIndex; // index of last song to include
+    private static int firstIndex = 0; // index of first song to include
+    private static int lastIndex = Math.min(8, songTitles.length - 1);; // index of last song to include
     
     private Shape downArrow = Shape.downArrow(0.5f,0.95f);
     private Shape upArrow = Shape.upArrow(0.5f,0.05f);
@@ -210,8 +210,6 @@ public class SongSelectionScroller implements Scroller {
 
     @Override
     public void init() {
-        firstIndex = 0;
-        lastIndex = Math.min(8, songTitles.length - 1);
         updateSongSelectionButtons();
     }
     

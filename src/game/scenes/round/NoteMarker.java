@@ -18,7 +18,7 @@ import util.Pair;
 
 public class NoteMarker {
     public static final float FRACTION_X = 0.85f;
-    private static final int NUM_LETTERS = 7; // number of letters to represent sound elements
+    private static final List<Integer> NOTES_IN_ORDER = Controls.notesInOrder();
     private final int note;
     private final Handedness handedness;
     private float fractionY;
@@ -87,27 +87,27 @@ public class NoteMarker {
     public void init() {
         int containerWidth = Interlude.GAME_CONTAINER.getWidth();
         int containerHeight = Interlude.GAME_CONTAINER.getHeight();
-        List<Integer> notesInOrder = Controls.notesInOrder();
+        int numLetters = NOTES_IN_ORDER.size();
         if ( handedness == Handedness.SINGLE ) {
             float initial = 0.2f;
-            float increment = (1.0f - 2 * initial) / (NUM_LETTERS - 1);
+            float increment = (1.0f - 2 * initial) / (numLetters - 1);
             
-            for ( int i = 0; i < notesInOrder.size(); i++ ) {
-                if ( note == notesInOrder.get(i) ) {
+            for ( int i = 0; i < numLetters; i++ ) {
+                if ( note == NOTES_IN_ORDER.get(i) ) {
                     fractionY = initial + i * increment;
                 }
             }
             radius = (int) (Math.min(containerWidth, containerHeight) * increment * 2) / 5;
         } else {
             float initial = 0.1f;
-            float increment = 0.05f;
-            for ( int i = 0; i < notesInOrder.size(); i++ ) {
-                if ( note == notesInOrder.get(i) ) {
+            float increment = (1.0f - 2 * initial) / (2 * numLetters - 1);
+            for ( int i = 0; i < NOTES_IN_ORDER.size(); i++ ) {
+                if ( note == NOTES_IN_ORDER.get(i) ) {
                     fractionY = initial + i * increment;
                 }
             }
             if ( handedness == Handedness.RIGHT ) {
-                fractionY += NUM_LETTERS * increment;
+                fractionY += numLetters * increment;
             }
             radius = (int) (Math.min(containerWidth, containerHeight) * increment * 2) / 5;
         }

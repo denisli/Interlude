@@ -14,7 +14,8 @@ import game.Renderable;
 import game.Updateable;
 
 public class NoteOrderer implements Renderable, Updateable {
-    private static final int NUM_NOTES = 8;
+    private static final List<Integer> NOTES_IN_ORDER = Controls.notesInOrder();
+    private static final int NUM_NOTES = NOTES_IN_ORDER.size();
     private static final float FRACTION_Y = 0.8f;
     private final List<NoteOrdererDraggable> draggables = new ArrayList<NoteOrdererDraggable>();
     private Optional<NoteOrdererDraggable> draggedNote = Optional.empty();
@@ -94,11 +95,10 @@ public class NoteOrderer implements Renderable, Updateable {
 
     @Override
     public void init() {
-        List<Integer> notesInOrder = Controls.notesInOrder();
         float initialFractionX = 0.2f;
-        increment = ( 1.0f - 2 * initialFractionX ) / NUM_NOTES;
-        for ( int i = 0; i < notesInOrder.size(); i++ ) {
-            int noteInteger = notesInOrder.get(i);
+        increment = ( 1.0f - 2 * initialFractionX ) / (NUM_NOTES - 1);
+        for ( int i = 0; i < NOTES_IN_ORDER.size(); i++ ) {
+            int noteInteger = NOTES_IN_ORDER.get(i);
             float position = initialFractionX + i * increment;
             indexToFractionX[i] = position;
             draggables.add( NoteOrdererDraggable.draggable( noteInteger, position, FRACTION_Y ) );

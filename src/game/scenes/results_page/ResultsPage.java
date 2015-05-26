@@ -15,6 +15,7 @@ public class ResultsPage extends Scene {
     
     private Label<String> titleLabel;
     private Label<String> scoreLabel;
+    private Button backButton;
     private Button mainMenuButton;
     
     public ResultsPage( String musicTitle, int score ) {
@@ -24,8 +25,7 @@ public class ResultsPage extends Scene {
 
     @Override
     public Scene parentScene() {
-        // TODO Auto-generated method stub
-        throw new RuntimeException("Score page should have no parent scene to go back to");
+    	return Scene.songSelection();
     }
 
     @Override
@@ -34,6 +34,7 @@ public class ResultsPage extends Scene {
         titleLabel.render(g);
         scoreLabel.render(g);
         mainMenuButton.render(g);
+        backButton.render(g);
     }
 
     @Override
@@ -42,6 +43,7 @@ public class ResultsPage extends Scene {
         titleLabel.update(t);
         scoreLabel.update(t);
         mainMenuButton.update(t);
+        backButton.update(t);
     }
 
     @Override
@@ -55,7 +57,8 @@ public class ResultsPage extends Scene {
         // TODO Auto-generated method stub
         this.titleLabel = Label.textLabel(musicTitle, 0.5f, 0.3f, Color.black, GameFonts.ARIAL_PLAIN_54);
         this.scoreLabel = Label.textLabel(Integer.toString(score), 0.5f, 0.5f, Color.black, GameFonts.ARIAL_PLAIN_54);
-        this.mainMenuButton = Button.textButton( "Main Menu", 0.8f, 0.05f, new ChangeSceneEffect(Scene.mainMenu()) );
+        this.mainMenuButton = Button.textButton( "Main Menu", 0.75f, 0.05f, new ChangeSceneEffect(Scene.mainMenu()) );
+        this.backButton = Button.backButton(0.9f, 0.05f);
     }
 
     @Override

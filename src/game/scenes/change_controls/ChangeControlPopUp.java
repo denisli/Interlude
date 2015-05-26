@@ -20,7 +20,7 @@ public class ChangeControlPopUp extends PopUp implements KeyListener {
     private final Label<String> keyNameLabel;
     private boolean keyPressed = false;
     private int pressedKey;
-    private final Label<String> instructionLabel = Label.textLabel("Press the button you want to change control to", 0.5f, 0.5f, Color.black,
+    private final Label<String> instructionLabel = Label.textLabel("Press the button you want to change control to.", 0.5f, 0.5f, Color.black,
             GameFonts.ARIAL_PLAIN_18 );
     
     public static PopUp makePopUp( int note, Handedness handedness, Label<String> keyNameLabel ) {
@@ -37,7 +37,6 @@ public class ChangeControlPopUp extends PopUp implements KeyListener {
     
     @Override
     public void render(Graphics g) {
-        // TODO Auto-generated method stub
         int containerWidth = Interlude.GAME_CONTAINER.getWidth();
         int containerHeight = Interlude.GAME_CONTAINER.getHeight();
         int instructionLabelWidth = (int) (instructionLabel.fractionWidth() * containerWidth);
@@ -71,45 +70,38 @@ public class ChangeControlPopUp extends PopUp implements KeyListener {
 
     @Override
     public void init() {
-        // TODO Auto-generated method stub
         Interlude.GAME_CONTAINER.getInput().addKeyListener(this);
         instructionLabel.init();
     }
 
     @Override
     public void keyPressed(int key, char c) {
-        // TODO Auto-generated method stub
         keyPressed = true;
         pressedKey = key;
     }
 
     @Override
     public void keyReleased(int key, char c) {
-        // TODO Auto-generated method stub
         
     }
 
     @Override
     public void inputEnded() {
-        // TODO Auto-generated method stub
         
     }
 
     @Override
     public void inputStarted() {
-        // TODO Auto-generated method stub
         
     }
 
     @Override
     public boolean isAcceptingInput() {
-        // TODO Auto-generated method stub
         return true;
     }
 
     @Override
     public void setInput(Input input) {
-        // TODO Auto-generated method stub
         
     }
 }
