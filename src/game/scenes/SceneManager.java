@@ -1,16 +1,31 @@
 package game.scenes;
 
+import game.Interlude;
+import game.scenes.initialization_scene.InitializationScene;
+
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
+import org.newdawn.slick.SlickException;
 
 public class SceneManager {
     private static Scene currentScene = Scene.initializationScene();
-    
-//    public SceneManager() {
-//        this.currentScene = Scene.mainMenu();//Scene.mainMenu();
-//    }
+    private static Image background;
+    static {
+    	try {
+    		int containerWidth = Interlude.GAME_CONTAINER.getWidth();
+    		int containerHeight = Interlude.GAME_CONTAINER.getHeight();
+			background = new Image("images/background.png");
+			background = background.getScaledCopy(containerHeight,containerWidth);
+		} catch (SlickException e) {
+			e.printStackTrace();
+		}
+    }
     
     public static void render(Graphics g) {
-        currentScene.render(g);
+    	if ( !(currentScene instanceof InitializationScene) ) {
+    		background.draw(0,0);
+    	}
+    	currentScene.render(g);
     }
     
     public static void update(int t) {

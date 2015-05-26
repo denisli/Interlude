@@ -14,13 +14,14 @@ import org.newdawn.slick.Input;
 
 public class SongSelectionScroller implements Scroller {
     private final String[] songTitles = new String[] {
+    		"Owl City - Fireflies",
     		"Tina Turner - Simply the Best",
     		"Pokemon Trainer Battle (Orchestrated)",
     		"Fort Minor - Where'd You Go",
     		"Fort Minor - Remember the Name",
     		"The Garden of Words - Rain",
     		"Clannad Medley",
-    		"Litteroot Town 2",
+    		"Littleroot Town 2",
     		"Inuyasha - Dearest",
     		"Pokemon Center Theme",
     		"Full Metal Alchemist - I Will",
@@ -87,6 +88,7 @@ public class SongSelectionScroller implements Scroller {
             "Slam Dunk - Kimi ga Suki Da to Sakebitai",
     };
     private final String[] fileNames = new String[] {
+    		"Fireflies - Owl City.mid",
     		"Tina_Turner_-_Simply_the_Best.mid",
     		"trainer-battle-orchestrated-.mid",
     		"WheredYouGo.mid",
