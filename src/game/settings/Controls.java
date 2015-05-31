@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import music.Handedness;
 import music.Note;
 
 import org.newdawn.slick.Input;
+
+import util.Pair;
 
 public class Controls {
     private static final List<Integer> NOTES_IN_ORDER = new ArrayList<Integer>(Arrays.asList(
@@ -50,17 +51,15 @@ public class Controls {
         return NOTES_IN_ORDER;
     }
     
-    public static int[] noteKeys( Handedness handedness ) {
-        if ( handedness == Handedness.SINGLE ) {
+    public static int[] noteKeys( GameplayType gameplayType ) {
+        if ( gameplayType == GameplayType.ONE_HANDED ) {
             return new int[] { ANoteKey, BNoteKey, CNoteKey, DNoteKey, 
                     ENoteKey, FNoteKey, GNoteKey
             };
-        } else if ( handedness == Handedness.LEFT ) {
+        } else if ( gameplayType == GameplayType.TWO_HANDED ) {
             return new int[] { leftANoteKey, leftBNoteKey, leftCNoteKey, leftDNoteKey,
-                    leftENoteKey, leftFNoteKey, leftGNoteKey
-            };
-        } else if ( handedness == Handedness.RIGHT ) {
-            return new int[] { rightANoteKey, rightBNoteKey, rightCNoteKey, rightDNoteKey,
+                    leftENoteKey, leftFNoteKey, leftGNoteKey, 
+                    rightANoteKey, rightBNoteKey, rightCNoteKey, rightDNoteKey,
                     rightENoteKey, rightFNoteKey, rightGNoteKey 
             };
         } else {
@@ -128,46 +127,60 @@ public class Controls {
         }
     }
     
-    // 
-    public static int correspondingNote(int key, Handedness handedness) {
-        if ( handedness == Handedness.SINGLE ) {
-            if (key == ANoteKey) {
-                return Note.A;
-            } else if (key == BNoteKey) {
-                return Note.B;
-            } else if (key == CNoteKey) {
-                return Note.C;
-            } else if (key == DNoteKey) {
-                return Note.D;
-            } else if (key == ENoteKey) {
-                return Note.E;
-            } else if (key == FNoteKey) {
-                return Note.F;
-            } else if (key == GNoteKey) {
-                return Note.G;
-            } else {
+    public static Pair<Integer, Handedness> correspondingLetterAndHand(int key) {
+		if ( GameplayTypeSetting.gameplayType() == GameplayType.ONE_HANDED ) {
+			Handedness handedness = Handedness.SINGLE;
+			if ( key == ANoteKey ) {
+                return new Pair<Integer,Handedness>(Note.A,handedness);
+			} else if ( key == BNoteKey ) {
+                return new Pair<Integer,Handedness>(Note.B,handedness);
+			} else if ( key == CNoteKey ) {
+                return new Pair<Integer,Handedness>(Note.C,handedness);
+			} else if ( key == DNoteKey ) {
+                return new Pair<Integer,Handedness>(Note.D,handedness);
+			} else if ( key == ENoteKey ) {
+                return new Pair<Integer,Handedness>(Note.E,handedness);
+			} else if ( key == FNoteKey ) {
+                return new Pair<Integer,Handedness>(Note.F,handedness);
+			} else if ( key == GNoteKey ) {
+                return new Pair<Integer,Handedness>(Note.G,handedness);
+			} else {
                 throw new IllegalArgumentException("Key given is not a note key");
-            }
-        } else {
-            if (key == leftANoteKey || key == rightANoteKey) {
-                return Note.A;
-            } else if (key == leftBNoteKey || key == rightBNoteKey) {
-                return Note.B;
-            } else if (key == leftCNoteKey || key == rightCNoteKey) {
-                return Note.C;
-            } else if (key == leftDNoteKey || key == rightDNoteKey) {
-                return Note.D;
-            } else if (key == leftENoteKey || key == rightENoteKey) {
-                return Note.E;
-            } else if (key == leftFNoteKey || key == rightFNoteKey) {
-                return Note.F;
-            } else if (key == leftGNoteKey || key == rightGNoteKey) {
-                return Note.G;
-            } else {
-                throw new IllegalArgumentException("Key given is not a note key");
-            }
-        }
-    }
+			}
+		} else {
+			if ( key == leftANoteKey ) {
+                return new Pair<Integer,Handedness>(Note.A,Handedness.LEFT);
+			} else if ( key == leftBNoteKey ) {
+                return new Pair<Integer,Handedness>(Note.B,Handedness.LEFT);
+			} else if ( key == leftCNoteKey ) {
+                return new Pair<Integer,Handedness>(Note.C,Handedness.LEFT);
+			} else if ( key == leftDNoteKey ) {
+				return new Pair<Integer,Handedness>(Note.D,Handedness.LEFT);
+			} else if ( key == leftENoteKey ) {
+                return new Pair<Integer,Handedness>(Note.E,Handedness.LEFT);
+			} else if ( key == leftFNoteKey ) {
+                return new Pair<Integer,Handedness>(Note.F,Handedness.LEFT);
+			} else if ( key == leftGNoteKey ) {
+                return new Pair<Integer,Handedness>(Note.G,Handedness.LEFT);
+			} else if ( key == rightANoteKey ) {
+				return new Pair<Integer,Handedness>(Note.A,Handedness.RIGHT);
+			} else if ( key == rightBNoteKey ) {
+				return new Pair<Integer,Handedness>(Note.B,Handedness.RIGHT);
+			} else if ( key == rightCNoteKey ) {
+				return new Pair<Integer,Handedness>(Note.C,Handedness.RIGHT);
+			} else if ( key == rightDNoteKey ) {
+				return new Pair<Integer,Handedness>(Note.D,Handedness.RIGHT);
+			} else if ( key == rightENoteKey ) {
+				return new Pair<Integer,Handedness>(Note.E,Handedness.RIGHT);
+			} else if ( key == rightFNoteKey ) {
+				return new Pair<Integer,Handedness>(Note.F,Handedness.RIGHT);
+			} else if ( key == rightGNoteKey ) {
+				return new Pair<Integer,Handedness>(Note.G,Handedness.RIGHT);
+			} else {
+				throw new IllegalArgumentException("Key given is not a note key");
+			}
+		}
+	}
 
     public static int correspondingKey(int letter, Handedness handedness ) {
         if ( handedness == Handedness.SINGLE ) {

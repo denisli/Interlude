@@ -1,13 +1,6 @@
 package music;
 
 public interface Instrument {
-    public static InstrumentType typeOfInstrument( int programNumber ) {
-        if ( programNumber == 0 ) {
-            return InstrumentType.DOUBLE;
-        } else {
-            return InstrumentType.SINGLE;
-        }
-    }
     
     public void setVolumeRatio(double volumeRatio);
     
@@ -22,8 +15,6 @@ public interface Instrument {
     public String getInstrumentName();
     
     public int getProgram();
-    
-    public InstrumentType type();
     
     public void clear();
     

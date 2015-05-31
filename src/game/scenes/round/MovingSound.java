@@ -2,8 +2,8 @@ package game.scenes.round;
 
 import game.Interlude;
 import game.Renderable;
+import game.settings.Handedness;
 import game.settings.Orientation;
-import music.Handedness;
 import music.Instrument;
 import music.Note;
 

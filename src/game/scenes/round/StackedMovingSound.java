@@ -1,13 +1,13 @@
 package game.scenes.round;
 
 import game.Renderable;
+import game.settings.Handedness;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.newdawn.slick.Graphics;
 
-import music.Handedness;
 import music.Instrument;
 
 public class StackedMovingSound implements Renderable {

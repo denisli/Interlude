@@ -5,8 +5,8 @@ import java.util.List;
 import game.Interlude;
 import game.fonts.GameFonts;
 import game.settings.Controls;
+import game.settings.Handedness;
 import game.settings.Orientation;
-import music.Handedness;
 import music.Note;
 
 import org.newdawn.slick.Color;

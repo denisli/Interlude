@@ -3,7 +3,6 @@ package game.scenes.change_controls;
 import java.util.ArrayList;
 import java.util.List;
 
-import music.Handedness;
 import music.Note;
 import game.Renderable;
 import game.Updateable;
@@ -13,6 +12,7 @@ import game.labels.Label;
 import game.pop_ups.PopUp;
 import game.scenes.Scene;
 import game.settings.Controls;
+import game.settings.Handedness;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;

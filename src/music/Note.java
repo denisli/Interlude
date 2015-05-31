@@ -1,5 +1,9 @@
 package music;
 
+import game.settings.GameplayType;
+import game.settings.GameplayTypeSetting;
+import game.settings.Handedness;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -11,6 +15,9 @@ import java.util.List;
  *
  */
 public class Note {
+	
+	private static final int MIDDLE_C = 60;
+	
     public static final int C = 0;
     //public static final int CS = 1;
     public static final int D = 2;
@@ -171,6 +178,18 @@ public class Note {
     
     public int volume() {
         return volume;
+    }
+    
+    public Handedness handedness() {
+    	if ( GameplayTypeSetting.gameplayType() == GameplayType.ONE_HANDED ) {
+    		return Handedness.SINGLE;
+    	} else {
+    		if ( pitch() < MIDDLE_C ) {
+    			return Handedness.LEFT;
+    		} else {
+    			return Handedness.RIGHT;
+    		}
+    	}
     }
     
     /**

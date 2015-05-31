@@ -9,6 +9,7 @@ import game.scenes.SceneManager;
 import game.settings.Controls;
 import game.settings.GameplayType;
 import game.settings.GameplayTypeSetting;
+import game.settings.Handedness;
 import game.settings.Orientation;
 
 import java.util.ArrayList;
@@ -26,9 +27,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Input;
 
 import util.Pair;
-import music.Handedness;
 import music.Instrument;
-import music.InstrumentType;
 import music.Music;
 import music.Note;
 import music.Voice;
@@ -70,12 +69,8 @@ public class Round extends Scene {
         if ( GameplayTypeSetting.gameplayType() == GameplayType.ONE_HANDED ) {
             handednesses.add(Handedness.SINGLE);
         } else {
-            if ( selectedInstrument.type() == InstrumentType.SINGLE ) {
-                handednesses.add(Handedness.SINGLE);
-            } else {
-                handednesses.add(Handedness.LEFT);
-                handednesses.add(Handedness.RIGHT);
-            }
+            handednesses.add(Handedness.LEFT);
+            handednesses.add(Handedness.RIGHT);
         }
         
         for ( Handedness handedness : handednesses ) {
@@ -171,11 +166,11 @@ public class Round extends Scene {
 	                        Note noteToInsert = voice.next();
 	                        
 	                        int integer = noteToInsert.integer();
+	                        Handedness handedness = noteToInsert.handedness();
 	                        float offScreen = 0.0f;
 	                        
 	                        if ( instrument.equals(selectedInstrument) ) {
 	                        	System.out.println(instrument.getInstrumentName());
-	                        	Handedness handedness = voice.handedness();
 	                        	Pair<Integer,Handedness> position = new Pair<Integer,Handedness>(integer,handedness);
 	                        	MovingSound movingSound = new MovingSound( offScreen, noteMarkers.get(position).fractionY(), noteToInsert, handedness );
 	                        	movingSound.init();
@@ -210,11 +205,9 @@ public class Round extends Scene {
                 // If a user plays a note, perform all necessary actions due to his input.
                 // This includes playing a note and updating score.
                 if ( instrument.equals(selectedInstrument) ) {
-                    Handedness handedness = voice.handedness();
-                    for ( int key : Controls.noteKeys( handedness ) ) {
+                    for ( int key : Controls.noteKeys( GameplayTypeSetting.gameplayType() ) ) {
                         if ( input.isKeyPressed(key) ) {
-                        	int letter = Controls.correspondingNote(key, handedness );
-                        	Pair<Integer,Handedness> pair = new Pair<Integer,Handedness>(letter,handedness);
+                        	Pair<Integer,Handedness> pair = Controls.correspondingLetterAndHand(key);
                         	LinkedList<StackedMovingSound> correspondingNotesOnScreen = notesOnScreen.get(pair);
                             if ( !correspondingNotesOnScreen.isEmpty() ) {
                                 StackedMovingSound stackedMovingSound = correspondingNotesOnScreen.remove();

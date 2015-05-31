@@ -71,12 +71,6 @@ public class GeneralInstrument implements Instrument {
         idx = ( idx + 1 ) % occupiedChannels.length;
     }
     
-    
-    @Override
-    public InstrumentType type() {
-        return Instrument.typeOfInstrument(programNumber);
-    }
-
     @Override
     public String getInstrumentName() {
         return instrumentName;

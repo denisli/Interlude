@@ -7,7 +7,7 @@ import game.labels.Label;
 import game.pop_ups.PopUp;
 import game.scenes.SceneManager;
 import game.settings.Controls;
-import music.Handedness;
+import game.settings.Handedness;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;

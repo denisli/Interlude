@@ -1,11 +1,11 @@
 package music;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 
+import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
 
-import music.parser.MidiParser;
+import music.parser.MidiParserImproved;
 
 public class MusicFile {
     private final String musicTitle;
@@ -24,13 +24,14 @@ public class MusicFile {
         return musicFileName;
     }
     
-    public Music getMusic() throws FileNotFoundException {
+    public Music getMusic() throws IOException {
         //return Parser.fileToMusic( musicFile );
         try {
-            return MidiParser.parse( musicTitle, musicFileName );
+            return MidiParserImproved.parse( musicTitle, musicFileName );
         } catch (MidiUnavailableException mue) {
-            // TODO: do something else with this exception;
-            throw new RuntimeException("Midi not available");
-        }
+            throw new RuntimeException("Midi not available.");
+        } catch (InvalidMidiDataException imde) {
+			throw new RuntimeException("Midi data invalid.");
+		}
     }
 }
