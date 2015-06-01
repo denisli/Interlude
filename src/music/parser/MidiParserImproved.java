@@ -306,8 +306,9 @@ public class MidiParserImproved {
 		return notes;
 	}
 	
-	private static List<Integer> getTimesUntilNextElement(List<Pair<Note,Long>> notesAndTicks, Map<Long,Integer> tickToTime) {
+	private static List<Integer> getTimesUntilNextElement(List<Pair<Note,Long>> notesAndTicks, Map<Long,Integer> tickToTime, int startTime) {
 		List<Integer> timesUntilNextElement = new ArrayList<Integer>();
+		timesUntilNextElement.add(startTime);
 		
 		for ( int i=0; i < notesAndTicks.size()-1; i++ ) {
 			long firstTick = notesAndTicks.get(i).getRight();
@@ -368,7 +369,6 @@ public class MidiParserImproved {
 					}
 				}
 			}
-			List<Integer> startTimes = new ArrayList<Integer>();
 			Set<Integer> channels = programNumberToChannels.get(programNumber);
 			int[] channelsAsArray = new int[channels.size()];
 			int count = 0;
@@ -378,9 +378,8 @@ public class MidiParserImproved {
 					
 			Instrument instrument = new GeneralInstrument(programNumber,channelsAsArray);
 			List<Note> notes = getNotesFromNotesAndTicks(notesAndTicks);
-			List<Integer> timesUntilNextElement = getTimesUntilNextElement(notesAndTicks, tickToTime);
-			startTimes.add(startTime);
-			Voice voice = new MidiVoice(notes, timesUntilNextElement, startTime, instrument);
+			List<Integer> timesUntilNextElement = getTimesUntilNextElement(notesAndTicks, tickToTime, startTime);
+			Voice voice = new MidiVoice(notes, timesUntilNextElement, instrument);
 			voices.add(voice);
 		}
 		return voices;

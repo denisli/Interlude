@@ -25,18 +25,10 @@ public class Music {
     	return voices;
     }
     
-    public List<Integer> timesUntilVoicesStart() {
-        List<Integer> timesUntilVoicesStart = new ArrayList<Integer>();
-        for ( Voice voice : voices ) {
-            timesUntilVoicesStart.add(voice.startTime());
-        }
-        return timesUntilVoicesStart;
-    }
-    
     public int duration() {
         int longestDuration = 0;
         for ( Voice voice : voices ) {
-            longestDuration = Math.max( longestDuration, voice.startTime() + voice.duration() );
+            longestDuration = Math.max( longestDuration, voice.duration() );
         }
         return longestDuration;
     }

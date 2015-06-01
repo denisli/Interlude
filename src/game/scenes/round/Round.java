@@ -80,7 +80,6 @@ public class Round extends Scene {
         	}
         }
         
-        List<Integer> timesUntilVoicesStart = music.timesUntilVoicesStart();
         this.voices = music.voices();
         
         int initialDelay = 3000; // 3 seconds
@@ -88,9 +87,9 @@ public class Round extends Scene {
         for ( int voiceIndex = 0; voiceIndex < voices.size(); voiceIndex++ ) {
             Voice voice = voices.get(voiceIndex);
             if ( !voice.instrument().equals(selectedInstrument) ) {
-                restingTimes.put(voiceIndex, initialDelay + timeToReachNoteMarker + timesUntilVoicesStart.get(voiceIndex));
+                restingTimes.put(voiceIndex, initialDelay + timeToReachNoteMarker + voice.timeUntilNextElement());
             } else {
-                restingTimes.put(voiceIndex, initialDelay + timesUntilVoicesStart.get(voiceIndex));
+                restingTimes.put(voiceIndex, initialDelay + voice.timeUntilNextElement());
             }
         }
     }
@@ -159,46 +158,51 @@ public class Round extends Scene {
                 
                 if (restingTime <= 0) { // pick out another note!
                     musicStarted = true;
-                    if ( !voice.ended() ) {
-                    	Map<Pair<Integer,Handedness>,StackedMovingSound> positionToStackedMovingSound = new HashMap<Pair<Integer,Handedness>,StackedMovingSound>();
-                    	
-                    	do {
-	                        Note noteToInsert = voice.next();
-	                        
-	                        int integer = noteToInsert.integer();
-	                        Handedness handedness = noteToInsert.handedness();
-	                        float offScreen = 0.0f;
-	                        
-	                        if ( instrument.equals(selectedInstrument) ) {
-	                        	System.out.println(instrument.getInstrumentName());
-	                        	Pair<Integer,Handedness> position = new Pair<Integer,Handedness>(integer,handedness);
-	                        	MovingSound movingSound = new MovingSound( offScreen, noteMarkers.get(position).fractionY(), noteToInsert, handedness );
-	                        	movingSound.init();
-	                        	StackedMovingSound stackedMovingSound = positionToStackedMovingSound.get(position);
-	                        	if ( stackedMovingSound == null ) {
-	                        		stackedMovingSound = new StackedMovingSound();
-	                        		stackedMovingSound.addMovingSound(movingSound);
-	                        		positionToStackedMovingSound.put(position, stackedMovingSound);
-	                        	} else {
-	                        		stackedMovingSound.addMovingSound(movingSound);
-	                        	}
-	                        } else {
-	                            System.out.println(instrument.getInstrumentName());
-	                            noteToInsert.bePlayed(instrument);
-	                        }
-	                        if (!voice.ended()) {
-	                            restingTime += voice.timeUntilNextElement();
-	                            restingTimes.put(voiceIndex, restingTime);
-	                        } else {
-	                        	break;
-	                        }
-                    	} while ( voice.timeUntilNextElement() == 0 );
-                    	
-                    	for ( Pair<Integer,Handedness> position : positionToStackedMovingSound.keySet() ) {
-                    		LinkedList<StackedMovingSound> correspondingNotesOnScreen = notesOnScreen.get(position);
-                    		StackedMovingSound stackedMovingSound = positionToStackedMovingSound.get(position);
-                    		correspondingNotesOnScreen.add(stackedMovingSound);
+                    Map<Pair<Integer,Handedness>,StackedMovingSound> positionToStackedMovingSound = new HashMap<Pair<Integer,Handedness>,StackedMovingSound>();
+
+                    do {
+                    	// Stop getting notes if the voice ended
+                    	Note noteToInsert;
+                    	if ( !voice.ended() ) {
+                    		noteToInsert = voice.next();
+                    	} else {
+                    		break;
                     	}
+
+                    	int integer = noteToInsert.integer();
+                    	Handedness handedness = noteToInsert.handedness();
+                    	float offScreen = 0.0f;
+
+                    	if ( instrument.equals(selectedInstrument) ) {
+                    		System.out.println(instrument.getInstrumentName());
+                    		Pair<Integer,Handedness> position = new Pair<Integer,Handedness>(integer,handedness);
+                    		MovingSound movingSound = new MovingSound( offScreen, noteMarkers.get(position).fractionY(), noteToInsert, handedness );
+                    		movingSound.init();
+                    		StackedMovingSound stackedMovingSound = positionToStackedMovingSound.get(position);
+                    		if ( stackedMovingSound == null ) {
+                    			stackedMovingSound = new StackedMovingSound();
+                    			stackedMovingSound.addMovingSound(movingSound);
+                    			positionToStackedMovingSound.put(position, stackedMovingSound);
+                    		} else {
+                    			stackedMovingSound.addMovingSound(movingSound);
+                    		}
+                    	} else {
+                    		System.out.println(instrument.getInstrumentName());
+                    		noteToInsert.bePlayed(instrument);
+                    	}
+
+                    	if ( !voice.ended() ) {
+                    		restingTime += voice.timeUntilNextElement();
+                    		restingTimes.put(voiceIndex, restingTime);
+                    	} else {
+                    		break;
+                    	}
+                    } while ( voice.timeUntilNextElement() == 0 );
+
+                    for ( Pair<Integer,Handedness> position : positionToStackedMovingSound.keySet() ) {
+                    	LinkedList<StackedMovingSound> correspondingNotesOnScreen = notesOnScreen.get(position);
+                    	StackedMovingSound stackedMovingSound = positionToStackedMovingSound.get(position);
+                    	correspondingNotesOnScreen.add(stackedMovingSound);
                     }
                 }
                 
@@ -343,14 +347,13 @@ public class Round extends Scene {
                         correspondingNotesOnScreen.clear();
                     }
                     int initialDelay = 100;
-                    List<Integer> timesUntilVoicesStart = music.timesUntilVoicesStart();
                     int timeToReachNoteMarker = (int) ( NoteMarker.FRACTION_X / (MovingSound.SPEED) );
                     for ( int voiceIdx : restingTimes.keySet() ) {
                         Voice voice = voices.get(voiceIdx);
                         if ( !voice.instrument().equals(selectedInstrument) ) {
-                            restingTimes.put(voiceIdx, initialDelay + timeToReachNoteMarker + timesUntilVoicesStart.get(voiceIdx));
+                            restingTimes.put(voiceIdx, initialDelay + timeToReachNoteMarker + voice.timeUntilNextElement());
                         } else {
-                            restingTimes.put(voiceIdx, initialDelay + timesUntilVoicesStart.get(voiceIdx));
+                            restingTimes.put(voiceIdx, initialDelay + voice.timeUntilNextElement());
                         }
                     }
                     totalScore = 0;
