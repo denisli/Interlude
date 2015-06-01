@@ -10,18 +10,6 @@ public class MidiNote extends Note {
 		this.channelNumber = channelNumber;
 	}
 	
-	public int pitch() {
-		return super.pitch();
-	}
-	
-	public int duration() {
-		return super.duration();
-	}
-	
-	public int volume() {
-		return super.volume();
-	}
-	
 	public int getChannelNumber() {
 		return channelNumber;
 	}

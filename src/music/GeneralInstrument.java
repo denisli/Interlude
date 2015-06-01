@@ -1,14 +1,11 @@
 package music;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.PriorityQueue;
 
 import javax.sound.midi.MidiChannel;
 import javax.sound.midi.Synthesizer;
 
 import util.Quadruple;
-import util.Triple;
 
 public class GeneralInstrument implements Instrument {
     private double volumeRatio = 1.0;
@@ -22,9 +19,8 @@ public class GeneralInstrument implements Instrument {
     private int idx = 0;
     private long currentTime = 0;
     private final int programNumber;
-    /** pair = ( channelIdx, pitch ) */
-    private final List<Triple<Integer,Integer,Integer>> notesToResumeTo = new ArrayList<Triple<Integer,Integer,Integer>>();
-    private boolean paused;
+    
+    private boolean paused = false;
     
     public GeneralInstrument( int programNumber, int... occupiedChannels ) {
         Synthesizer synth = LoadSynthesizer.getSynthesizer();
@@ -45,17 +41,19 @@ public class GeneralInstrument implements Instrument {
     
     @Override
     public void update(int t) {
-        currentTime += t;
-        while ( !offTimes.isEmpty() ) {
-            if ( currentTime >= offTimes.peek().getLeft() ) {
-                Quadruple<Long,Integer,Integer,Integer> pair = offTimes.poll();
-                int channelIdx = pair.getMiddleLeft();
-                int pitch = pair.getMiddleRight();
-                channels[channelIdx].noteOff(pitch);
-            } else {
-                break;
-            }
-        }
+    	if ( !paused ) {
+	        currentTime += t;
+	        while ( !offTimes.isEmpty() ) {
+	            if ( currentTime >= offTimes.peek().getLeft() ) {
+	                Quadruple<Long,Integer,Integer,Integer> pair = offTimes.poll();
+	                int channelIdx = pair.getMiddleLeft();
+	                int pitch = pair.getMiddleRight();
+	                channels[channelIdx].noteOff(pitch);
+	            } else {
+	                break;
+	            }
+	        }
+    	}
     }
     
     @Override
@@ -77,46 +75,22 @@ public class GeneralInstrument implements Instrument {
     }
     
     @Override
-    public int getProgram() {
-        return programNumber;
-    }
-
-    @Override
     public void clear() {
-        while ( !offTimes.isEmpty() ) {
-            Quadruple<Long,Integer,Integer,Integer> quad = offTimes.remove();
-            int channelIdx = quad.getMiddleLeft();
-            int pitch = quad.getMiddleRight();
-            channels[channelIdx].noteOff(pitch);
-        }
+    	offTimes.clear();
+    	for ( MidiChannel channel : channels ) {
+    		channel.allSoundOff();
+    	}
     }
 
     @Override
     public void pause() {
-        if ( ! paused ) {
-            for ( Quadruple<Long,Integer,Integer,Integer> quad : offTimes ) {
-                int channelIdx = quad.getMiddleLeft();
-                int pitch = quad.getMiddleRight();
-                int volume = quad.getRight();
-                channels[channelIdx].noteOff(pitch);
-                notesToResumeTo.add( new Triple<Integer,Integer,Integer>(channelIdx, pitch, volume) );
-            }
-            paused = true;
-        }
+        clear();
+        paused = true;
     }
 
     @Override
     public void resume() {
-        if ( paused ) {
-            for ( Triple<Integer,Integer,Integer> triple : notesToResumeTo ) {
-                int channelIdx = triple.getLeft();
-                int pitch = triple.getMiddle();
-                int volume = triple.getRight();
-                channels[channelIdx].noteOn(pitch, (int) (volume * volumeRatio));
-            }
-            notesToResumeTo.clear();
-            paused = false;
-        }
+    	paused = false;
     }
     
     @Override

@@ -7,17 +7,14 @@ import javax.sound.midi.Synthesizer;
 
 import util.Quadruple;
 import music.Instrument;
-import music.InstrumentType;
 import music.LoadSynthesizer;
 import music.Note;
 import music.OffTimesComparator;
 
 public class MidiInstrument implements Instrument {
-	private boolean pause;
+	private boolean paused;
 	private double volumeRatio = 1.0;
 	private MidiChannel[] channels;
-	private int playingChannel;
-	private int programNumber;
 	private String instrumentName;
 	private final OffTimesComparator comparator = new OffTimesComparator();
 	private final PriorityQueue<Quadruple<Long,Integer,Integer,Integer>> offTimes = new PriorityQueue<Quadruple<Long,Integer,Integer,Integer>>(comparator);
@@ -26,7 +23,8 @@ public class MidiInstrument implements Instrument {
 	public MidiInstrument(int programNumber, int... occupiedChannelNumbers) {
 		Synthesizer synth = LoadSynthesizer.getSynthesizer();
 		channels = synth.getChannels();
-		instrumentName = synth.getDefaultSoundbank().getInstruments()[programNumber].getName();
+		javax.sound.midi.Instrument[] instruments = synth.getDefaultSoundbank().getInstruments();
+		this.instrumentName = (occupiedChannelNumbers[0] == 9) ? "Percussion" : instruments[programNumber].getName();
 		for ( int channel : occupiedChannelNumbers ) {
 			channels[channel].programChange(programNumber);
 		}
@@ -34,39 +32,43 @@ public class MidiInstrument implements Instrument {
 	
 	@Override
     public void update(int t) {
-        currentTime += t;
-        while ( !offTimes.isEmpty() ) {
-            if ( currentTime >= offTimes.peek().getLeft() ) {
-                Quadruple<Long,Integer,Integer,Integer> quad = offTimes.poll();
-                int channelIdx = quad.getMiddleLeft();
-                int pitch = quad.getMiddleRight();
-                channels[channelIdx].noteOff(pitch);
-            } else {
-                break;
-            }
-        }
+		if ( !paused ) {
+			currentTime += t;
+			while ( !offTimes.isEmpty() ) {
+				if ( currentTime >= offTimes.peek().getLeft() ) {
+					Quadruple<Long,Integer,Integer,Integer> quad = offTimes.poll();
+					int channelIdx = quad.getMiddleLeft();
+					int pitch = quad.getMiddleRight();
+					channels[channelIdx].noteOff(pitch);
+				} else {
+					break;
+				}
+			}
+		}
     }
     
     @Override
     public void play(Note note) {
+    	MidiNote midiNote = (MidiNote) note;
+    	int channelNumber = midiNote.getChannelNumber();
         int pitch = note.pitch();
         int volume = note.volume();
         int duration = note.duration();
-        MidiChannel channel = channels[playingChannel];
-        System.out.println("Tick: " + note.tick() + ", Channel: " + playingChannel + ", Program Number: " + channel.getProgram() + ", Pitch: " + pitch + ", Volume: " + volume + ", Duration: " + duration);
-        offTimes.add( new Quadruple<Long,Integer,Integer,Integer>( currentTime + duration, playingChannel, pitch, volume ) );
+        MidiChannel channel = channels[channelNumber];
+        System.out.println("Tick: " + note.tick() + ", Channel: " + channelNumber + ", Program Number: " + channel.getProgram() + ", Pitch: " + pitch + ", Volume: " + volume + ", Duration: " + duration);
+        offTimes.add( new Quadruple<Long,Integer,Integer,Integer>( currentTime + duration, channelNumber, pitch, volume ) );
         channel.noteOn( pitch, volume );
     }
     
     @Override
     public void pause() {
-    	pause = true;
+    	paused = true;
     	clear();
     }
     
     @Override
     public void resume() {
-    	pause = false;
+    	paused = false;
     }
 
 	@Override
@@ -74,10 +76,6 @@ public class MidiInstrument implements Instrument {
 		return instrumentName;
 	}
 
-	public void setPlayingChannel(int channelNumber) {
-		playingChannel = channelNumber;
-	}
-	
 	public void setControl(int controller, int value, int channelNumber) {
 		MidiChannel channel = channels[channelNumber];
 		channel.controlChange(controller, value);
@@ -96,15 +94,6 @@ public class MidiInstrument implements Instrument {
 	@Override
 	public int hashCode() {
 		return instrumentName.hashCode();
-	}
-
-	@Override
-	public InstrumentType type() {
-		if ( programNumber == 0 ) {
-            return InstrumentType.DOUBLE;
-        } else {
-            return InstrumentType.SINGLE;
-        }
 	}
 
 	@Override

@@ -8,8 +8,7 @@ import javax.sound.midi.*;
 import util.Pair;
 import music.GeneralInstrument;
 import music.Instrument;
-import music.InstrumentPiece;
-import music.MidiVoice;
+import music.BasicMidiVoice;
 import music.Music;
 import music.Note;
 import music.Voice;
@@ -150,14 +149,26 @@ public class MidiParserImproved {
     		}
     		// At this point in the code, there is no programChange.
     		// If the channel is percussion, then it is reasonable for there to be
-    		// not program change. Otherwise, we just ignore the program number.
+    		// not program change. Otherwise, we assume the program number is 0.
     		if ( channel == PERCUSSION_CHANNEL ) {
     			int programNumber = Integer.MAX_VALUE;
 				Set<Integer> channels = new HashSet<Integer>();
 				channels.add(channel);
 				programNumberToChannels.put(programNumber,channels);
+    		} else {
+    			System.out.println("No program number was assigned to a non-percussion channel.");
+    			if ( programNumberToChannels.containsKey(DEFAULT_PROGRAM_NUMBER) ) {
+    				Set<Integer> channels = programNumberToChannels.get(DEFAULT_PROGRAM_NUMBER);
+    				channels.add(channel);
+    			} else {
+    				Set<Integer> channels = new HashSet<Integer>();
+    				channels.add(channel);
+    				programNumberToChannels.put(DEFAULT_PROGRAM_NUMBER, channels);
+    			}
     		}
     	}
+    	// Allocate channels so that we can further improve the probability of avoiding
+    	// notes canceling each other.
     	Set<Integer> programNumbers = programNumberToChannels.keySet();
     	int numProgramNumbers = programNumbers.size();
     	for ( int programNumber : programNumbers ) {
@@ -379,7 +390,7 @@ public class MidiParserImproved {
 			Instrument instrument = new GeneralInstrument(programNumber,channelsAsArray);
 			List<Note> notes = getNotesFromNotesAndTicks(notesAndTicks);
 			List<Integer> timesUntilNextElement = getTimesUntilNextElement(notesAndTicks, tickToTime, startTime);
-			Voice voice = new MidiVoice(notes, timesUntilNextElement, instrument);
+			Voice voice = new BasicMidiVoice(notes, timesUntilNextElement, instrument);
 			voices.add(voice);
 		}
 		return voices;

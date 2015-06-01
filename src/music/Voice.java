@@ -1,11 +1,11 @@
 package music;
 
 public interface Voice {
-    public Note next();
+    public Note nextNote();
     
     // This gives the time until the next element. At the beginning, this is the time until the first
     // note plays.
-    public int timeUntilNextElement();
+    public int timeUntilNextNote();
     
     public Instrument instrument();
     

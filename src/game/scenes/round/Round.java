@@ -87,9 +87,9 @@ public class Round extends Scene {
         for ( int voiceIndex = 0; voiceIndex < voices.size(); voiceIndex++ ) {
             Voice voice = voices.get(voiceIndex);
             if ( !voice.instrument().equals(selectedInstrument) ) {
-                restingTimes.put(voiceIndex, initialDelay + timeToReachNoteMarker + voice.timeUntilNextElement());
+                restingTimes.put(voiceIndex, initialDelay + timeToReachNoteMarker + voice.timeUntilNextNote());
             } else {
-                restingTimes.put(voiceIndex, initialDelay + voice.timeUntilNextElement());
+                restingTimes.put(voiceIndex, initialDelay + voice.timeUntilNextNote());
             }
         }
     }
@@ -164,7 +164,7 @@ public class Round extends Scene {
                     	// Stop getting notes if the voice ended
                     	Note noteToInsert;
                     	if ( !voice.ended() ) {
-                    		noteToInsert = voice.next();
+                    		noteToInsert = voice.nextNote();
                     	} else {
                     		break;
                     	}
@@ -192,12 +192,12 @@ public class Round extends Scene {
                     	}
 
                     	if ( !voice.ended() ) {
-                    		restingTime += voice.timeUntilNextElement();
+                    		restingTime += voice.timeUntilNextNote();
                     		restingTimes.put(voiceIndex, restingTime);
                     	} else {
                     		break;
                     	}
-                    } while ( voice.timeUntilNextElement() == 0 );
+                    } while ( voice.timeUntilNextNote() == 0 );
 
                     for ( Pair<Integer,Handedness> position : positionToStackedMovingSound.keySet() ) {
                     	LinkedList<StackedMovingSound> correspondingNotesOnScreen = notesOnScreen.get(position);
@@ -351,9 +351,9 @@ public class Round extends Scene {
                     for ( int voiceIdx : restingTimes.keySet() ) {
                         Voice voice = voices.get(voiceIdx);
                         if ( !voice.instrument().equals(selectedInstrument) ) {
-                            restingTimes.put(voiceIdx, initialDelay + timeToReachNoteMarker + voice.timeUntilNextElement());
+                            restingTimes.put(voiceIdx, initialDelay + timeToReachNoteMarker + voice.timeUntilNextNote());
                         } else {
-                            restingTimes.put(voiceIdx, initialDelay + voice.timeUntilNextElement());
+                            restingTimes.put(voiceIdx, initialDelay + voice.timeUntilNextNote());
                         }
                     }
                     totalScore = 0;

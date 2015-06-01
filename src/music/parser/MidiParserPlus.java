@@ -1,9 +1,5 @@
 package music.parser;
 
-import game.settings.GameplayType;
-import game.settings.GameplayTypeSetting;
-import game.settings.Handedness;
-
 import java.io.*;
 import java.util.*;
 
@@ -12,18 +8,18 @@ import javax.sound.midi.*;
 import util.Pair;
 import music.GeneralInstrument;
 import music.Instrument;
-import music.InstrumentPiece;
-import music.InstrumentType;
-import music.MidiVoice;
+import music.BasicMidiVoice;
 import music.Music;
 import music.Note;
 import music.Voice;
+import music.midi_music.ChannelAccurateMidiVoice;
+import music.midi_music.MidiInstrument;
+import music.midi_music.MidiNote;
 
 public class MidiParserPlus {
 	private static final int DEFAULT_MICROSPQN = 500000;
 	private static final double DEFAULT_BPQN = 1.0;
 	private static final int DEFAULT_PROGRAM_NUMBER = 0;
-	private static final int MIDDLE_C = 60;
 	private static final int SET_TEMPO = 0x51;
 	private static final int PERCUSSION_CHANNEL = 9;
     
@@ -40,9 +36,9 @@ public class MidiParserPlus {
     	Map<Integer,MidiSoundEvents> programNumberToSoundEvents = getProgramNumberToSoundEvents(channelToSoundEvents);
     	Map<Long,Integer> tickToTime = getTickToTime(events, resolution);
     			
-    	List<InstrumentPiece> instrumentPieces = getInstrumentPieces(programNumberToSoundEvents, tickToTime, programNumberToChannels, resolution);
+    	List<Voice> voices = getVoices(programNumberToSoundEvents, tickToTime, programNumberToChannels, resolution);
     	
-    	Music music = new Music(musicTitle, instrumentPieces);
+    	Music music = new Music(musicTitle, voices);
     	
     	return music;
     }
@@ -124,19 +120,17 @@ public class MidiParserPlus {
     private static Map<Integer,Set<Integer>> getProgramNumberToChannels(Map<Integer,MidiSoundEvents> channelToEvents) {
     	Map<Integer,Set<Integer>> programNumberToChannels = new HashMap<Integer,Set<Integer>>();
     	
-    	final int NUM_AVAILABLE_CHANNELS = 15;
     	boolean[] occupiedChannels = new boolean[16];
-    	int numOccupiedChannels = 0;
     	
     	for ( int channel : channelToEvents.keySet() ) {
     		if ( channel == PERCUSSION_CHANNEL ) {
-    			occupiedChannels[channel] = true; numOccupiedChannels++;
+    			occupiedChannels[channel] = true;
     			int programNumber = Integer.MAX_VALUE;
     			Set<Integer> channels = new HashSet<Integer>();
     			channels.add(channel);
     			programNumberToChannels.put(programNumber, channels);
     		} else {
-	    		occupiedChannels[channel] = true; numOccupiedChannels++;
+	    		occupiedChannels[channel] = true;
 	    		MidiSoundEvents events = channelToEvents.get(channel);
 	    		lookForProgramNumber: for ( MidiEvent event : events ) {
 	    			ShortMessage sm = (ShortMessage) event.getMessage();
@@ -156,36 +150,25 @@ public class MidiParserPlus {
     		}
     		// At this point in the code, there is no programChange.
     		// If the channel is percussion, then it is reasonable for there to be
-    		// not program change. Otherwise, we just ignore the program number.
+    		// not program change. Otherwise, we assume the program number is 0.
     		if ( channel == PERCUSSION_CHANNEL ) {
     			int programNumber = Integer.MAX_VALUE;
 				Set<Integer> channels = new HashSet<Integer>();
 				channels.add(channel);
 				programNumberToChannels.put(programNumber,channels);
+    		} else {
+    			if ( programNumberToChannels.containsKey(DEFAULT_PROGRAM_NUMBER) ) {
+    				Set<Integer> channels = programNumberToChannels.get(DEFAULT_PROGRAM_NUMBER);
+    				channels.add(channel);
+    			} else {
+    				Set<Integer> channels = new HashSet<Integer>();
+    				channels.add(channel);
+    				programNumberToChannels.put(DEFAULT_PROGRAM_NUMBER, channels);
+    			}
     		}
     	}
+    	// We do not allocate channels here to be more accurate with the midi file.
     	Set<Integer> programNumbers = programNumberToChannels.keySet();
-    	int numProgramNumbers = programNumbers.size();
-    	for ( int programNumber : programNumbers ) {
-    		if ( programNumberToChannels.get(programNumber).contains(PERCUSSION_CHANNEL) ) continue;
-	    	allocateChannels: while ( numOccupiedChannels < NUM_AVAILABLE_CHANNELS ) {
-	    		int numChannelsToAllocate = (int) Math.ceil((double) (NUM_AVAILABLE_CHANNELS - numOccupiedChannels) / numProgramNumbers);
-	    		for ( int channel=0; channel < occupiedChannels.length; channel++ ) {
-	    			boolean isOccupied = occupiedChannels[channel];
-	    			if ( channel == PERCUSSION_CHANNEL ) {
-	    				continue;
-	    			}
-	    			if ( !isOccupied ) {
-	    				occupiedChannels[channel] = true;
-	    				programNumberToChannels.get(programNumber).add(channel);
-	    				numChannelsToAllocate--; numOccupiedChannels++;
-	    				if ( numChannelsToAllocate == 0 ) {
-	    					break allocateChannels;
-	    				}
-	    			}
-	    		}
-	    	}
-    	}
     	// If there is a percussion make sure to reset program number to 
     	// something appropriate
     	if ( programNumbers.contains(Integer.MAX_VALUE) ) {
@@ -284,52 +267,38 @@ public class MidiParserPlus {
 		return tickToTime;
 	}
 	
-	private static Handedness handedness( int programNumber, int value ) {
-		if ( GameplayTypeSetting.gameplayType() == GameplayType.ONE_HANDED ) {
-            return Handedness.SINGLE;
-        } else {
-            if ( Instrument.typeOfInstrument( programNumber ) == InstrumentType.SINGLE ) {
-                return Handedness.SINGLE;
-            } else {
-                if ( value > MIDDLE_C ) {
-                    return Handedness.LEFT;
-                } else {
-                    return Handedness.RIGHT;
-                }
-            }
-        }
-	}
-	
-	private static MidiEvent findNoteOnEvent(List<MidiEvent> noteOnEvents, int value) {
+	private static MidiEvent findNoteOnEvent(List<MidiEvent> noteOnEvents, int value, int channel) {
 		for ( MidiEvent noteOnEvent : noteOnEvents ) {
 			MidiMessage noteOnMessage = noteOnEvent.getMessage();
 			ShortMessage noteOnSM = (ShortMessage) noteOnMessage;
 			int noteOnValue = noteOnSM.getData1();
-			if ( noteOnValue == value ) {
+			int noteOnChannel = noteOnSM.getChannel();
+			if ( noteOnValue == value && noteOnChannel == channel ) {
 				return noteOnEvent;
 			}
 		}
 		throw new RuntimeException("No note on to match to");
 	}
 	
-	private static List<Note> getNotesFromNotesAndTicks(List<Pair<Note,Long>> notesAndTicks) {
-		notesAndTicks.sort(new Comparator<Pair<Note,Long>>() {
+	private static List<MidiNote> getMidiNotesFromNotesAndTicks(List<Pair<MidiNote,Long>> notesAndTicks) {
+		notesAndTicks.sort(new Comparator<Pair<MidiNote,Long>>() {
 			@Override
-			public int compare(Pair<Note, Long> o1, Pair<Note, Long> o2) {
+			public int compare(Pair<MidiNote, Long> o1, Pair<MidiNote, Long> o2) {
 				long tick1 = o1.getRight();
 				long tick2 = o2.getRight();
 				return (int) (tick1 - tick2);
 			}
 		});
-		List<Note> notes = new ArrayList<Note>();
-		for ( Pair<Note,Long> noteAndTick : notesAndTicks ) {
+		List<MidiNote> notes = new ArrayList<MidiNote>();
+		for ( Pair<MidiNote,Long> noteAndTick : notesAndTicks ) {
 			notes.add(noteAndTick.getLeft());
 		}
 		return notes;
 	}
 	
-	private static List<Integer> getTimesUntilNextElement(List<Pair<Note,Long>> notesAndTicks, Map<Long,Integer> tickToTime) {
+	private static List<Integer> getTimesUntilNextElement(List<Pair<MidiNote,Long>> notesAndTicks, Map<Long,Integer> tickToTime, int startTime) {
 		List<Integer> timesUntilNextElement = new ArrayList<Integer>();
+		timesUntilNextElement.add(startTime);
 		
 		for ( int i=0; i < notesAndTicks.size()-1; i++ ) {
 			long firstTick = notesAndTicks.get(i).getRight();
@@ -343,13 +312,13 @@ public class MidiParserPlus {
 		return timesUntilNextElement;
 	}
 	
-	private static List<InstrumentPiece> getInstrumentPieces(Map<Integer,MidiSoundEvents> programNumberToSoundEvents, Map<Long,Integer> tickToTime, Map<Integer,Set<Integer>> programNumberToChannels, int resolution) {
-		List<InstrumentPiece> instrumentPieces = new ArrayList<InstrumentPiece>();
+	private static List<Voice> getVoices(Map<Integer,MidiSoundEvents> programNumberToSoundEvents, Map<Long,Integer> tickToTime, Map<Integer,Set<Integer>> programNumberToChannels, int resolution) {
+		List<Voice> voices = new ArrayList<Voice>();
 		
 		for ( int programNumber : programNumberToSoundEvents.keySet() ) {
 			// Get the notes for each hand in order to make the voices for each program number
-			Map<Handedness,List<Pair<Note,Long>>> handednessToNotesAndTicks = new HashMap<Handedness,List<Pair<Note,Long>>>();
-			Map<Handedness,Integer> handednessToStartTime = new HashMap<Handedness,Integer>();
+			List<Pair<MidiNote,Long>> notesAndTicks = new ArrayList<Pair<MidiNote,Long>>();
+			int startTime = 0;
 			
 			MidiSoundEvents events = programNumberToSoundEvents.get(programNumber);
 			List<MidiEvent> noteOnEvents = new LinkedList<MidiEvent>();
@@ -372,7 +341,8 @@ public class MidiParserPlus {
 						}
 						if ( !isNoteOn ) {
 							int value = sm.getData1();
-							MidiEvent noteOnEvent = findNoteOnEvent(noteOnEvents, value);
+							int channel = sm.getChannel();
+							MidiEvent noteOnEvent = findNoteOnEvent(noteOnEvents, value, channel);
 							noteOnEvents.remove(noteOnEvent);
 							int noteOnTime = tickToTime.get(noteOnEvent.getTick());
 							MidiMessage noteOnMessage = noteOnEvent.getMessage();
@@ -380,24 +350,16 @@ public class MidiParserPlus {
 							int noteOnVelocity = noteOnSM.getData1();
 							int noteOffTime = tickToTime.get(event.getTick());
 							int timeElapsed = noteOffTime - noteOnTime;
-							Handedness handedness = handedness(programNumber,value);
-							Note note = new Note(value,timeElapsed,noteOnVelocity);
+							MidiNote note = new MidiNote(value,timeElapsed,noteOnVelocity,channel);
 							note.setTick(noteOnEvent.getTick());
-							if ( handednessToNotesAndTicks.containsKey(handedness) ) {
-								List<Pair<Note,Long>> notesAndTicks = handednessToNotesAndTicks.get(handedness);
-								notesAndTicks.add(new Pair<Note,Long>(note,noteOnEvent.getTick()));
-							} else {
-								handednessToStartTime.put(handedness,noteOnTime);
-								List<Pair<Note,Long>> notesAndTicks = new ArrayList<Pair<Note,Long>>();
-								notesAndTicks.add(new Pair<Note,Long>(note,noteOnEvent.getTick()));
-								handednessToNotesAndTicks.put(handedness,notesAndTicks);
+							if ( notesAndTicks.isEmpty() ) {
+								startTime = noteOnTime;
 							}
+							notesAndTicks.add(new Pair<MidiNote,Long>(note,noteOnEvent.getTick()));
 						}
 					}
 				}
 			}
-			List<Voice> voices = new ArrayList<Voice>();
-			List<Integer> startTimes = new ArrayList<Integer>();
 			Set<Integer> channels = programNumberToChannels.get(programNumber);
 			int[] channelsAsArray = new int[channels.size()];
 			int count = 0;
@@ -405,19 +367,12 @@ public class MidiParserPlus {
 				channelsAsArray[count++] = channel;
 			}
 					
-			Instrument instrument = new GeneralInstrument(programNumber,channelsAsArray);
-			for ( Handedness handedness : handednessToNotesAndTicks.keySet() ) {
-				List<Pair<Note,Long>> notesAndTicks = handednessToNotesAndTicks.get(handedness);
-				List<Note> notes = getNotesFromNotesAndTicks(notesAndTicks);
-				List<Integer> timesUntilNextElement = getTimesUntilNextElement(notesAndTicks, tickToTime);
-				int startTime = handednessToStartTime.get(handedness);
-				startTimes.add(startTime);
-				Voice voice = new MidiVoice(notes, timesUntilNextElement, handedness, instrument);
-				voices.add(voice);
-			}
-			InstrumentPiece instrumentPiece = new InstrumentPiece(voices, startTimes, instrument);
-			instrumentPieces.add(instrumentPiece);
+			Instrument instrument = new MidiInstrument(programNumber,channelsAsArray);
+			List<MidiNote> notes = getMidiNotesFromNotesAndTicks(notesAndTicks);
+			List<Integer> timesUntilNextElement = getTimesUntilNextElement(notesAndTicks, tickToTime, startTime);
+			Voice voice = new ChannelAccurateMidiVoice(notes, timesUntilNextElement, instrument);
+			voices.add(voice);
 		}
-		return instrumentPieces;
+		return voices;
 	}
 }

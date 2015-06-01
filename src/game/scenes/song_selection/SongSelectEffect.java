@@ -10,6 +10,7 @@ import music.Music;
 import music.MusicFile;
 import music.parser.MidiParser;
 import music.parser.MidiParserImproved;
+import music.parser.MidiParserPlus;
 
 public class SongSelectEffect implements Runnable {
     private final MusicFile musicFile;
@@ -22,7 +23,7 @@ public class SongSelectEffect implements Runnable {
     public void run() {
         // TODO Auto-generated method stub
         try {
-            Music music = MidiParserImproved.parse( musicFile.musicTitle(), musicFile.fileName() );
+            Music music = MidiParserPlus.parse( musicFile.musicTitle(), musicFile.fileName() );
             if ( music.isMultiInstrument() ) {
                 SceneManager.setNewScene( Scene.instrumentSelection( music ) );
             } else {

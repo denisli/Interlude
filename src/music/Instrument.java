@@ -14,8 +14,6 @@ public interface Instrument {
         
     public String getInstrumentName();
     
-    public int getProgram();
-    
     public void clear();
     
     @Override

@@ -2,7 +2,7 @@ package music;
 
 import java.util.List;
 
-public class MidiVoice implements Voice {
+public class BasicMidiVoice implements Voice {
     private final List<Note> sequence;
     private final List<Integer> timesUntilNextElement;
     private final Instrument instrument;
@@ -10,18 +10,18 @@ public class MidiVoice implements Voice {
     private int index = -1; // index of the music element currently playing
     private Note currentElement;
     
-    public MidiVoice(List<Note> sequence, List<Integer> timesUntilNextElement, Instrument instrument) {
+    public BasicMidiVoice(List<Note> sequence, List<Integer> timesUntilNextElement, Instrument instrument) {
         this.sequence = sequence;
         this.timesUntilNextElement = timesUntilNextElement;
         this.instrument = instrument;
     }
     
-    public Note next() {
+    public Note nextNote() {
         currentElement = sequence.get(++index);
         return currentElement;
     }
     
-    public int timeUntilNextElement() {
+    public int timeUntilNextNote() {
         return timesUntilNextElement.get(index + 1);
     }
     
