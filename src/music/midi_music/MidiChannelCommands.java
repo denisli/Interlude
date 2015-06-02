@@ -5,7 +5,7 @@ import java.util.List;
 
 public class MidiChannelCommands {
 	private final int channelNumber;
-	private final List<MidiCommand> commands = new ArrayList<MidiCommand>();
+	private final List<MidiControlChange> commands = new ArrayList<MidiControlChange>();
 	private final List<Integer> timesUntilNextCommand = new ArrayList<Integer>();
 	
 	private int index = 0;
@@ -22,12 +22,12 @@ public class MidiChannelCommands {
 		index++;
 	}
 	
-	public void add(MidiCommand command, int timeUntilCommand) {
+	public void add(MidiControlChange command, int timeUntilCommand) {
 		commands.add(command);
 		timesUntilNextCommand.add(timeUntilCommand);
 	}
 	
-	public MidiCommand nextCommand() {
+	public MidiControlChange nextCommand() {
 		return commands.get(index);
 	}
 	

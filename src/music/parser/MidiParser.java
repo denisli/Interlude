@@ -22,7 +22,7 @@ public class MidiParser {
         final int NOTE_ON = 0x90;
         final int NOTE_OFF = 0x80;
         //InputStream in = ClassLoader.getSystemResourceAsStream("midi/26799_What-Ive-Done.mid");
-        InputStream in = ClassLoader.getSystemResourceAsStream("midi/littleroot-town-2-.mid");
+        InputStream in = ClassLoader.getSystemResourceAsStream("midi/secret base ~Kimi ga Kureta Mono~.mid");
         int x = 2;
         if ( x == 1 ) return;
         Sequence sequence = MidiSystem.getSequence(in);
@@ -34,7 +34,7 @@ public class MidiParser {
             System.out.println();
             for (int i=0; i < track.size(); i++) { 
                 MidiEvent event = track.get(i);
-                if ( event.getTick() > 200000 || event.getTick() < 50000 ) { continue; }
+                if ( event.getTick() > 20000 ) { continue; }
                 System.out.print("@" + event.getTick() + " ");
                 MidiMessage message = event.getMessage();
                 if (message instanceof ShortMessage) {
@@ -58,6 +58,9 @@ public class MidiParser {
                         System.out.println("Program Change, " + sm.getData1());
                     } else {
                         System.out.println("Command: " + sm.getCommand());
+                        if ( sm.getCommand() == ShortMessage.CONTROL_CHANGE ) {
+                        	System.out.println("\tController: " + sm.getData1() + ", Value: " + sm.getData2());
+                        }
                     }
                 } else if ( message instanceof MetaMessage ) {
                     MetaMessage mm = (MetaMessage) message;

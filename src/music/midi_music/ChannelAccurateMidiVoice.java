@@ -4,7 +4,6 @@ import java.util.List;
 
 import music.Instrument;
 import music.Note;
-import music.Note;
 import music.Voice;
 
 public class ChannelAccurateMidiVoice implements Voice {
@@ -17,7 +16,7 @@ public class ChannelAccurateMidiVoice implements Voice {
     private int index = -1; // index of the music element currently playing
     private Note currentElement;
     
-    public ChannelAccurateMidiVoice(List<MidiNote> notes, List<Integer> timesUntilNextNote, Instrument instrument) {
+    public ChannelAccurateMidiVoice(List<MidiNote> notes, List<Integer> timesUntilNextNote, MidiInstrument instrument) {
         this.notes = notes;
         this.timesUntilNextNote = timesUntilNextNote;
         this.instrument = instrument;

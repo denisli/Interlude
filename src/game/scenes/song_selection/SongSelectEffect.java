@@ -2,15 +2,12 @@ package game.scenes.song_selection;
 
 import game.scenes.Scene;
 import game.scenes.SceneManager;
-
-import javax.sound.midi.MidiUnavailableException;
-
 import music.Instrument;
 import music.Music;
 import music.MusicFile;
-import music.parser.MidiParser;
 import music.parser.MidiParserImproved;
 import music.parser.MidiParserPlus;
+import music.parser.MidiParserSuper;
 
 public class SongSelectEffect implements Runnable {
     private final MusicFile musicFile;
@@ -21,7 +18,6 @@ public class SongSelectEffect implements Runnable {
 
     @Override
     public void run() {
-        // TODO Auto-generated method stub
         try {
             Music music = MidiParserPlus.parse( musicFile.musicTitle(), musicFile.fileName() );
             if ( music.isMultiInstrument() ) {

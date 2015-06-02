@@ -280,7 +280,7 @@ public class MidiParserPlus {
 		throw new RuntimeException("No note on to match to");
 	}
 	
-	private static List<MidiNote> getMidiNotesFromNotesAndTicks(List<Pair<MidiNote,Long>> notesAndTicks) {
+	private static List<MidiNote> getMidiNotes(List<Pair<MidiNote,Long>> notesAndTicks) {
 		notesAndTicks.sort(new Comparator<Pair<MidiNote,Long>>() {
 			@Override
 			public int compare(Pair<MidiNote, Long> o1, Pair<MidiNote, Long> o2) {
@@ -367,8 +367,8 @@ public class MidiParserPlus {
 				channelsAsArray[count++] = channel;
 			}
 					
-			Instrument instrument = new MidiInstrument(programNumber,channelsAsArray);
-			List<MidiNote> notes = getMidiNotesFromNotesAndTicks(notesAndTicks);
+			MidiInstrument instrument = new MidiInstrument(programNumber,channelsAsArray);
+			List<MidiNote> notes = getMidiNotes(notesAndTicks);
 			List<Integer> timesUntilNextElement = getTimesUntilNextElement(notesAndTicks, tickToTime, startTime);
 			Voice voice = new ChannelAccurateMidiVoice(notes, timesUntilNextElement, instrument);
 			voices.add(voice);
