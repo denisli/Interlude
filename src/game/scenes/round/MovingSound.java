@@ -9,6 +9,8 @@ import music.Note;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.geom.Circle;
+import org.newdawn.slick.geom.Shape;
 
 import util.Pair;
 
@@ -17,7 +19,7 @@ public class MovingSound implements Renderable {
     private float fractionX;
     private float fractionY;
     private int radius;
-    private Color color = Color.black;
+    private Color color = Color.orange;
     private Handedness handedness;
     
     private final Note note;
@@ -37,8 +39,11 @@ public class MovingSound implements Renderable {
         float actualFractionY = actualPosition.getRight();
         int centerX = (int) ( actualFractionX * containerWidth );
         int centerY = (int) ( actualFractionY * containerHeight );
-        g.setColor( color );
-        g.fillOval( centerX - radius, centerY - radius, 2 * radius, 2 * radius ); 
+        Shape shape = new Circle(centerX, centerY, radius);
+        g.setColor(color);
+        g.fill(shape);
+        g.setColor(Color.black);
+        g.draw(shape); 
     }
     
     public void bePlayed(Instrument instrument) {

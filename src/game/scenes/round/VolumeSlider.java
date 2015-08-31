@@ -114,7 +114,7 @@ public class VolumeSlider implements Renderable, Updateable {
         int cornerRadius = 6;
         int sliderTop = (int) ( containerHeight * ( fractionY - FRACTION_HEIGHT / 2 ) ); 
         int sliderBottom = (int) ( containerHeight * ( fractionY + FRACTION_HEIGHT / 2 ) ); 
-        value = 1.0;
+        value = instrument.getVolumeRatio();
         double valueFractionPosition = ( value - BOTTOM_VALUE ) / ( TOP_VALUE - BOTTOM_VALUE );
         int sliderButtonCenterY = (int) (sliderBottom + ( sliderTop - sliderBottom ) * valueFractionPosition);
         

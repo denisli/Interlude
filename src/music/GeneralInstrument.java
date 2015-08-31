@@ -26,7 +26,7 @@ public class GeneralInstrument implements Instrument {
         Synthesizer synth = LoadSynthesizer.getSynthesizer();
         javax.sound.midi.Instrument[] instruments = synth.getDefaultSoundbank().getInstruments();
         this.programNumber = programNumber;
-        this.instrumentName = (occupiedChannels[0] == 9) ? "Percussion" : instruments[programNumber].getName();
+        this.instrumentName = (arrayContains(occupiedChannels,9)) ? "Percussion" : instruments[programNumber].getName();
         MidiChannel[] channels = synth.getChannels();
         
         for ( int i : occupiedChannels ) {
@@ -37,6 +37,13 @@ public class GeneralInstrument implements Instrument {
         this.channels = channels;
         this.currentPlayer = channels[occupiedChannels[0]];
         this.occupiedChannels = occupiedChannels;
+    }
+    
+    private boolean arrayContains(int[] arr, int num) {
+    	for ( int elem : arr ) {
+    		if ( elem == num ) return true;
+    	}
+    	return false;
     }
     
     @Override
@@ -111,5 +118,10 @@ public class GeneralInstrument implements Instrument {
 	@Override
 	public void setVolumeRatio(double volumeRatio) {
 		this.volumeRatio = volumeRatio;
+	}
+
+	@Override
+	public double getVolumeRatio() {
+		return volumeRatio;
 	}
 }

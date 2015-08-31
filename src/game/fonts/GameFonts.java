@@ -3,7 +3,6 @@ package game.fonts;
 import game.Interlude;
 
 import java.awt.Font;
-import java.util.function.Function;
 
 import org.newdawn.slick.UnicodeFont;
 

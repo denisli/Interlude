@@ -14,8 +14,8 @@ public class SceneManager {
     	try {
     		int containerWidth = Interlude.GAME_CONTAINER.getWidth();
     		int containerHeight = Interlude.GAME_CONTAINER.getHeight();
-			background = new Image("images/background.png");
-			background = background.getScaledCopy(containerHeight,containerWidth);
+			background = new Image("images/musical_background.png");
+			background = background.getScaledCopy(containerWidth, containerHeight);
 		} catch (SlickException e) {
 			e.printStackTrace();
 		}

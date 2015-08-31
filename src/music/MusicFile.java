@@ -5,7 +5,7 @@ import java.io.IOException;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiUnavailableException;
 
-import music.parser.MidiParserImproved;
+import music.parser.MidiParser;
 
 public class MusicFile {
     private final String musicTitle;
@@ -27,7 +27,7 @@ public class MusicFile {
     public Music getMusic() throws IOException {
         //return Parser.fileToMusic( musicFile );
         try {
-            return MidiParserImproved.parse( musicTitle, musicFileName );
+            return MidiParser.parse( musicTitle, musicFileName );
         } catch (MidiUnavailableException mue) {
             throw new RuntimeException("Midi not available.");
         } catch (InvalidMidiDataException imde) {

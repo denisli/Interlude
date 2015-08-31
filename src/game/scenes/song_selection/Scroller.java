@@ -7,7 +7,7 @@ import org.newdawn.slick.MouseListener;
 
 public interface Scroller extends Renderable, Updateable, MouseListener {
     public static Scroller songSelectionScroller() {
-        Scroller scroller = new SongSelectionScroller();
+        Scroller scroller = SongSelectionScroller.getSongSelectionScroller();
         scroller.init();
         return scroller;
     }

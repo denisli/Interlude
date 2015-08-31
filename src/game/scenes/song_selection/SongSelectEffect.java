@@ -5,9 +5,7 @@ import game.scenes.SceneManager;
 import music.Instrument;
 import music.Music;
 import music.MusicFile;
-import music.parser.MidiParserImproved;
-import music.parser.MidiParserPlus;
-import music.parser.MidiParserSuper;
+import music.parser.MidiParser;
 
 public class SongSelectEffect implements Runnable {
     private final MusicFile musicFile;
@@ -19,7 +17,7 @@ public class SongSelectEffect implements Runnable {
     @Override
     public void run() {
         try {
-            Music music = MidiParserPlus.parse( musicFile.musicTitle(), musicFile.fileName() );
+            Music music = MidiParser.parse( musicFile.musicTitle(), musicFile.fileName() );
             if ( music.isMultiInstrument() ) {
                 SceneManager.setNewScene( Scene.instrumentSelection( music ) );
             } else {
