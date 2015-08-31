@@ -27,6 +27,8 @@ public class InterludeGameContainer {
 		app.setShowFPS(false);
 		app.setTargetFrameRate(60);
 		app.setVSync(true);
+		app.setAlwaysRender(true);
+		app.setUpdateOnlyWhenVisible(false);
 	}
 
 	public int getWidth() {
