@@ -213,7 +213,7 @@ public class SongSelectionScroller implements Scroller {
 	public void mouseWheelMoved(int change) {
 		change /= 120; // scale down the change. I believe they are in
 						// increments of 120.
-		System.out.println(change);
+		// System.out.println(change);
 		while (change > 0 && firstIndex > 0) {
 			change--;
 			firstIndex--;

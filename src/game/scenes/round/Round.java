@@ -203,7 +203,7 @@ public class Round extends Scene {
 						float offScreen = 0.0f;
 
 						if (instrument.equals(selectedInstrument)) {
-							System.out.println(instrument.getInstrumentName());
+							// System.out.println(instrument.getInstrumentName());
 							Pair<Integer, Handedness> position = new Pair<Integer, Handedness>(
 									integer, handedness);
 							MovingSound movingSound = new MovingSound(
@@ -222,7 +222,7 @@ public class Round extends Scene {
 								stackedMovingSound.addMovingSound(movingSound);
 							}
 						} else {
-							System.out.println(instrument.getInstrumentName());
+							// System.out.println(instrument.getInstrumentName());
 							noteToInsert.bePlayed(instrument);
 						}
 
