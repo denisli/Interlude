@@ -48,6 +48,16 @@ Changing the orientation
 
 So initially the notes will go from left to right. You can change that by rotating the screen by pressing the left and right arrows.
 
+Changing the volume
+-------------------
+
+Click on "Options" after choosing your music (and instrument). You can slide the vertically-oriented slider to change the volume. When it says "2x VOLUME", this is not truly twice as loud. In the sense of MIDI, the velocity is doubled, but kept at a maximum of 128.
+
+Changing the speed of the notes
+-------------------------------
+
+Click on "Options" after choosing your music (and instrument). You can also slide the horizontally-oriented slider to change the speed. Unfortunately this slider is not adequately labeled. You can only change the speed to 0.25x, 0.5x, 0.75x, ..., 2x. The slider will move to the speed you have dragged it closest to. You probably can't see which one you're on, but you can probably figure out from the fact that the slider is linearly-scaled.
+
 Changing the play-style
 -----------------------
 
