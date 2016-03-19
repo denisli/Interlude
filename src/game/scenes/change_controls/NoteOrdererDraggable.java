@@ -8,12 +8,11 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.Rectangle;
 
+import game.GameObject;
 import game.Interlude;
-import game.Renderable;
-import game.Updateable;
 import game.fonts.GameFonts;
 
-public class NoteOrdererDraggable implements Renderable, Updateable {
+public class NoteOrdererDraggable implements GameObject {
     private float fractionX;
     private float fractionY;
     private final String noteLetter;

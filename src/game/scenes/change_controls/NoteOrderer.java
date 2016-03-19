@@ -9,11 +9,10 @@ import org.newdawn.slick.Input;
 
 import util.Slotter;
 import game.settings.Controls;
+import game.GameObject;
 import game.Interlude;
-import game.Renderable;
-import game.Updateable;
 
-public class NoteOrderer implements Renderable, Updateable {
+public class NoteOrderer implements GameObject {
     private static final List<Integer> NOTES_IN_ORDER = Controls.notesInOrder();
     private static final int NUM_NOTES = NOTES_IN_ORDER.size();
     private static final float FRACTION_Y = 0.8f;

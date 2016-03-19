@@ -1,15 +1,13 @@
 package game.buttons;
 
-import game.Clickable;
-import game.Clickingable;
-import game.Hoverable;
+import game.GameObject;
 import game.Interlude;
 import game.scenes.SceneManager;
 
 import org.newdawn.slick.Input;
 import org.newdawn.slick.geom.Shape;
 
-public abstract class Button implements Hoverable, Clickingable, Clickable {
+public abstract class Button implements GameObject {
 	Shape boundingShape;
 	Runnable effect;
 	
@@ -62,22 +60,22 @@ public abstract class Button implements Hoverable, Clickingable, Clickable {
     	}
     }
     
-    @Override
     public boolean isHovered(Input input) {
     	return !mouseWasDown && !mouseIsDown && mouseIsInBound;
     }
     
-    @Override
     public boolean isClicking(Input input) {
     	return mouseWasDown && mouseIsDown && mouseWasInBound && mouseIsInBound;
     }
     
-    @Override
     public boolean isClicked(Input input) {
     	return mouseWasDown && !mouseIsDown && mouseWasInBound && mouseIsInBound;
     }
     
-    @Override
+    public abstract void hover(Input input);
+    
+    public abstract void clicking(Input input);
+    
     public void click(Input input) {
     	effect.run();
     }

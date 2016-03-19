@@ -1,7 +1,7 @@
 package game.scenes.round;
 
+import game.GameObject;
 import game.Interlude;
-import game.Renderable;
 import game.settings.Handedness;
 import game.settings.Orientation;
 import music.Instrument;
@@ -14,7 +14,7 @@ import org.newdawn.slick.geom.Shape;
 
 import util.Pair;
 
-public class MovingSound implements Renderable {
+public class MovingSound implements GameObject {
     public final static float SPEED = 1.0f/3500.0f; // how much of the screen in moves in 1 millisecond
     private float fractionX;
     private float fractionY;

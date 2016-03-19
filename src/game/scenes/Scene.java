@@ -5,8 +5,7 @@ import java.util.List;
 
 import music.Instrument;
 import music.Music;
-import game.Renderable;
-import game.Updateable;
+import game.GameObject;
 import game.pop_ups.PopUp;
 import game.scenes.change_controls.ChangeControls;
 import game.scenes.initialization_scene.InitializationScene;
@@ -20,7 +19,7 @@ import game.scenes.song_selection.SongSelectionPage;
 
 import org.newdawn.slick.Graphics;
 
-public abstract class Scene implements Renderable, Updateable {
+public abstract class Scene implements GameObject {
     protected final List<PopUp> popUps = new ArrayList<PopUp>();
     protected final List<PopUp> popUpsToRemove = new ArrayList<PopUp>();
     

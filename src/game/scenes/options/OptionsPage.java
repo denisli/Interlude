@@ -11,14 +11,13 @@ import game.selectables.Selectable;
 import game.selectables.Statement;
 import game.settings.GameplayType;
 import game.settings.GameplayTypeSetting;
-import game.Renderable;
-import game.Updateable;
+import game.GameObject;
 
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 public class OptionsPage extends Scene {
-    List<Renderable> renderables = new ArrayList<Renderable>();
+    List<GameObject> renderables = new ArrayList<GameObject>();
     
     @Override
     public Scene parentScene() {
@@ -33,7 +32,7 @@ public class OptionsPage extends Scene {
 
     @Override
     public void update(int t) {
-        renderables.stream().forEach( renderable -> ((Updateable) renderable).update(t) );
+        renderables.stream().forEach( renderable -> renderable.update(t) );
     }
 
     @Override

@@ -1,8 +1,6 @@
 package music;
 
-import game.Updateable;
-
-public abstract class InstrumentPlayer implements Updateable {
+public abstract class InstrumentPlayer {
 	private Instrument instrument;
 	
 	public abstract void update(int t);

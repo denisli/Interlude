@@ -2,11 +2,10 @@ package game.selectables;
 
 import org.newdawn.slick.Input;
 
+import game.GameObject;
 import game.Interlude;
-import game.Renderable;
-import game.Updateable;
 
-public abstract class Selectable implements Renderable, Updateable {
+public abstract class Selectable implements GameObject {
     private boolean selected = false;
     
     private Statement condition;

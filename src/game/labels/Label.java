@@ -5,10 +5,9 @@ import java.util.function.Function;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.UnicodeFont;
 
-import game.Renderable;
-import game.Updateable;
+import game.GameObject;
 
-public interface Label<T> extends Renderable, Updateable {
+public interface Label<T> extends GameObject {
     
     public static Label<String> textLabel(String text, float fractionX, float fractionY, Color color, UnicodeFont font) {
         Function<String,String> stringer = (Function<String,String>) ( string -> string );

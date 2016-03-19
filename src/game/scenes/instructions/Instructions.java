@@ -3,8 +3,7 @@ package game.scenes.instructions;
 import java.util.ArrayList;
 import java.util.List;
 
-import game.Updateable;
-import game.Renderable;
+import game.GameObject;
 import game.buttons.Button;
 import game.fonts.GameFonts;
 import game.labels.Label;
@@ -14,7 +13,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 public class Instructions extends Scene {
-    private final List<Renderable> renderables = new ArrayList<Renderable>();
+    private final List<GameObject> renderables = new ArrayList<GameObject>();
     
     @Override
     public void render(Graphics g) {
@@ -23,7 +22,7 @@ public class Instructions extends Scene {
 
     @Override
     public void update(int t) {
-        renderables.stream().forEach( renderable -> ((Updateable) renderable).update(t) );
+        renderables.stream().forEach( renderable -> renderable.update(t) );
     }
 
     @Override

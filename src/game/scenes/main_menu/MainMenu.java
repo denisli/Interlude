@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import game.Updateable;
-import game.Renderable;
+import game.GameObject;
 import game.buttons.Button;
 import game.buttons.effects.ChangeSceneEffect;
 import game.fonts.GameFonts;
@@ -16,7 +15,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.Graphics;
 
 public class MainMenu extends Scene {
-    private final List<Renderable> renderables = new ArrayList<Renderable>();
+    private final List<GameObject> renderables = new ArrayList<GameObject>();
     
     @Override
     public void render(Graphics g) {
@@ -25,7 +24,7 @@ public class MainMenu extends Scene {
 
     @Override
     public void update(int t) {
-        renderables.stream().forEach( renderable -> ((Updateable) renderable).update(t) );
+        renderables.stream().forEach( renderable -> renderable.update(t) );
     }
 
     @Override

@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import music.Note;
-import game.Renderable;
-import game.Updateable;
+import game.GameObject;
 import game.buttons.Button;
 import game.fonts.GameFonts;
 import game.labels.Label;
@@ -20,7 +19,7 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.UnicodeFont;
 
 public class ChangeControls extends Scene {
-    private final List<Renderable> renderables = new ArrayList<Renderable>();
+    private final List<GameObject> renderables = new ArrayList<GameObject>();
     private final NoteOrderer noteOrderer = NoteOrderer.noteOrderer();
     private final List<Label<String>> controlLabels = new ArrayList<Label<String>>();
     
@@ -35,7 +34,7 @@ public class ChangeControls extends Scene {
     public void update(int t) {
         // TODO Auto-generated method stub
         super.update(t);
-        renderables.stream().forEach( renderable -> ((Updateable) renderable).update(t) );
+        renderables.stream().forEach( renderable -> renderable.update(t) );
         controlLabels.stream().forEach( label -> label.update(t) );
     }
 

@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import game.Interlude;
-import game.Renderable;
-import game.Updateable;
+import game.GameObject;
 import game.buttons.Button;
 import game.scenes.Scene;
 
@@ -14,7 +13,7 @@ import org.newdawn.slick.Input;
 
 public class SongSelectionPage extends Scene {
     private final Scroller songSelectionScroller = Scroller.songSelectionScroller();
-    private List<Renderable> renderables = new ArrayList<Renderable>();
+    private List<GameObject> renderables = new ArrayList<GameObject>();
 
     @Override
     public void render(Graphics g) {
@@ -23,7 +22,7 @@ public class SongSelectionPage extends Scene {
 
     @Override
     public void update(int t) {
-        renderables.stream().forEach( renderable -> ((Updateable) renderable).update(t) );
+        renderables.stream().forEach( renderable -> renderable.update(t) );
     }
 
     @Override

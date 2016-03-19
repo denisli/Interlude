@@ -12,12 +12,11 @@ import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.RoundedRectangle;
 
 import game.Interlude;
-import game.Renderable;
-import game.Updateable;
+import game.GameObject;
 import game.fonts.GameFonts;
 import game.labels.Label;
 
-public class VolumeSlider implements Renderable, Updateable {
+public class VolumeSlider implements GameObject {
     private final Instrument instrument;
     private final float fractionX;
     private final float fractionY;
@@ -33,7 +32,7 @@ public class VolumeSlider implements Renderable, Updateable {
     private double value;
     private RoundedRectangle sliderButton;
     
-    private final List<Renderable> renderables = new ArrayList<Renderable>();
+    private final List<GameObject> renderables = new ArrayList<GameObject>();
     private Label<String> instrumentLabel;
     private Label<String> topLabel;
     private Label<String> bottomLabel;
@@ -69,7 +68,7 @@ public class VolumeSlider implements Renderable, Updateable {
 
     @Override
     public void update(int t) {
-        renderables.stream().forEach( renderable -> ((Updateable) renderable).update(t) );
+        renderables.stream().forEach( renderable -> renderable.update(t) );
         
         Input input = Interlude.GAME_CONTAINER.getInput();
         int containerHeight = Interlude.GAME_CONTAINER.getHeight();

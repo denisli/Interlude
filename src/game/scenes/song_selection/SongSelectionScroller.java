@@ -14,6 +14,7 @@ import org.newdawn.slick.Input;
 
 public class SongSelectionScroller implements Scroller {
 	private static final String[] songTitles = new String[] {
+			"Shigatsu - Again",
 			"Pokemon - Lugia's Song", "Bleach - Houki Boushi (Piano)",
 			"Bleach - Houki Boushi (Full Instrumental)",
 			"Bleach - Rolling Star", "Pokemon Medley", "Hiiro no Kakera - Nee",
@@ -66,6 +67,7 @@ public class SongSelectionScroller implements Scroller {
 			"Girls Generation - Gee",
 			"Slam Dunk - Kimi ga Suki Da to Sakebitai", };
 	private static final String[] fileNames = new String[] {
+			"Shigatsu OST - AGAIN (MIDI - Hereson).mid",
 			"pokemon-lugias-song.mid",
 			"bleach-houki-boshi-piano-solo.mid",
 			"bleach-houki-boshi.mid",

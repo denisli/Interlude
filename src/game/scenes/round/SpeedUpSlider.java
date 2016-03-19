@@ -9,13 +9,12 @@ import org.newdawn.slick.Input;
 import org.newdawn.slick.UnicodeFont;
 import org.newdawn.slick.geom.RoundedRectangle;
 
+import game.GameObject;
 import game.Interlude;
-import game.Renderable;
-import game.Updateable;
 import game.fonts.GameFonts;
 import game.labels.Label;
 
-public class SpeedUpSlider implements Renderable, Updateable {
+public class SpeedUpSlider implements GameObject {
     private final float fractionX;
     private final float fractionY;
     private final TimeDilator timeDilator;
@@ -35,7 +34,7 @@ public class SpeedUpSlider implements Renderable, Updateable {
     private boolean mouseWasPressed = false;
     private RoundedRectangle sliderButton;
     
-    private final List<Renderable> renderables = new ArrayList<Renderable>();
+    private final List<GameObject> renderables = new ArrayList<GameObject>();
     private Label<String> leftLabel;
     private Label<String> rightLabel;
     
@@ -70,7 +69,7 @@ public class SpeedUpSlider implements Renderable, Updateable {
 
     @Override
     public void update(int t) {
-        renderables.stream().forEach( renderable -> ((Updateable) renderable).update(t) );
+        renderables.stream().forEach( renderable -> renderable.update(t) );
         
         Input input = Interlude.GAME_CONTAINER.getInput();
         int containerWidth = Interlude.GAME_CONTAINER.getWidth();

@@ -1,6 +1,6 @@
 package game.scenes.round;
 
-import game.Renderable;
+import game.GameObject;
 import game.settings.Handedness;
 
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import org.newdawn.slick.Graphics;
 
 import music.Instrument;
 
-public class StackedMovingSound implements Renderable {
+public class StackedMovingSound implements GameObject {
 	// stackedMovingSounds is a list of moving sounds
 	private final List<MovingSound> stackedMovingSounds = new ArrayList<MovingSound>();
 	private MovingSound longestMovingSound;

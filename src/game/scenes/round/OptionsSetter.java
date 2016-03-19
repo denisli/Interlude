@@ -1,8 +1,7 @@
 package game.scenes.round;
 
 import game.Interlude;
-import game.Renderable;
-import game.Updateable;
+import game.GameObject;
 import game.buttons.Button;
 import game.pop_ups.PopUp;
 import game.scenes.SceneManager;
@@ -19,7 +18,7 @@ import music.Instrument;
 public class OptionsSetter extends PopUp {
 	private final List<Instrument> instruments;
 	private final TimeDilator timeDilator;
-	private final List<Renderable> renderables = new ArrayList<Renderable>();
+	private final List<GameObject> renderables = new ArrayList<GameObject>();
 	private static final float VOLUME_SLIDER_FRACTION_Y = 0.5f;
 	private static final float SPEED_UP_SLIDER_FRACTION_X = 0.5f;
 	private static final float SPEED_UP_SLIDER_FRACTION_Y = 0.8f;
@@ -60,7 +59,7 @@ public class OptionsSetter extends PopUp {
 	@Override
 	public void update(int t) {
 		renderables.stream().forEach(
-				renderable -> ((Updateable) renderable).update(t));
+				renderable -> renderable.update(t));
 	}
 
 	@Override
@@ -85,7 +84,7 @@ public class OptionsSetter extends PopUp {
 						0.75f,
 						0.7f,
 						(Runnable) () -> {
-							for (Renderable renderable : renderables) {
+							for (GameObject renderable : renderables) {
 								if (renderable instanceof VolumeSlider) {
 									VolumeSlider volumeSlider = (VolumeSlider) renderable;
 									volumeSlider.reset();
@@ -98,7 +97,7 @@ public class OptionsSetter extends PopUp {
 						0.9f,
 						0.7f,
 						(Runnable) () -> {
-							for (Renderable renderable : renderables) {
+							for (GameObject renderable : renderables) {
 								if (renderable instanceof SpeedUpSlider) {
 									SpeedUpSlider speedUpSlider = (SpeedUpSlider) renderable;
 									speedUpSlider.reset();
