@@ -104,9 +104,4 @@ public class InitializationScene extends Scene {
 		}
 	}
 
-	@Override
-	protected void handleServerMessages() {
-
-	}
-
 }

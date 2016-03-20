@@ -61,9 +61,4 @@ public class ResultsPage extends Scene {
         this.backButton = Button.backButton(0.9f, 0.05f);
     }
 
-    @Override
-    protected void handleServerMessages() {
-        // TODO Auto-generated method stub
-        
-    }
 }

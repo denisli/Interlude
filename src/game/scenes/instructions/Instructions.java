@@ -49,8 +49,4 @@ public class Instructions extends Scene {
         renderables.add(Label.textLabel( instructionText, 0.5f, 0.4f, Color.black, GameFonts.ARIAL_PLAIN_18 ));
     }
 
-    @Override
-    protected void handleServerMessages() {
-        
-    }
 }

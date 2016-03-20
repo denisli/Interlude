@@ -64,10 +64,4 @@ public class OptionsPage extends Scene {
         }, (Runnable) () -> GameplayTypeSetting.setGameplayType(GameplayType.TWO_HANDED) ));
     }
 
-    @Override
-    protected void handleServerMessages() {
-        // TODO Auto-generated method stub
-        
-    }
-
 }

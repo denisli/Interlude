@@ -466,9 +466,4 @@ public class Round extends Scene {
 				Color.darkGray, GameFonts.ARIAL_PLAIN_32, new TimeToString());
 	}
 
-	@Override
-	protected void handleServerMessages() {
-		throw new RuntimeException("Not implemented yet");
-	}
-
 }

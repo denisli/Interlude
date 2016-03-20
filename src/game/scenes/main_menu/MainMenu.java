@@ -57,9 +57,4 @@ public class MainMenu extends Scene {
         renderables.add(interludeLabel);
     }
 
-    @Override
-    protected void handleServerMessages() {
-        // TODO Auto-generated method stub
-        
-    }
 }

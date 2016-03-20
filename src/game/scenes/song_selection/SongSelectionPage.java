@@ -55,9 +55,4 @@ public class SongSelectionPage extends Scene {
         renderables.add(songSelectionScroller);
     }
 
-    @Override
-    protected void handleServerMessages() {
-        // TODO Auto-generated method stub
-        
-    }
 }

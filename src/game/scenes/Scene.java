@@ -108,5 +108,4 @@ public abstract class Scene implements GameObject {
     
     protected abstract void cleanUp();
     
-    protected abstract void handleServerMessages();
 }

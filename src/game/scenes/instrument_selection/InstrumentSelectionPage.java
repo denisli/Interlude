@@ -78,9 +78,4 @@ public class InstrumentSelectionPage extends Scene {
         renderables.add( Button.backButton( 0.9f, 0.1f ) );
     }
 
-    @Override
-    protected void handleServerMessages() {
-        
-    }
-
 }

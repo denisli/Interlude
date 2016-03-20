@@ -100,9 +100,4 @@ public class ChangeControls extends Scene {
         renderables.add(noteOrderer);
     }
 
-    @Override
-    protected void handleServerMessages() {
-        // TODO Auto-generated method stub
-        
-    }
 }
